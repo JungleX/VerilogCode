@@ -1,0 +1,27 @@
+readme
+
+《Verilog数字系统设计教材》夏宇闻 编著
+第17章 简化的RISC_CPU设计
+
+1.source file:
+	clk_gen.v 		时钟发生器
+	register.v 		指令寄存器
+	accum.v 		累加器
+	alu.v 			算术运算器
+	datactl.v 		数据控制器
+	adr.v 			地址多路器
+	counter.v 		程序计数器
+	machinectl.v 	状态控制器
+	machine.v 		状态机
+	addr_decode.v
+	ram.v
+	rom.v
+	cpu.v
+
+2.testbench file:
+	cputop.v
+
+3.test file
+	test1.pro
+	test1.dat
+
