@@ -11,7 +11,7 @@ module filter3x3_tb();
   reg [23:0] filterLine2;
   reg [23:0] filterLine3;
   
-  wire [23:0] out;
+  wire [15:0] out;
   
   filter3x3 u0(
     .inLine1(inLine1),
@@ -29,12 +29,11 @@ module filter3x3_tb();
 
 initial 
 begin
-  clk = 1'b0;
+  clk = 1'b1;
   repeat (20) clk = #5 ~clk;
 end
 
-
-always @(negedge clk ) 
+always @(posedge clk ) 
 begin
   $display("data:");
   $display("%d %d %d", inLine1[23:16], inLine1[15:8], inLine1[7:0]);
@@ -47,8 +46,8 @@ begin
   $display("%d %d %d", filterLine3[23:16], filterLine3[15:8], filterLine3[7:0]);
   
   $display("out: %d", out);
-end
 
+end
 
 initial
 begin
@@ -60,8 +59,12 @@ begin
   filterLine2 = 24'b0;
   filterLine3 = 24'b0;
   */
-  
-//  #10
+  #0
+  rst = 1'b1;
+
+  #10
+  rst = 1'b0;
+
   inLine1 = {8'b0, 8'b1, 8'b10};
   inLine2 = {8'b1, 8'b1, 8'b10};
   inLine3 = {8'b10, 8'b0, 8'b10};
@@ -73,9 +76,9 @@ begin
   inLine1 = {8'b0, 8'b1, 8'b10};
   inLine2 = {8'b1, 8'b1, 8'b10};
   inLine3 = {8'b10, 8'b0, 8'b10};
-  filterLine1 = {8'b1, 8'b10, 8'b1};
-  filterLine2 = {8'b1, 8'b10, 8'b1};
-  filterLine3 = {8'b1, 8'b10, 8'b1};
+  filterLine1 = {8'b10, 8'b10, 8'b10};
+  filterLine2 = {8'b10, 8'b10, 8'b10};
+  filterLine3 = {8'b10, 8'b10, 8'b10};
   
 end
 
