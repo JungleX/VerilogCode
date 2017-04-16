@@ -1,0 +1,9 @@
+`ifndef _bit_width_vh
+`define _bit_width_vh
+`define IMG_DATA_WIDTH 8
+`define IMG_DATA_LINE_WIDTH `IMG_DATA_WIDTH * 3
+
+`define NUM_1 8'b1 //32'b00111111100000000000000000000000
+`define NUM_2 8'b10 //32'b01000000000000000000000000000000
+
+`endif
