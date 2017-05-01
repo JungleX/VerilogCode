@@ -33,18 +33,17 @@ module accumulator(
     
     reg [`IMG_DATA_WIDTH * 2 - 1:0] data;
     reg [`IMG_DATA_WIDTH - 1:0] bias;
-    wire [`IMG_DATA_WIDTH * 2 - 1:0] fout_16;
-    reg [`IMG_DATA_WIDTH - 1:0] fout_8;
-    
-    mult_gen_signed_8 mult(.CLK(clk), .A(data[`IMG_DATA_WIDTH - 1:0]),  .B(bias),  .P(fout_16));
-    
+    wire [`IMG_DATA_WIDTH - 1:0] fout_8;
+   
+    adder_signed_8 adder(.CLK(clk), .A(data[`IMG_DATA_WIDTH - 1:0]),  .B(bias),  .S(fout_8));
+
     assign out = fout_8;
     
     always @(posedge clk or posedge rst) begin
         if(rst) begin
-            data = `IMG_DATA_WIDTH * 2'b0;
-            bias = `IMG_DATA_WIDTH'b0;
-            fout_8 = `IMG_DATA_WIDTH'b0;
+            data <= `IMG_DATA_WIDTH * 2'b0;
+            bias <= `IMG_DATA_WIDTH'b0;
+            //fout_8 <= `IMG_DATA_WIDTH'b0;
         end
     end
     
@@ -54,7 +53,7 @@ module accumulator(
             data <= inData;
             bias <= inBias;
             // clk2 
-            fout_8 <= fout_16[ `IMG_DATA_WIDTH - 1:0];
+            // fout_8 
         end
     end        
     

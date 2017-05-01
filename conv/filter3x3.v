@@ -10,7 +10,7 @@
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
-// Description: 
+// Description:    
 // 计算过程分为3个clk的流水
 // 输入数据后第三个clk下降沿输出计算结果
 //
@@ -69,25 +69,27 @@ module filter3x3(
     always @(posedge clk or posedge rst) begin
         if(rst) begin
             //reset registers
-            DataLine1 = `IMG_DATA_LINE_WIDTH'b0;
-            DataLine2 = `IMG_DATA_LINE_WIDTH'b0;
-            DataLine3 = `IMG_DATA_LINE_WIDTH'b0;
+            DataLine1 <= `IMG_DATA_LINE_WIDTH'b0;
+            DataLine2 <= `IMG_DATA_LINE_WIDTH'b0;
+            DataLine3 <= `IMG_DATA_LINE_WIDTH'b0;
     
-            fLine1 = `IMG_DATA_LINE_WIDTH'b0;
-            fLine2 = `IMG_DATA_LINE_WIDTH'b0;
-            fLine3 = `IMG_DATA_LINE_WIDTH'b0;
+            fLine1 <= `IMG_DATA_LINE_WIDTH'b0;
+            fLine2 <= `IMG_DATA_LINE_WIDTH'b0;
+            fLine3 <= `IMG_DATA_LINE_WIDTH'b0;
        
-            mulLine1 = `IMG_DATA_LINE_WIDTH'b0;
-            mulLine2 = `IMG_DATA_LINE_WIDTH'b0;
-            mulLine3 = `IMG_DATA_LINE_WIDTH'b0;
+            mulLine1 <= `IMG_DATA_LINE_WIDTH'b0;
+            mulLine2 <= `IMG_DATA_LINE_WIDTH'b0;
+            mulLine3 <= `IMG_DATA_LINE_WIDTH'b0;
         
-            fout = `IMG_DATA_WIDTH * 2'b0;
+            fout <= `IMG_DATA_WIDTH * 2'b0;
         end
     end
  
     assign out = fout;
   
     always @(negedge clk) begin
+    // clk2 时，mult_x 的计算会在上升沿做，占用一个时钟周期，所以整体在下降沿赋值，才能在一个周期内接收到对应的计算结果
+    //always @(posedge clk) begin
         if(ena) begin
             // clk1
             // load input matrix and filter data to DataLine and fLine

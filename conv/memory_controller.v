@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module memory_controller(
+    module memory_controller(
     input clk,
     input rst,
     input ena,
@@ -96,145 +96,145 @@ module memory_controller(
     always @(posedge clk or posedge rst) begin
         if(ena) begin
             if(rst) begin
-                b_rst = 1'b1;
-                b_wr_en = 1'b0; 
-                b_rd_en = 1'b0; 
-                w_rst = 1'b1;
-                w_wr_en = 1'b0;
-                w_rd_en = 1'b0; 
-                l_ena = 1'b0;
-                l_wea = 1'b0;
-                l_rst = 1'b1;
-                allLoadDone = 1'b0;
+                b_rst   <= 1'b1;
+                b_wr_en <= 1'b0; 
+                b_rd_en <= 1'b0; 
+                w_rst   <= 1'b1;
+                w_wr_en <= 1'b0;
+                w_rd_en <= 1'b0; 
+                l_ena   <= 1'b0;
+                l_wea   <= 1'b0;
+                l_rst   <= 1'b1;
+                allLoadDone <= 1'b0;
             end
             else begin
-                b_rst = 1'b0;
-                w_rst = 1'b0;
-                l_rst = 1'b0;
+                b_rst <= 1'b0;
+                w_rst <= 1'b0;
+                l_rst <= 1'b0;
             end
         end
     end
     
     always @(posedge clk) begin
         if(ena) begin
-            m_state = {biasFull,biasEmpty,weightFull,weightEmpty};
+            m_state <= {biasFull,biasEmpty,weightFull,weightEmpty};
         
             case(readState)
                 ALL_READING:
                     begin
-                        b_rd_en = 1'b1;
-                        w_rd_en = 1'b1;
-                        l_ena = 1'b1;
-                        l_wea = 1'b0;
+                        b_rd_en <= 1'b1;
+                        w_rd_en <= 1'b1;
+                        l_ena <= 1'b1;
+                        l_wea <= 1'b0;
                     end
                 ALL_READ_DONE:
                     begin
-                        b_rd_en = 1'b0;
-                        w_rd_en = 1'b0;
-                        l_ena = 1'b0;
-                        l_wea = 1'b0;
+                        b_rd_en <= 1'b0;
+                        w_rd_en <= 1'b0;
+                        l_ena <= 1'b0;
+                        l_wea <= 1'b0;
                     end
                 BIAS_READING:
                     begin
-                    b_rd_en = 1'b1;
-                    w_rd_en = 1'b0;
-                    l_ena = 1'b0;
+                    b_rd_en <= 1'b1;
+                    w_rd_en <= 1'b0;
+                    l_ena <= 1'b0;
                     end
                 WEIGHT_READING:
                     begin
-                        b_rd_en = 1'b0;
-                        w_rd_en = 1'b1;
-                        l_ena = 1'b0;
+                        b_rd_en <= 1'b0;
+                        w_rd_en <= 1'b1;
+                        l_ena <= 1'b0;
                     end
                 LAYER_READING:
                     begin
-                        b_rd_en = 1'b0;
-                        w_rd_en = 1'b0;
-                        l_ena = 1'b1;
-                        l_wea = 1'b0;
+                        b_rd_en <= 1'b0;
+                        w_rd_en <= 1'b0;
+                        l_ena <= 1'b1;
+                        l_wea <= 1'b0;
                     end
                 BIAS_WEIGHT_READING: 
                     begin
-                        b_rd_en = 1'b1;
-                        w_rd_en = 1'b1;
-                        l_ena = 1'b0;
+                        b_rd_en <= 1'b1;
+                        w_rd_en <= 1'b1;
+                        l_ena <= 1'b0;
                     end
                 BIAS_LAYER_READING:
                     begin
-                        b_rd_en = 1'b1;
-                        w_rd_en = 1'b0;
-                        l_ena = 1'b1;
-                        l_wea = 1'b0;
+                        b_rd_en <= 1'b1;
+                        w_rd_en <= 1'b0;
+                        l_ena <= 1'b1;
+                        l_wea <= 1'b0;
                     end
                 WEIGHT_LAYER_READING:
                     begin
-                        b_rd_en = 1'b0;
-                        w_rd_en = 1'b1;
-                        l_ena = 1'b1;
-                        l_wea = 1'b0;
+                        b_rd_en <= 1'b0;
+                        w_rd_en <= 1'b1;
+                        l_ena <= 1'b1;
+                        l_wea <= 1'b0;
                     end
             endcase
             
             case(loadState)
                 ALL_LOADING: 
                     begin 
-                        allLoadDone = 1'b0;
-                        b_wr_en = 1'b1;  
-                        w_wr_en = 1'b1; 
-                        l_ena = 1'b1;
-                        l_wea = 1'b1;
+                        allLoadDone <= 1'b0;
+                        b_wr_en <= 1'b1;  
+                        w_wr_en <= 1'b1; 
+                        l_ena <= 1'b1;
+                        l_wea <= 1'b1;
                     end
                 ALL_lOAD_DONE:
                     begin
-                        allLoadDone = 1'b1;
-                        b_wr_en = 1'b0;  
-                        w_wr_en = 1'b0;
-                        l_ena = 1'b0;
+                        allLoadDone <= 1'b1;
+                        b_wr_en <= 1'b0;  
+                        w_wr_en <= 1'b0;
+                        l_ena <= 1'b0;
                     end
                 BIAS_LOADING:
                     begin
-                        allLoadDone = 1'b0;
-                        b_wr_en = 1'b1;  
-                        w_wr_en = 1'b0;
-                        l_ena = 1'b0;
+                        allLoadDone <= 1'b0;
+                        b_wr_en <= 1'b1;  
+                        w_wr_en <= 1'b0;
+                        l_ena <= 1'b0;
                     end                
                 WEIGHT_LOADING:
                     begin
-                        allLoadDone = 1'b0;
-                        b_wr_en = 1'b0;  
-                        w_wr_en = 1'b1;
-                        l_ena = 1'b0;
+                        allLoadDone <= 1'b0;
+                        b_wr_en <= 1'b0;  
+                        w_wr_en <= 1'b1;
+                        l_ena <= 1'b0;
                     end
                 LAYER_LOADING:
                     begin
-                        allLoadDone = 1'b0;
-                        b_wr_en = 1'b0;  
-                        w_wr_en = 1'b0;
-                        l_ena = 1'b1;
-                        l_wea = 1'b1;
+                        allLoadDone <= 1'b0;
+                        b_wr_en <= 1'b0;  
+                        w_wr_en <= 1'b0;
+                        l_ena <= 1'b1;
+                        l_wea <= 1'b1;
                     end
                 BIAS_WEIGHT_LOADING:
                     begin
-                        allLoadDone = 1'b0;
-                        b_wr_en = 1'b1;  
-                        w_wr_en = 1'b1;
-                        l_ena = 1'b0;
+                        allLoadDone <= 1'b0;
+                        b_wr_en <= 1'b1;  
+                        w_wr_en <= 1'b1;
+                        l_ena <= 1'b0;
                     end
                 BIAS_LAYER_LOADING:
                     begin
-                        allLoadDone = 1'b0;
-                        b_wr_en = 1'b1;  
-                        w_wr_en = 1'b0;
-                        l_ena = 1'b1;
-                        l_wea = 1'b1;
+                        allLoadDone <= 1'b0;
+                        b_wr_en <= 1'b1;  
+                        w_wr_en <= 1'b0;
+                        l_ena <= 1'b1;
+                        l_wea <= 1'b1;
                     end
                 WEIGHT_LAYER_LOADING:
                     begin
-                        allLoadDone = 1'b0;
-                        b_wr_en = 1'b0;  
-                        w_wr_en = 1'b1;
-                        l_ena = 1'b1;
-                        l_wea = 1'b1;
+                        allLoadDone <= 1'b0;
+                        b_wr_en <= 1'b0;  
+                        w_wr_en <= 1'b1;
+                        l_ena <= 1'b1;
+                        l_wea <= 1'b1;
                     end
             endcase
         end
