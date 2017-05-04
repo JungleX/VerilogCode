@@ -46,11 +46,11 @@ module max_pool_tb();
 
     #10
     reset = 1'b0;
-    sub_in = {8'd0, 8'd1, 8'd2, 8'd3, 8'd4, 8'd5, 8'd6, 8'd7, 8'd8};
+    sub_in = {`NN_WIDTH'd0, `NN_WIDTH'd1, `NN_WIDTH'd2, `NN_WIDTH'd3, `NN_WIDTH'd4, `NN_WIDTH'd5, `NN_WIDTH'd6, `NN_WIDTH'd7, `NN_WIDTH'd8};
     
     #10
     reset = 1'b0;
-    sub_in = {8'd9, 8'd1, 8'd5, 8'd3, 8'd4, 8'd7, 8'd6, 8'd0, 8'd8};
+    sub_in = {`NN_WIDTH'd9, `NN_WIDTH'd1, `NN_WIDTH'd5, `NN_WIDTH'd3, `NN_WIDTH'd4, `NN_WIDTH'd7, `NN_WIDTH'd6, `NN_WIDTH'd0, `NN_WIDTH'd8};
     
 end
 

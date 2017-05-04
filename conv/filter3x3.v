@@ -32,10 +32,10 @@ module filter3x3(
     //filter matrix
     input [`IMG_DATA_MATRIX_WIDTH - 1:0] filterMatrix,
 
-    output [`IMG_DATA_WIDTH * 2 - 1:0] out
+    output [`IMG_DATA_WIDTH_DOUBLE - 1:0] out
     );
   
-    reg [`IMG_DATA_WIDTH * 2 - 1:0] fout;
+    reg [`IMG_DATA_WIDTH_DOUBLE - 1:0] fout;
 
     reg [`IMG_DATA_LINE_WIDTH - 1:0] DataLine1;
     reg [`IMG_DATA_LINE_WIDTH - 1:0] DataLine2;
@@ -54,17 +54,30 @@ module filter3x3(
     wire [`IMG_DATA_LINE_WIDTH - 1:0] mult_3;
   
     // 8 bits, signed integer
-    mult_gen_signed_8 mult11(.CLK(clk), .A(DataLine1[`IMG_DATA_WIDTH - 1:0]),   .B(fLine1[`IMG_DATA_WIDTH - 1:0]),   .P(mult_1[`IMG_DATA_WIDTH - 1:0]));
-    mult_gen_signed_8 mult12(.CLK(clk), .A(DataLine1[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .B(fLine1[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .P(mult_1[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]));
-    mult_gen_signed_8 mult13(.CLK(clk), .A(DataLine1[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .B(fLine1[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .P(mult_1[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]));
+//    mult_gen_signed_8 mult11(.CLK(clk), .A(DataLine1[`IMG_DATA_WIDTH - 1:0]),   .B(fLine1[`IMG_DATA_WIDTH - 1:0]),   .P(mult_1[`IMG_DATA_WIDTH - 1:0]));
+//    mult_gen_signed_8 mult12(.CLK(clk), .A(DataLine1[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .B(fLine1[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .P(mult_1[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]));
+//    mult_gen_signed_8 mult13(.CLK(clk), .A(DataLine1[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .B(fLine1[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .P(mult_1[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]));
   
-    mult_gen_signed_8 mult21(.CLK(clk), .A(DataLine2[`IMG_DATA_WIDTH - 1:0]),   .B(fLine2[`IMG_DATA_WIDTH - 1:0]),   .P(mult_2[`IMG_DATA_WIDTH - 1:0]));
-    mult_gen_signed_8 mult22(.CLK(clk), .A(DataLine2[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .B(fLine2[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .P(mult_2[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]));                                                                                          
-    mult_gen_signed_8 mult23(.CLK(clk), .A(DataLine2[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .B(fLine2[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .P(mult_2[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]));
+//    mult_gen_signed_8 mult21(.CLK(clk), .A(DataLine2[`IMG_DATA_WIDTH - 1:0]),   .B(fLine2[`IMG_DATA_WIDTH - 1:0]),   .P(mult_2[`IMG_DATA_WIDTH - 1:0]));
+//    mult_gen_signed_8 mult22(.CLK(clk), .A(DataLine2[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .B(fLine2[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .P(mult_2[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]));                                                                                          
+//    mult_gen_signed_8 mult23(.CLK(clk), .A(DataLine2[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .B(fLine2[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .P(mult_2[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]));
   
-    mult_gen_signed_8 mult31(.CLK(clk), .A(DataLine3[`IMG_DATA_WIDTH - 1:0]),   .B(fLine3[`IMG_DATA_WIDTH - 1:0]),   .P(mult_3[`IMG_DATA_WIDTH - 1:0]));
-    mult_gen_signed_8 mult32(.CLK(clk), .A(DataLine3[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .B(fLine3[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .P(mult_3[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]));
-    mult_gen_signed_8 mult33(.CLK(clk), .A(DataLine3[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .B(fLine3[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .P(mult_3[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]));
+//    mult_gen_signed_8 mult31(.CLK(clk), .A(DataLine3[`IMG_DATA_WIDTH - 1:0]),   .B(fLine3[`IMG_DATA_WIDTH - 1:0]),   .P(mult_3[`IMG_DATA_WIDTH - 1:0]));
+//    mult_gen_signed_8 mult32(.CLK(clk), .A(DataLine3[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .B(fLine3[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .P(mult_3[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]));
+//    mult_gen_signed_8 mult33(.CLK(clk), .A(DataLine3[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .B(fLine3[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .P(mult_3[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]));
+ 
+    // 16 bits, signed integer
+    mult_signed mult11(.CLK(clk), .A(DataLine1[`IMG_DATA_WIDTH - 1:0]),   .B(fLine1[`IMG_DATA_WIDTH - 1:0]),   .P(mult_1[`IMG_DATA_WIDTH - 1:0]));
+    mult_signed mult12(.CLK(clk), .A(DataLine1[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .B(fLine1[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .P(mult_1[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]));
+    mult_signed mult13(.CLK(clk), .A(DataLine1[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .B(fLine1[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .P(mult_1[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]));
+  
+    mult_signed mult21(.CLK(clk), .A(DataLine2[`IMG_DATA_WIDTH - 1:0]),   .B(fLine2[`IMG_DATA_WIDTH - 1:0]),   .P(mult_2[`IMG_DATA_WIDTH - 1:0]));
+    mult_signed mult22(.CLK(clk), .A(DataLine2[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .B(fLine2[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .P(mult_2[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]));                                                                                          
+    mult_signed mult23(.CLK(clk), .A(DataLine2[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .B(fLine2[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .P(mult_2[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]));
+  
+    mult_signed mult31(.CLK(clk), .A(DataLine3[`IMG_DATA_WIDTH - 1:0]),   .B(fLine3[`IMG_DATA_WIDTH - 1:0]),   .P(mult_3[`IMG_DATA_WIDTH - 1:0]));
+    mult_signed mult32(.CLK(clk), .A(DataLine3[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .B(fLine3[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]),  .P(mult_3[`IMG_DATA_WIDTH * 2 - 1:`IMG_DATA_WIDTH]));
+    mult_signed mult33(.CLK(clk), .A(DataLine3[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .B(fLine3[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .P(mult_3[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]));
  
     always @(posedge clk or posedge rst) begin
         if(rst) begin
@@ -81,7 +94,7 @@ module filter3x3(
             mulLine2 <= `IMG_DATA_LINE_WIDTH'b0;
             mulLine3 <= `IMG_DATA_LINE_WIDTH'b0;
         
-            fout <= `IMG_DATA_WIDTH * 2'b0;
+            fout <= `IMG_DATA_WIDTH_DOUBLE'b0;
         end
     end
  

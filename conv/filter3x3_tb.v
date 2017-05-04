@@ -1,9 +1,10 @@
 `timescale 1ns/1ns
+`include "bit_width.vh"
 
 module filter3x3_tb();
   reg clk, rst, ena;
-  reg  [`IMG_DATA_MATRIX_WIDTH -1:0] inMatrix;
-  reg [`IMG_DATA_MATRIX_WIDTH -1:0] filterMatrix;
+  reg  [`IMG_DATA_MATRIX_WIDTH - 1:0] inMatrix;
+  reg  [`IMG_DATA_MATRIX_WIDTH - 1:0] filterMatrix;
   wire [`IMG_DATA_WIDTH * 2 - 1:0] out;
   
   filter3x3 u0(

@@ -21,19 +21,13 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module accumulator_tb();
-    reg clk, rst, ena;
-    reg [`IMG_DATA_WIDTH * 2 - 1:0] inData;
+    reg clk;
+    //reg [`IMG_DATA_WIDTH_DOUBLE - 1:0] inData;
+    reg [`IMG_DATA_WIDTH_DOUBLE - 1:0] inData;
     reg [`IMG_DATA_WIDTH - 1:0] inBias;
-    wire [`IMG_DATA_WIDTH - 1:0] out;
+    wire [`IMG_DATA_WIDTH - 1:0] fout;
     
-    accumulator a(
-        .ena(ena),
-        .clk(clk),
-        .rst(rst),
-        .inData(inData),
-        .inBias(inBias),
-        .out(out)
-    );
+    adder madder(.CLK(clk), .A(inData[`IMG_DATA_WIDTH - 1:0]),  .B(inBias),  .S(fout));
     
     initial 
     begin
@@ -43,18 +37,13 @@ module accumulator_tb();
     
     initial
     begin
-        #0
-        ena = 1'b1;
-        rst = 1'b1;
+        #10
+        inData = `IMG_DATA_WIDTH_DOUBLE'd3;
+        inBias = `IMG_DATA_WIDTH'd2;
         
         #10
-        rst = 1'b0;
-        inData = 16'b11;
-        inBias = 8'b10;
-        
-        #10
-        inData = 16'b111;
-        inBias = 8'b101;
+        inData = `IMG_DATA_WIDTH_DOUBLE'd7;
+        inBias = `IMG_DATA_WIDTH'd5;
     end
     
 endmodule
