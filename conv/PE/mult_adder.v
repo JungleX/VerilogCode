@@ -9,31 +9,46 @@ module mult_adder(
 	);
 
 //wire declaration
-//MA_TREE_SIZE = 3
-wire [`CONV_PRODUCT_WIDTH-1:0] in_add_vector_wire0;
-wire [`CONV_PRODUCT_WIDTH-1:0] in_add_vector_wire1;
-wire [`CONV_PRODUCT_WIDTH-1:0] in_add_vector_wire2;
-//3 * 2 - 1
-wire [`CONV_ADD_WIDTH-1:0] adder_tree_wire0;
-wire [`CONV_ADD_WIDTH-1:0] adder_tree_wire1;
-wire [`CONV_ADD_WIDTH-1:0] adder_tree_wire2;
-wire [`CONV_ADD_WIDTH-1:0] adder_tree_wire3;
-wire [`CONV_ADD_WIDTH-1:0] adder_tree_wire4;
+//CONV_TN = 3
+wire [`CONV_PRODUCT_WIDTH-1:0] in_add_wire0;
+wire [`CONV_PRODUCT_WIDTH-1:0] in_add_wire1;
+wire [`CONV_PRODUCT_WIDTH-1:0] in_add_wire2;
 
-wire [(`MA_TREE_SIZE*2)-1-1:0]carry_wire ;
+// assign statment s
+assign out = in_add_wire0 + in_add_wire1 + in_add_wire2;
 
-// assign statments
-assign out = adder_tree_wire0;
-assign carry_wire [(`MA_TREE_SIZE*2)-1-1:`MA_TREE_SIZE-1] = `MA_TREE_SIZE'd0;
+mult_two ma1(.clock(clock),.reset(reset),
+.op_a(in[`CONV_MULT_WIDTH-1:0]),
+.op_b(kernel[`CONV_MULT_WIDTH-1:0]),
+.out(in_add_wire0));
 
-always@(posedge clock) begin
-	in_add_vector_wire0 <= in[`CONV_MULT_WIDTH*1-1:0] * kernal[`CONV_MULT_WIDTH*1-1:0];
-	in_add_vector_wire1 <= in[`CONV_MULT_WIDTH*2-1:`CONV_MULT_WIDTH] * kernal[`CONV_MULT_WIDTH*2-1:`CONV_MULT_WIDTH];
-	in_add_vector_wire2 <= in[`CONV_MULT_WIDTH*3-1:2*`CONV_MULT_WIDTH] * kernal[`CONV_MULT_WIDTH*3-1:2*`CONV_MULT_WIDTH];
-end
+mult_two ma2(.clock(clock),.reset(reset),
+.op_a(in[`CONV_MULT_WIDTH*2-1:`CONV_MULT_WIDTH]),
+.op_b(kernel[`CONV_MULT_WIDTH*2-1:`CONV_MULT_WIDTH]),
+.out(in_add_wire1));
 
-assign adder_tree_wire2[`CONV_PRODUCT_WIDTH-1:0] = in_add_vector_wire0;
-assign adder_tree_wire3[`CONV_PRODUCT_WIDTH-1:0] = in_add_vector_wire0;
+mult_two ma3(.clock(clock),.reset(reset),
+.op_a(in[`CONV_MULT_WIDTH*3-1:`CONV_MULT_WIDTH*2]),
+.op_b(kernel[`CONV_MULT_WIDTH*3-1:`CONV_MULT_WIDTH*2]),
+.out(in_add_wire2));
 
 endmodule
 
+module mult_two(
+    input clock,
+    input reset,
+    input [`CONV_MULT_WIDTH-1:0] op_a,
+    input [`CONV_MULT_WIDTH-1:0] op_b,
+    output [`CONV_PRODUCT_WIDTH-1:0] out
+    );
+    reg [`CONV_PRODUCT_WIDTH-1:0] product;
+    assign out = product;
+    
+    always@(posedge clock or negedge reset)
+    begin
+        if(reset == 1'b0)
+            product <= `CONV_PRODUCT_WIDTH'd0;
+        else
+            product <= op_a * op_b;
+    end
+endmodule
