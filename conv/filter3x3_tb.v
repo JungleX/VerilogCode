@@ -26,10 +26,10 @@ initial
 begin
   #0
   ena = 1'b1;
-  rst = 1'b1;
-
-  #10
   rst = 1'b0;
+
+  #20
+  rst = 1'b1;
   inMatrix = {`NUM_1, `NUM_2, `NUM_1, `NUM_2, `NUM_1, `NUM_1, `NUM_1, `NUM_1, `NUM_2};
 // 1 2 1
 // 2 1 1
@@ -40,7 +40,7 @@ begin
 // 1 1 1 
   
   #10
-  rst = 1'b0;
+  rst = 1'b1;
   inMatrix = {`NUM_2, `NUM_2, `NUM_1, `NUM_1, `NUM_1, `NUM_1, `NUM_1, `NUM_2, `NUM_2};
 // 2 2 1
 // 1 1 1 
@@ -51,7 +51,7 @@ begin
 // 1 1 2
 
     #30
-    rst = 1'b1;
+    rst = 1'b0;
   
 end
 

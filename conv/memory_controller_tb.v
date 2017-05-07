@@ -81,7 +81,7 @@ module memory_controller_tb();
     initial begin
         ena = 1'b1;
  // rst ===========================
-        rst = 1'b1;
+        rst = 1'b0;
         
         #`clk_period
          rst = 1'b0;
@@ -90,7 +90,7 @@ module memory_controller_tb();
         rst = 1'b1;
 // readState =======================              
         #`clk_period
-        rst = 1'b0;
+        rst = 1'b1;
         readState = 3'b111;
 
         #`clk_period

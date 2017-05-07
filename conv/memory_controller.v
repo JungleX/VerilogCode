@@ -95,7 +95,7 @@
    
     always @(posedge clk or posedge rst) begin
         if(ena) begin
-            if(rst) begin
+            if(!rst) begin
                 b_rst   <= 1'b1;
                 b_wr_en <= 1'b0; 
                 b_rd_en <= 1'b0; 

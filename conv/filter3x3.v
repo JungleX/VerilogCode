@@ -80,7 +80,7 @@ module filter3x3(
     mult_signed mult33(.CLK(clk), .A(DataLine3[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .B(fLine3[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]), .P(mult_3[`IMG_DATA_LINE_WIDTH - 1:`IMG_DATA_WIDTH * 2]));
  
     always @(posedge clk or posedge rst) begin
-        if(rst) begin
+        if(!rst) begin
             //reset registers
             DataLine1 <= `IMG_DATA_LINE_WIDTH'b0;
             DataLine2 <= `IMG_DATA_LINE_WIDTH'b0;
