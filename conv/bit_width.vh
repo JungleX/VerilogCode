@@ -26,4 +26,9 @@
 `define NUM_1 `IMG_DATA_WIDTH'b1
 `define NUM_2 `IMG_DATA_WIDTH'b10
 
+`define MULT_ADDER_IN_WIDTH 16
+`define CONV_ADD_WIDTH 16
+`define CONV_PRODUCT_WIDTH 16
+`define MA_TREE_SIZE 3
+
 `endif
