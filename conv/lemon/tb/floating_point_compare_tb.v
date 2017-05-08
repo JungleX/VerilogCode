@@ -24,19 +24,19 @@ module floating_point_compare_tb();
     reg clock;
     
     reg[15:0] com_a_data;
-//    wire com_a_ready;
+    wire com_a_ready;
     reg com_a_valid;
     
     reg[15:0] com_b_data;
-//    wire com_b_ready;
+    wire com_b_ready;
     reg com_b_valid;
     
     wire[7:0] com_re_data;
-//    reg com_re_ready;
+    reg com_re_ready;
     wire com_re_valid;
    
-   // non-blocking mode, there is no tready
-   // latency 0, there is no aclk
+   // if non-blocking mode is selected, there is no tready
+   // if latency is 0, there is no aclk
    // when a>b, com_re_data[0] = 1; otherwise com_re_data[0] = 0
     floating_point_compare fpc(
 //        .aclk(clock),
@@ -64,14 +64,13 @@ module floating_point_compare_tb();
     com_a_data = 16'b0000000000000000; // 0
     com_b_valid = 1;
     com_b_data = 16'b1100101001000000; //-12.5
-//    com_re_ready = 1;
+    com_re_ready = 1;
 
     #10
     com_a_valid = 1;
     com_a_data = 16'b1100101001000000; //-12.5
     com_b_valid = 1;
     com_b_data = 16'b0000000000000000; // 0
-//    com_re_ready = 1;
 
     #10
     com_a_valid = 1;
@@ -79,7 +78,7 @@ module floating_point_compare_tb();
     com_b_valid = 1;
     com_b_data = 16'b0000000000000000; // 0
     
-        #10
+    #10
     com_a_valid = 1;
     com_a_data = 16'b0100100100010000; // 10.125
     com_b_valid = 1;

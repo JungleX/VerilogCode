@@ -17,3 +17,5 @@
 `define POOL_WIDTH_5  13
 `define POOL_HEIGHT_5 13
 `define POOL_DEEP_5   256
+
+`define COMPARE_RESULT_WIDTH 7

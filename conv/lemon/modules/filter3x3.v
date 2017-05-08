@@ -10,9 +10,8 @@
 // Target Devices: 
 // Tool Versions: 
 // Description:    
-// 计算过程分为3个clk的流水
-// 输入数据后第三个clk下降沿输出计算结果
-//
+//      get the result at 3th negedge clk
+//      output the result at 4th posedge clk
 // Dependencies: 
 // 
 // Revision:
@@ -35,6 +34,7 @@ module filter3x3(
     output [`IMG_DATA_WIDTH_DOUBLE - 1:0] out
     );
   
+    reg [`IMG_DATA_WIDTH_DOUBLE - 1:0] out;
     reg [`IMG_DATA_WIDTH_DOUBLE - 1:0] fout;
 
     reg [`IMG_DATA_LINE_WIDTH - 1:0] DataLine1;
@@ -96,9 +96,12 @@ module filter3x3(
         
             fout <= `IMG_DATA_WIDTH_DOUBLE'b0;
         end
+        else begin
+            out <= fout;
+        end
     end
  
-    assign out = fout;
+    //assign out = fout;
   
     always @(negedge clk) begin
     // clk2 时，mult_x 的计算会在上升沿做，占用一个时钟周期，所以整体在下降沿赋值，才能在一个周期内接收到对应的计算结果

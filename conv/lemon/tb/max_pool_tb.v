@@ -23,13 +23,15 @@
 module max_pool_tb();
     reg clock;
     reg reset;
+    reg ena;
     reg [`NH_VECTOR_WIDTH - 1:0] sub_in; 
     wire [`POOL_OUT_WIDTH - 1:0] sub_out;
 
     max_pool dut(
         .clk(clock),
+        .ena(ena),
         .reset(reset),
-        .nh_vector(sub_in),
+        .in_vector(sub_in),
         .pool_out(sub_out)
     );
 
@@ -42,16 +44,28 @@ module max_pool_tb();
     initial 
     begin
     #0
-    reset = 1'b1;
+    reset = 1'b0;
+    ena = 1'b0;
 
     #10
-    reset = 1'b0;
-    sub_in = {`NN_WIDTH'd0, `NN_WIDTH'd1, `NN_WIDTH'd2, `NN_WIDTH'd3, `NN_WIDTH'd4, `NN_WIDTH'd5, `NN_WIDTH'd6, `NN_WIDTH'd7, `NN_WIDTH'd8};
+    reset = 1'b1;
+    ena = 1'b1;
+    sub_in = {`NN_WIDTH'b0000000000000000, `NN_WIDTH'b0100101001000000, `NN_WIDTH'b1100101001000000, 
+              `NN_WIDTH'b0100100100010000, `NN_WIDTH'b0100100010100000, `NN_WIDTH'b1100100100010000, 
+              `NN_WIDTH'b1100100010100000, `NN_WIDTH'b0000000000000000, `NN_WIDTH'b0011110000000000};
+    // 0,      12.5, -12.5
+    // 10.125, 9.25, -10.125
+    // -9.25,  0,    1
     
     #10
-    reset = 1'b0;
-    sub_in = {`NN_WIDTH'd9, `NN_WIDTH'd1, `NN_WIDTH'd5, `NN_WIDTH'd3, `NN_WIDTH'd4, `NN_WIDTH'd7, `NN_WIDTH'd6, `NN_WIDTH'd0, `NN_WIDTH'd8};
+    reset = 1'b1;
+    sub_in = {`NN_WIDTH'b0000000000000000, `NN_WIDTH'b0100101001000000, `NN_WIDTH'b1100101001000000, 
+              `NN_WIDTH'b0100100100010000, `NN_WIDTH'b0100100010100000, `NN_WIDTH'b1100100100010000, 
+              `NN_WIDTH'b1100100010100000, `NN_WIDTH'b0100110011100000, `NN_WIDTH'b0011110000000000};
+     // 0,      12.5, -12.5
+     // 10.125, 9.25, -10.125
+     // -9.25,  19.5,    1             
     
-end
+    end
 
 endmodule
