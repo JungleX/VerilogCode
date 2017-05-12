@@ -9,9 +9,10 @@
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
-// Description: 
+// Description
+//     get the input at the first negedge clk: 
 //     get the max number of 3x3 matrix at 5th negedge clk
-//     output the max number at 6th posedge clk
+//     output the max number at 5th posedge clk
 // Dependencies: 
 // 
 // Revision:
