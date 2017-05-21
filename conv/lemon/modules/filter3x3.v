@@ -106,7 +106,7 @@ module filter3x3(
     always @(negedge clk) begin
     // clk2 时，mult_x 的计算会在上升沿做，占用一个时钟周期，所以整体在下降沿赋值，才能在一个周期内接收到对应的计算结果
     //always @(posedge clk) begin
-        if(ena) begin
+        if(ena && rst) begin
             // clk1
             // load input matrix and filter data to DataLine and fLine
             DataLine3 <= inMatrix[`IMG_DATA_LINE_WIDTH - 1:0];

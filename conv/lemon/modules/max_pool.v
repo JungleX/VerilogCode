@@ -159,7 +159,7 @@ module max_pool(
     
      always @(negedge clk) begin
        //always @(posedge clk) begin
-           if(ena) begin
+           if(ena && reset) begin
                 com_a_valid <= 1;
                 com_b_valid <= 1;
                            
