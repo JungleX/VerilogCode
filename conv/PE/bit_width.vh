@@ -32,4 +32,6 @@
 `define CONV_PRODUCT_WIDTH 16
 `define CONV_MULT_WIDTH `IMG_DATA_WIDTH
 
+`define PCIE_DATA_WIDTH 16
+
 `endif

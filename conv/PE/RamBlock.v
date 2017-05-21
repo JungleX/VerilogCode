@@ -1,6 +1,4 @@
-`timescale 1ns/1ps
-
-module conv1(input clka, input ena, input wea, input addra, input dina, input clkb, input enb, input addrb, output doutb);
+module RamBlock(input clka, input ena, input wea, input addra, input dina, input clkb, input enb, input addrb, output doutb);
 wire clka;
 wire ena;
 wire wea;
