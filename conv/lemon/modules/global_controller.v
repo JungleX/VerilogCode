@@ -24,12 +24,11 @@ module global_controller(
     input clk,
     input ena,
     input rst,
-    input pcieDataReady,    // data from pcie(data of conv1) is ready to use. 1:ready; 0:idle or writing 
-    input layerDataReady,   // todo, if the all data of AlexNet can store on-chip, use this signal, data of other layers is ready
+    input pcieDataReady,    // feature map data(for conv1) from pcie is ready to use. 1:ready; 0:idle or writing 
 
-    input convStatus,       // conv status, 0:idle or running; 1:done
-    input poolStatus,       // pool status, 0:idle or running; 1:done
-    input fcStatus,         // fc status, 0:idle or running; 1:done
+    input convStatus,       // conv status, 0:idle or running; 1:done, done means the conv finish and output data is ready
+    input poolStatus,       // pool status, 0:idle or running; 1:done, done means the conv finish and output data is ready
+    input fcStatus,         // fc status, 0:idle or running; 1:done, done means the conv finish and output data is ready
      
     input biasFull,         // todo, 1:bias RAM is full 
     input biasEmpty,        // todo, 1:bias RAM is empty
@@ -39,7 +38,8 @@ module global_controller(
     
     output reg[3:0] runLayer,// which layer to run
     
-    output reg pcieCmd,     // control pcie to write data to bias RAM, weight RAM and layer data RAM. 
+    output reg pcieLayerCmd, // control pcie to write data to layer data RAM.
+    output reg pcieKernelEn,// enable pcie to write data to weight and bias RAM, when to write, according to the cmd from conv module 
     
     output reg biasReadEn,   // enable bias read
     output reg weightReadEn, // enable weight read
@@ -71,14 +71,15 @@ module global_controller(
         if(ena) begin
             if(!rst) begin
                 runLayer = IDLE;   // idle, no layer to run
-                pcieCmd = 0;  // disable pcie operation
+                pcieLayerCmd = 0;  // disable pcie operation
+                pcieKernelEn = 0;
                     
                 biasReadEn = 0;
                 weightReadEn = 0;    
                 layerReadEn = 0;
                            
-                biasRst = 1;     // FIFO reset signal, 1 to reset
-                weightRst = 1;
+                biasRst = 0;    // memory, use RAM
+                weightRst = 0;
                 pcieRst = 0;
                 convRst = 0;
                 poolRst = 0;
@@ -86,8 +87,8 @@ module global_controller(
                 
             end
             else begin
-                biasRst = 0;     // FIFO reset signal, 0 to not reset
-                weightRst = 0;
+                biasRst = 1;     
+                weightRst = 1;
                 pcieRst = 1;
                 convRst = 1;
                 poolRst = 1;
@@ -102,14 +103,15 @@ module global_controller(
                 IDLE:
                     begin
                         if(pcieDataReady == 0) begin // if pcie date is not ready, status: idle
-                            pcieCmd = 1;
+                            pcieLayerCmd = 1;
+                            pcieKernelEn = 1;
                             runLayer = IDLE;
                             biasReadEn = 0;
                             weightReadEn = 0;    
                             layerReadEn = 0;
                         end
                         if(pcieDataReady == 1) begin // if pcie date is ready, start to conv1
-                            pcieCmd = 0;
+                            pcieLayerCmd = 0;
                             convRst = 0;
                             runLayer = CONV1;
                             biasReadEn = 1;
@@ -119,19 +121,14 @@ module global_controller(
                     end
                 CONV1:
                     begin
-                        if(convStatus == 1) begin // current conv is done, load data for next layer
-                            pcieCmd = 1; // write to on-chip memory
+                        if(convStatus == 1) begin // current conv is done, and output feature map store on-chip
+                            convRst = 0; // reset conv module
+                            poolRst = 0; // reset pool module before use it
+                            
+                            runLayer = POOL1;
                             biasReadEn = 0;
                             weightReadEn = 0;    
-                            layerReadEn = 0;
-                            if(pcieDataReady == 1) begin // complete the load
-                                pcieCmd = 0;
-                                poolRst = 0;
-                                runLayer = POOL1;
-                                biasReadEn = 0;
-                                weightReadEn = 0;    
-                                layerReadEn = 1;
-                            end
+                            layerReadEn = 1;
                         end
                         else begin
                             convRst = 1;
@@ -143,19 +140,14 @@ module global_controller(
                     end     
                 POOL1:
                     begin
-                        if(poolStatus == 1) begin // pool finish, load new data
-                            pcieCmd = 1;
-                            biasReadEn = 0;
-                            weightReadEn = 0;    
-                            layerReadEn = 0;
-                            if(pcieDataReady == 1) begin // new data is ready, go to conv2
-                                pcieCmd = 0;
-                                convRst = 0;
-                                runLayer = CONV2;
-                                biasReadEn = 1;
-                                weightReadEn = 1;    
-                                layerReadEn = 1;
-                            end
+                        if(poolStatus == 1) begin // pool finish
+                            poolRst = 0;
+                            convRst = 0;
+                            
+                            runLayer = CONV2;
+                            biasReadEn = 1;
+                            weightReadEn = 1;    
+                            layerReadEn = 1;
                         end
                         else begin
                             poolRst = 1;
@@ -168,18 +160,13 @@ module global_controller(
                 CONV2:
                     begin
                         if(convStatus == 1) begin
-                            pcieCmd = 1;
+                            convRst = 0;
+                            poolRst = 0;
+                            
+                            runLayer = POOL2;
                             biasReadEn = 0;
-                            weightReadEn = 0;    
-                            layerReadEn = 0;
-                            if(pcieDataReady == 1) begin
-                                pcieCmd = 0;
-                                poolRst = 0;
-                                runLayer = POOL2;
-                                biasReadEn = 0;
-                                weightReadEn = 0;
-                                layerReadEn = 1;
-                            end
+                            weightReadEn = 0;
+                            layerReadEn = 1;
                         end
                         else begin
                             convRst = 1;
@@ -192,18 +179,12 @@ module global_controller(
                 POOL2:
                     begin
                         if(poolStatus == 1) begin
-                            pcieCmd = 1;
-                            biasReadEn = 0;
-                            weightReadEn = 0;    
-                            layerReadEn = 0;
-                            if(pcieDataReady == 1) begin
-                                pcieCmd = 0;
-                                convRst = 0;
-                                runLayer = CONV3;
-                                biasReadEn = 1;
-                                weightReadEn = 1;
-                                layerReadEn = 1;
-                            end
+                            poolRst = 0;
+                            convRst = 0;
+                            runLayer = CONV3;
+                            biasReadEn = 1;
+                            weightReadEn = 1;
+                            layerReadEn = 1;
                         end
                         else begin
                             poolRst = 1;
@@ -216,18 +197,12 @@ module global_controller(
                 CONV3:
                     begin
                         if(convStatus == 1) begin
-                            pcieCmd = 1;
-                            biasReadEn = 0;
-                            weightReadEn = 0;    
-                            layerReadEn = 0;
-                            if(pcieDataReady == 1) begin
-                                pcieCmd = 0;
-                                convRst = 0;
-                                runLayer = CONV4;
-                                biasReadEn = 1;
-                                weightReadEn = 1;
-                                layerReadEn = 1;
-                            end
+                            convRst = 0;
+                            
+                            runLayer = CONV4;
+                            biasReadEn = 1;
+                            weightReadEn = 1;
+                            layerReadEn = 1;
                         end
                         else begin
                             convRst = 1;
@@ -240,18 +215,12 @@ module global_controller(
                 CONV4:
                     begin
                         if(convStatus == 1) begin
-                            pcieCmd = 1;
-                            biasReadEn = 0;
-                            weightReadEn = 0;    
-                            layerReadEn = 0;
-                            if(pcieDataReady == 1) begin
-                                pcieCmd = 0;
-                                convRst = 0;
-                                runLayer = CONV5;
-                                biasReadEn = 1;
-                                weightReadEn = 1;
-                                layerReadEn = 1;
-                            end
+                            convRst = 0;
+                            
+                            runLayer = CONV5;
+                            biasReadEn = 1;
+                            weightReadEn = 1;
+                            layerReadEn = 1;
                         end
                         else begin
                             convRst = 1;
@@ -264,18 +233,13 @@ module global_controller(
                 CONV5:
                     begin
                         if(convStatus == 1) begin
-                            pcieCmd = 1;
+                            convRst = 0;
+                            poolRst = 0;
+                            
+                            runLayer = POOL5;
                             biasReadEn = 0;
-                            weightReadEn = 0;    
-                            layerReadEn = 0;
-                            if(pcieDataReady == 1) begin
-                                pcieCmd = 0;
-                                poolRst = 0;
-                                runLayer = POOL5;
-                                biasReadEn = 0;
-                                weightReadEn = 0;
-                                layerReadEn = 1;
-                            end
+                            weightReadEn = 0;
+                            layerReadEn = 1;
                         end
                         else begin
                             convRst = 1;
@@ -288,18 +252,13 @@ module global_controller(
                 POOL5:
                     begin
                         if(poolStatus == 1) begin
-                            pcieCmd = 1;
-                            biasReadEn = 0;
-                            weightReadEn = 0;    
-                            layerReadEn = 0;
-                            if(pcieDataReady == 1) begin
-                                pcieCmd = 0;
-                                fcRst = 0;
-                                runLayer = FC6;
-                                biasReadEn = 1;
-                                weightReadEn = 1;
-                                layerReadEn = 1;
-                            end
+                            poolRst = 0;
+                            fcRst = 0;
+                                
+                            runLayer = FC6;
+                            biasReadEn = 1;
+                            weightReadEn = 1;
+                            layerReadEn = 1;
                         end
                         else begin
                             poolRst = 1;
@@ -312,18 +271,12 @@ module global_controller(
                 FC6:
                     begin
                         if(fcStatus == 1) begin
-                            pcieCmd = 1;
-                            biasReadEn = 0;
-                            weightReadEn = 0;    
-                            layerReadEn = 0;
-                            if(pcieDataReady == 1) begin
-                                pcieCmd = 0;
-                                fcRst = 0;
-                                runLayer = FC7;
-                                biasReadEn = 1;
-                                weightReadEn = 1;
-                                layerReadEn = 1;
-                            end
+                            fcRst = 0;
+                            
+                            runLayer = FC7;
+                            biasReadEn = 1;
+                            weightReadEn = 1;
+                            layerReadEn = 1;
                         end
                         else begin
                             fcRst = 1;
@@ -336,18 +289,12 @@ module global_controller(
                 FC7:
                     begin
                         if(fcStatus == 1) begin
-                            pcieCmd = 1;
-                            biasReadEn = 0;
-                            weightReadEn = 0;    
-                            layerReadEn = 0;
-                            if(pcieDataReady == 1) begin
-                                pcieCmd = 0;
-                                fcRst = 0;
-                                runLayer = FC8;
-                                biasReadEn = 1;
-                                weightReadEn = 1;
-                                layerReadEn = 1;
-                            end
+                            fcRst = 0;
+                            
+                            runLayer = FC8;
+                            biasReadEn = 1;
+                            weightReadEn = 1;
+                            layerReadEn = 1;
                         end
                         else begin
                             fcRst = 1;

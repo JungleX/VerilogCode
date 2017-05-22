@@ -4,7 +4,7 @@
 // Engineer: 
 // 
 // Create Date: 2017/05/15 21:47:22
-// Design Name: 
+// Design Name:  
 // Module Name: global_controller_tb
 // Project Name: 
 // Target Devices: 
@@ -40,7 +40,8 @@ module global_controller_tb();
     reg weightEmpty;
     
     wire[3:0] runLayer;
-    wire pcieCmd;
+    wire pcieLayerCmd;
+    wire pcieKernelEn;
     
     wire biasReadEn;
     wire weightReadEn;
@@ -57,33 +58,33 @@ module global_controller_tb();
         .clk(clk),
         .ena(ena),
         .rst(rst),
-        .pcieDataReady(pcieDataReady),    // data from pcie(data of conv1) is ready to use
-        .layerDataReady(layerDataReady),   // todo, if the all data of AlexNet can store on-chip, use this signal, data of other layers is ready
+        .pcieDataReady(pcieDataReady),   
 
-        .convStatus(convStatus),       // conv status, 0:idle or running; 1:done
-        .poolStatus(poolStatus),       // pool status, 0:idle or running; 1:done
-        .fcStatus(fcStatus),         // fc status, 0:idle or running; 1:done
+        .convStatus(convStatus),       
+        .poolStatus(poolStatus),       
+        .fcStatus(fcStatus),         
      
-        .biasFull(biasFull),         // 1:bias RAM is full 
-        .biasEmpty(biasEmpty),        // 1:bias RAM is empty
+        .biasFull(biasFull),       
+        .biasEmpty(biasEmpty),       
     
-        .weightFull(weightFull),       // 1:weight RAM is full
-        .weightEmpty(weightEmpty),      // 1:weight RAM is empty
+        .weightFull(weightFull),    
+        .weightEmpty(weightEmpty),     
     
-        .runLayer(runLayer),// which layer to run
+        .runLayer(runLayer),
     
-        .pcieCmd(pcieCmd),     // control pcie to write data to bias RAM, weight RAM and layer data RAM. 
+        .pcieLayerCmd(pcieLayerCmd),
+        .pcieKernelEn(pcieKernelEn),   
     
-        .biasReadEn(biasReadEn),   // enable bias read
-        .weightReadEn(weightReadEn), // enable weight read
-        .layerReadEn(layerReadEn),  // enable layer data read
+        .biasReadEn(biasReadEn),   
+        .weightReadEn(weightReadEn),
+        .layerReadEn(layerReadEn),
     
-        .biasRst(biasRst),      // reset the bias RAN
-        .weightRst(weightRst),    // reset the weight RAM
-        .pcieRst(pcieRst),      // todo, wait to do more design
-        .convRst(convRst),      // todo, reset conv operation
-        .poolRst(poolRst),      // reset pool operation
-        .fcRst(fcRst)           // reset fc operation
+        .biasRst(biasRst),    
+        .weightRst(weightRst),   
+        .pcieRst(pcieRst),     
+        .convRst(convRst),      
+        .poolRst(poolRst),      
+        .fcRst(fcRst)           
     );
 
     initial 
@@ -129,253 +130,152 @@ module global_controller_tb();
         
         // 5
         #`clk_period
-        // conv1 finish, new pcie data is writting to on-chip memory 
-        pcieDataReady = 0;
-        convStatus = 1;
-        poolStatus = 0;
-        fcStatus = 0;
- 
-        // 6
-        #`clk_period
-        // complete loading data, go to pool1
-        pcieDataReady = 1;
+        // conv1 finish, go to pool1;
         convStatus = 1;
         poolStatus = 0;
         fcStatus = 0;
 
-        // 7
+        // 6
         #`clk_period
         // pool1
-        pcieDataReady = 1;
         convStatus = 0;
         poolStatus = 0; // running
         fcStatus = 0;   
 
-        // 8
+        // 7
         #`clk_period
-        // pool1 finish, load new data
-        pcieDataReady = 0;
-        convStatus = 0;
-        poolStatus = 1;
-        fcStatus = 0;
- 
-        // 9
-         #`clk_period
-        // complete loading data, go to conv2
-        pcieDataReady = 1;
+        // pool1 finish, go to conv2
         convStatus = 0;
         poolStatus = 1;
         fcStatus = 0;
 
-        // 10
+        // 8
         #`clk_period
         // conv2
-        pcieDataReady = 1;
-        convStatus = 0;
+        convStatus = 0; // running
         poolStatus = 0;
         fcStatus = 0;
         
-        // 11
+        // 9
         #`clk_period
-        // conv2 finish, load new data
-        pcieDataReady = 0;
+        // conv2 finish, go to pool2
         convStatus = 1; 
         poolStatus = 0;
+        fcStatus = 0;   
+ 
+        // 10
+        #`clk_period
+        // pool2
+        convStatus = 0; 
+        poolStatus = 0; // running
+        fcStatus = 0;      
+              
+        // 11                                              
+        #`clk_period
+        // pool2 finish, go to conv3
+        convStatus = 0;
+        poolStatus = 1;
         fcStatus = 0;
 
         // 12
         #`clk_period
-        // complete loading data, go to pool2
-        pcieDataReady = 1;
-        convStatus = 1; 
+        // conv3;
+        convStatus = 0; // running
         poolStatus = 0;
-        fcStatus = 0;   
- 
+        fcStatus = 0;
+        
         // 13
         #`clk_period
-        // pool2
-        pcieDataReady = 1;
-        convStatus = 0; 
+        // conv3 finish, go to conv4
+        convStatus = 1;
         poolStatus = 0;
-        fcStatus = 0;      
-              
-        // 14                                              
-        #`clk_period
-        // pool2 finish, load new data
-        pcieDataReady = 0;
-        convStatus = 0; 
-        poolStatus = 1;
-        fcStatus = 0;                                                           
+        fcStatus = 0;
 
+        // 14
+        #`clk_period
+        // conv4
+        convStatus = 0; // running
+        poolStatus = 0;
+        fcStatus = 0;
+       
         // 15
         #`clk_period
-        // complete loading data, go to conv3
-        pcieDataReady = 1;
-        convStatus = 0;
-        poolStatus = 1;
+        // conv4 finish,go to conv5
+        convStatus = 1;
+        poolStatus = 0;
         fcStatus = 0;
 
         // 16
         #`clk_period
-        // conv3
-        pcieDataReady = 1;
-        convStatus = 0;
+        // conv5
+        convStatus = 0; // running
         poolStatus = 0;
         fcStatus = 0;
-        
+     
         // 17
         #`clk_period
-        // conv3 finish, load new data
-        pcieDataReady = 0;
+        // conv5 finish, go to pool5
         convStatus = 1; 
         poolStatus = 0;
-        fcStatus = 0; 
- 
+        fcStatus = 0;   
+
         // 18
         #`clk_period
-        // complete loading data, go to conv4
-        pcieDataReady = 1;
-        convStatus = 1;
-        poolStatus = 0;
-        fcStatus = 0;
-
-        // 19
+        // pool5
+        convStatus = 0; 
+        poolStatus = 0; // running
+        fcStatus = 0;      
+             
+        // 19                                          
         #`clk_period
-        // conv4
-        pcieDataReady = 1;
-        convStatus = 0;
-        poolStatus = 0;
-        fcStatus = 0;
-       
+        // pool5 finish, go to fc6
+        convStatus = 0; 
+        poolStatus = 1;
+        fcStatus = 0;   
+
         // 20
         #`clk_period
-        // conv4 finish, load new data
-        pcieDataReady = 0;
-        convStatus = 1; 
+        // fc6
+        convStatus = 0; 
         poolStatus = 0;
-        fcStatus = 0;     
-       
-        // 21
+        fcStatus = 0; // running     
+             
+        // 21                                         
         #`clk_period
-        // complete loading data, go to conv5
-        pcieDataReady = 1;
-        convStatus = 1;
+        // fc6 finish, go to fc7
+        convStatus = 0; 
         poolStatus = 0;
-        fcStatus = 0;
+        fcStatus = 1;   
 
         // 22
         #`clk_period
-        // conv5
-        pcieDataReady = 1;
-        convStatus = 0;
+        // fc7
+        convStatus = 0; 
         poolStatus = 0;
-        fcStatus = 0;
-     
-        // 23
+        fcStatus = 0; // running     
+             
+        // 23                                           
         #`clk_period
-        // conv5 finish, load new data
-        pcieDataReady = 0;
-        convStatus = 1; 
+        // fc7 finish, go to fc8
+        convStatus = 0; 
         poolStatus = 0;
-        fcStatus = 0;  
-     
+        fcStatus = 1;   
+
         // 24
         #`clk_period
-        // complete loading data, go to pool5
-        pcieDataReady = 1;
-        convStatus = 1; 
-        poolStatus = 0;
-        fcStatus = 0;   
-
-        // 25
-        #`clk_period
-        // pool5
-        pcieDataReady = 1;
-        convStatus = 0; 
-        poolStatus = 0;
-        fcStatus = 0;      
-             
-        // 26                                            
-        #`clk_period
-        // pool5 finish, load new data
-        pcieDataReady = 0;
-        convStatus = 0; 
-        poolStatus = 1;
-        fcStatus = 0;         
-
-        // 27
-        #`clk_period
-        // complete loading data, go to fc6
-        pcieDataReady = 1;
-        convStatus = 0; 
-        poolStatus = 1;
-        fcStatus = 0;   
-
-        // 28
-        #`clk_period
-        // fc6
-        pcieDataReady = 1;
-        convStatus = 0; 
-        poolStatus = 0;
-        fcStatus = 0;      
-             
-        // 29                                            
-        #`clk_period
-        // fc6 finish, load new data
-        pcieDataReady = 0;
-        convStatus = 0; 
-        poolStatus = 0;
-        fcStatus = 1;
-     
-        // 30
-        #`clk_period
-        // complete loading data, go to fc7
-        pcieDataReady = 1;
-        convStatus = 0; 
-        poolStatus = 0;
-        fcStatus = 1;   
-
-        // 31
-        #`clk_period
-        // fc7
-        pcieDataReady = 1;
-        convStatus = 0; 
-        poolStatus = 0;
-        fcStatus = 0;      
-             
-        // 32                                            
-        #`clk_period
-        // fc7 finish, load new data
-        pcieDataReady = 0;
-        convStatus = 0; 
-        poolStatus = 0;
-        fcStatus = 1;
- 
-        // 33
-        #`clk_period
-        // complete loading data, go to fc8
-        pcieDataReady = 1;
-        convStatus = 0; 
-        poolStatus = 0;
-        fcStatus = 1;   
-
-        // 34
-        #`clk_period
         // fc8
-        pcieDataReady = 1;
         convStatus = 0; 
         poolStatus = 0;
-        fcStatus = 0;      
+        fcStatus = 0; // running     
              
-        // 35                                            
+        // 25                                            
         #`clk_period
-        // fc8 finish, load new data
-        pcieDataReady = 0;
+        // fc8 finish, go to idle
         convStatus = 0; 
         poolStatus = 0;
         fcStatus = 1;       
      
-        // 36
+        // 26
         #`clk_period
         ena = 1; // enable the controller
         rst = 0; // reset the controller   
