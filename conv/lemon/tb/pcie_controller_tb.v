@@ -39,13 +39,18 @@ module pcie_controller_tb();
     wire pcieDataReady; // feature map of conv 1
     wire connnectPC;    // todo; ask PC for data
     
+    wire layerWriteEn;
     wire [31:0] writeLayerData;// write data to layer data RAM
     wire [17:0] layerDataAddr;  // layer data addreses
     
+    wire weightWriteEn;
     wire [1935:0] writeWeightData;  // write data to weight RAM
     wire [9:0] weightDataAddr;
+    
+    wire biasWriteEn;
     wire [15:0] writeBiasData;  // write data to bias RAM
     wire biasDataAddr;
+    wire wea;
 
     pcie_controller pc(
         .clk(clk),
@@ -65,13 +70,19 @@ module pcie_controller_tb();
         .pcieDataReady(pcieDataReady), // feature map of conv 1
         .connnectPC(connnectPC),    // todo, ask PC for data
         
+        .layerWriteEn(layerWriteEn),
         .writeLayerData(writeLayerData),// write data to layer data RAM
         .layerDataAddr(layerDataAddr),  // layer data addreses
         
+        .weightWriteEn(weightWriteEn),
         .writeWeightData(writeWeightData),  // write data to weight RAM
         .weightDataAddr(weightDataAddr),
+        
+        .biasWriteEn(biasWriteEn),
         .writeBiasData(writeBiasData),  // write data to bias RAM
-        .biasDataAddr(biasDataAddr)
+        .biasDataAddr(biasDataAddr),
+        
+        .wea(wea)
     );
 
     parameter IDLE  = 4'd0,

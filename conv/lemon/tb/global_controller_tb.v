@@ -27,7 +27,6 @@ module global_controller_tb();
     reg rst;
     
     reg pcieDataReady;
-    reg layerDataReady;
     
     reg convStatus;
     reg poolStatus;
@@ -259,6 +258,7 @@ module global_controller_tb();
      
         // 26
         #`clk_period
+        fcStatus = 0; 
         ena = 1; // enable the controller
         rst = 0; // reset the controller   
                     
