@@ -32,23 +32,14 @@ module global_controller_tb();
     reg convStatus;
     reg poolStatus;
     reg fcStatus;
-
-    reg biasFull;
-    reg biasEmpty;
-    
-    reg weightFull;
-    reg weightEmpty;
     
     wire[3:0] runLayer;
     wire pcieLayerCmd;
-    wire pcieKernelEn;
     
     wire biasReadEn;
     wire weightReadEn;
     wire layerReadEn;
-    
-    wire biasRst;
-    wire weightRst;
+
     wire pcieRst;
     wire convRst;
     wire poolRst;
@@ -62,25 +53,16 @@ module global_controller_tb();
 
         .convStatus(convStatus),       
         .poolStatus(poolStatus),       
-        .fcStatus(fcStatus),         
-     
-        .biasFull(biasFull),       
-        .biasEmpty(biasEmpty),       
-    
-        .weightFull(weightFull),    
-        .weightEmpty(weightEmpty),     
-    
+        .fcStatus(fcStatus),             
+        
         .runLayer(runLayer),
     
-        .pcieLayerCmd(pcieLayerCmd),
-        .pcieKernelEn(pcieKernelEn),   
+        .pcieLayerCmd(pcieLayerCmd), 
     
         .biasReadEn(biasReadEn),   
         .weightReadEn(weightReadEn),
         .layerReadEn(layerReadEn),
-    
-        .biasRst(biasRst),    
-        .weightRst(weightRst),   
+
         .pcieRst(pcieRst),     
         .convRst(convRst),      
         .poolRst(poolRst),      

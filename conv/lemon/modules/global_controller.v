@@ -29,25 +29,16 @@ module global_controller(
     input convStatus,       // conv status, 0:idle or running; 1:done, done means the conv finish and output data is ready
     input poolStatus,       // pool status, 0:idle or running; 1:done, done means the conv finish and output data is ready
     input fcStatus,         // fc status, 0:idle or running; 1:done, done means the conv finish and output data is ready
-     
-    input biasFull,         // todo, 1:bias RAM is full 
-    input biasEmpty,        // todo, 1:bias RAM is empty
-    
-    input weightFull,       // todo, 1:weight RAM is full
-    input weightEmpty,      // todo, 1:weight RAM is empty
     
     output reg[3:0] runLayer,// which layer to run
     
-    output reg pcieLayerCmd, // control pcie to write data to layer data RAM.
-    output reg pcieKernelEn,// enable pcie to write data to weight and bias RAM, when to write, according to the cmd from conv module 
+    output reg pcieLayerCmd, // control pcie to write conv1 original data to layer data RAM, write 2 kernel data to bias and weight RAM
     
     output reg biasReadEn,   // enable bias read
     output reg weightReadEn, // enable weight read
     output reg layerReadEn,  // enable layer data read
     
-    output reg biasRst,      // reset the bias RAM
-    output reg weightRst,    // reset the weight RAM
-    output reg pcieRst,      // todo, wait to do more design
+    output reg pcieRst,      // wait to do more design
     output reg convRst,      // reset conv operation
     output reg poolRst,      // reset pool operation
     output reg fcRst         // reset fc operation
@@ -71,15 +62,12 @@ module global_controller(
         if(ena) begin
             if(!rst) begin
                 runLayer = IDLE;   // idle, no layer to run
-                pcieLayerCmd = 0;  // disable pcie operation
-                pcieKernelEn = 0;
+                pcieLayerCmd = 0;  
                     
                 biasReadEn = 0;
                 weightReadEn = 0;    
                 layerReadEn = 0;
                            
-                biasRst = 0;    // memory, use RAM
-                weightRst = 0;
                 pcieRst = 0;
                 convRst = 0;
                 poolRst = 0;
@@ -87,8 +75,6 @@ module global_controller(
                 
             end
             else begin
-                biasRst = 1;     
-                weightRst = 1;
                 pcieRst = 1;
                 convRst = 1;
                 poolRst = 1;
@@ -102,15 +88,14 @@ module global_controller(
             case(runLayer)
                 IDLE:
                     begin
-                        if(pcieDataReady == 0) begin // if pcie date is not ready, status: idle
+                        if(pcieDataReady == 0) begin // if conv1 pcie data is not ready, status: idle
                             pcieLayerCmd = 1;
-                            pcieKernelEn = 1;
                             runLayer = IDLE;
                             biasReadEn = 0;
                             weightReadEn = 0;    
                             layerReadEn = 0;
                         end
-                        if(pcieDataReady == 1) begin // if pcie date is ready, start to conv1
+                        if(pcieDataReady == 1) begin // if conv1 pcie data is ready, start to conv1
                             pcieLayerCmd = 0;
                             convRst = 0;
                             runLayer = CONV1;

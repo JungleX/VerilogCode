@@ -1,0 +1,41 @@
+global_controller_tb.v
+
+0:	disable the global controller
+1:	reset the global controller
+
+2:	pcie is writting data to on-chip memory, runLayer = idle
+3:	data is ready, go to conv1 and runLayer = conv1
+4: 	conv1 is running, runLayer = conv1
+5: 	conv1 finish, convStatus = 1, go to pool1 and runLayer = pool1
+
+6:	pool1 is running, runLayer = pool1
+7:	pool1 finish, poolStatus = 1, go to conv2 and runLayer = conv2
+
+8:	conv2 is running, runLayer = conv2
+9:	conv2 finish, convStatus = 1, go to pool2 and runLayer = pool2
+
+10:	pool2 is running, runLayer = pool2
+11: pool2 finish, poolStatus = 1, go to conv3 and runLayer = conv3
+
+12:	conv3 is running, runLayer = conv3
+13: conv3 finish, convStatus = 1, go to conv4 and runLayer = conv4
+
+14:	conv4 is running, runLayer = conv4
+15: conv4 finish, convStatus = 1, go to conv5 and runLayer = conv5
+
+16:	conv5 is running, runLayer = conv5
+17: conv5 finish, convStatus = 1, go to pool5 and runLayer = pool5
+
+18:	pool5 is running, runLayer = pool5
+19:	pool5 finish, poolStatus = 1, go to fc6 and runLayer = fc6
+
+20:	fc6 is running, runLayer = fc6
+21:	fc6 finish, poolStatus = 1, go to fc7 and runLayer = fc7
+
+22:	fc7 is running, runLayer = fc6
+23:	fc7 finish, poolStatus = 1, go to fc8 and runLayer = fc8
+
+24:	fc8 is running, runLayer = fc8
+25:	fc8 finish, poolStatus = 1, go to idle
+
+26: reset the global controller

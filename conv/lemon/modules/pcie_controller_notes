@@ -1,0 +1,45 @@
+pcie_controller 说明
+1、IDLE
+	（1）当从 pc 端接收数据的状态 pcDataReady 有效时，才可以进行数据写 on-chip memory 的操作
+	（2）pcDataReady 有效时，接收到 global_controller 发出的 pcieLayerCmd 信号为 1 时，开始写操作
+	（3）此时的写操作，加载全部的原始图片数据 227*227*3 到 layer RAM 中，加载 2 个 weight 和 bias 的值到 weigh RAM 和 bias RAM 中
+	（4）加载完成后，返回 pcieDataReady = 1 给 global_controller，global_controller 接收到信号后会修改 pcieLayerCmd = 0
+
+2、CONV1
+	（1）刚进入 CONV1 状态时，重置 weight_depth_count。每次接收到 update 信号后，更新 1 个 kernel 数据（weight + bias）到对应 RAM 中，当前该写哪个 kernel，接着由 IDLE 状态已写了 2 个 kernel 的计数器来判断，每写 1 个 kernel 就对应更新 weight 和 bias 的计数器
+	（2）接收到 updateWeight 信号，说明 conv 操作读取了一个 weight，则在该位置 updateWeightAddr 补充一个 weight，写完后返回给 conv 操作 updateWeightDone = 1
+	（3）接收到 updateBias 信号，说明 conv 操作读取了一个 bias，给 updateBiasAddr 补充一个 bias，写完后返回给 conv 操作 updateBiasDone = 1
+
+3、POOL1
+	池化层不涉及 kernel 数据更新，仅仅针对 CONV1 的输出（计算过程中存储到 Layer RAM 中）进行最大池化操作
+
+4、CONV2
+	（1）刚进入 CONV2 状态时，重置 weight 和 bias 的计数器，以便重新计数 CONV2 涉及的 kernel 数目，每写 1 个 kernel 就对应更新 weight 和 bias 的计数器
+	（2）接收到 updateWeight 信号，说明 conv 操作读取了一个 weight，则在该位置 updateWeightAddr 补充一个 weight，写完后返回给 conv 操作 updateWeightDone = 1
+	（3）接收到 updateBias 信号，说明 conv 操作读取了一个 bias，给 updateBiasAddr 补充一个 bias，写完后返回给 conv 操作 updateBiasDone = 1
+
+5、POOL2
+	池化层不涉及 kernel 数据更新，仅仅针对 CONV2 的输出（计算过程中存储到 Layer RAM 中）进行最大池化操作
+
+6、CONV3
+	1）刚进入 CONV3 状态时，重置 weight 和 bias 的计数器，以便重新计数 CONV3 涉及的 kernel 数目，每写 1 个 kernel 就对应更新 weight 和 bias 的计数器
+	（2）接收到 updateWeight 信号，说明 conv 操作读取了一个 weight，则在该位置 updateWeightAddr 补充一个 weight，写完后返回给 conv 操作 updateWeightDone = 1
+	（3）接收到 updateBias 信号，说明 conv 操作读取了一个 bias，给 updateBiasAddr 补充一个 bias，写完后返回给 conv 操作 updateBiasDone = 1
+
+7、CONV4
+	1）刚进入 CONV4 状态时，重置 weight 和 bias 的计数器，以便重新计数 CONV4 涉及的 kernel 数目，每写 1 个 kernel 就对应更新 weight 和 bias 的计数器
+	（2）接收到 updateWeight 信号，说明 conv 操作读取了一个 weight，则在该位置 updateWeightAddr 补充一个 weight，写完后返回给 conv 操作 updateWeightDone = 1
+	（3）接收到 updateBias 信号，说明 conv 操作读取了一个 bias，给 updateBiasAddr 补充一个 bias，写完后返回给 conv 操作 updateBiasDone = 1
+
+8、CONV5
+	1）刚进入 CONV5 状态时，重置 weight 和 bias 的计数器，以便重新计数 CONV5 涉及的 kernel 数目，每写 1 个 kernel 就对应更新 weight 和 bias 的计数器
+	（2）接收到 updateWeight 信号，说明 conv 操作读取了一个 weight，则在该位置 updateWeightAddr 补充一个 weight，写完后返回给 conv 操作 updateWeightDone = 1
+	（3）接收到 updateBias 信号，说明 conv 操作读取了一个 bias，给 updateBiasAddr 补充一个 bias，写完后返回给 conv 操作 updateBiasDone = 1
+
+9、POOL5
+	池化层不涉及 kernel 数据更新，仅仅针对 CONV5 的输出（计算过程中存储到 Layer RAM 中）进行最大池化操
+
+
+todo，全连接层的设计待续
+
+10、FC
