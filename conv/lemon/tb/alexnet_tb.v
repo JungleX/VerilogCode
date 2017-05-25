@@ -56,8 +56,8 @@ module alexnet_tb();
     wire connnectPC;    // todo; ask PC for data
     
     wire layerWriteEn;
-    wire [31:0] writeLayerData;// write data to layer data RAM
-    wire [17:0] layerDataAddr;  // layer data addreses
+    wire [15:0] writeLayerData;// write data to layer data RAM
+    wire [18:0] layerDataAddr;  // layer data addreses
     
     wire weightWriteEn;
     wire [1935:0] writeWeightData;  // write data to weight RAM

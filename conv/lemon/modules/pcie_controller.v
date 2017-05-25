@@ -40,8 +40,8 @@ module pcie_controller(
     output reg connnectPC,               // todo, ask PC for data
     
     output reg layerWriteEn,
-    output reg [31:0] writeLayerData,    // write data to layer data RAM
-    output reg [17:0] layerDataAddr,     // layer data addreses
+    output reg [15:0] writeLayerData,    // write data to layer data RAM
+    output reg [18:0] layerDataAddr,     // layer data addreses
     
     output reg weightWriteEn,
     output reg [1935:0] writeWeightData, // write data to weight RAM
@@ -145,13 +145,10 @@ module pcie_controller(
                                             layerDataAddr = 0;
                                         else
                                             layerDataAddr = layerDataAddr + 1;
-                                                                          
-                                        if(fm_count == (`CONV1_FM_DATA_SIZE - 1))
-                                            writeLayerData = {16'b0, pcie_data[fm_count]};
-                                        else
-                                            writeLayerData = {pcie_data[fm_count+1], pcie_data[fm_count]};
                                             
-                                        fm_count = fm_count + 2;
+                                        writeLayerData = pcie_data[fm_count];
+
+                                        fm_count = fm_count + 1;
                                     end
                                     else begin
                                         layerWriteEn = 0;
