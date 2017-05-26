@@ -1,0 +1,25 @@
+convolution notes
+
+1、kernel_count
+	当前在进行第几个kernel的卷积计算
+	96、256、384、384、256
+	最大值 384
+	用 9 bits 表示，512>384
+
+2、kernel_depth_count
+	kernel 分为一层一层计算，记录当前 kernel 深度
+	96、256、384、384、256
+	最大值 384
+	用 9 bits 表示，512>384
+
+3、kernel_line_count
+	kernel 分为一行一行计算，记录当前 kernel 行数
+	用 4 bits 16>11
+
+4、fm_x
+	feature map 当前计算区域的起始 x 坐标
+	用 8 bits 256>227
+
+5、fm_y
+	feature map 当前计算区域的起始 y 坐标
+	用 8 bits 256>227
