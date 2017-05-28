@@ -11,6 +11,7 @@
 `define CONV1_KERNERL_MATRIX 121    // 11*11=121
 `define CONV1_KERNEL_SIZE    34848  // 11*11*3*96=34848
 `define CONV1_KERNERL_NUMBER 96
+`define CONV1_STRIDE         4
 
 // conv2
 `define CONV2_FM             27
@@ -20,6 +21,7 @@
 `define CONV2_KERNERL_MATRIX 25     // 5*5=25
 `define CONV2_KERNEL_SIZE    614400 // 5*5*96*256=614400
 `define CONV2_KERNERL_NUMBER 256
+`define CONV2_STRIDE         1
 
 // conv3
 `define CONV3_FM             13
@@ -29,6 +31,7 @@
 `define CONV3_KERNERL_MATRIX 9      // 3*3=9
 `define CONV3_KERNEL_SIZE    884736 // 3*3*256*384=884736
 `define CONV3_KERNERL_NUMBER 384
+`define CONV3_STRIDE         1
 
 // conv4
 `define CONV4_FM             13
@@ -38,6 +41,7 @@
 `define CONV4_KERNERL_MATRIX 9      // 3*3=9
 `define CONV4_KERNEL_SIZE    1327104     // 3*3*384*384=1327104
 `define CONV4_KERNERL_NUMBER 384
+`define CONV4_STRIDE         1
 
 // conv5
 `define CONV5_FM             13
@@ -47,3 +51,4 @@
 `define CONV5_KERNERL_MATRIX 9      // 3*3=9
 `define CONV5_KERNEL_SIZE    884736     // 3*3*384*256=884736
 `define CONV5_KERNERL_NUMBER 256
+`define CONV5_STRIDE         1
