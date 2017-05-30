@@ -1,7 +1,8 @@
 // data
-`define DATA_WIDTH          16      // 16 bits float
-`define CONV_MAX            11     
-`define CONV_MAX_LINE_SIZE  176 // 11*16=176
+`define DATA_WIDTH           16      // 16 bits float
+`define CONV_MAX             11     
+`define CONV_MAX_LINE_SIZE   176     // 11*16=176
+`define KERNEL_MAX_DEPTH     384
 
 // conv1
 `define CONV1_FM             227
@@ -12,6 +13,12 @@
 `define CONV1_KERNEL_SIZE    34848  // 11*11*3*96=34848
 `define CONV1_KERNERL_NUMBER 96
 `define CONV1_STRIDE         4
+
+// pool1
+`define POOL1_FM             55
+`define POOL1_DEPTH          96
+`define POOL1_WINDOW         3      // 3*3
+`define POOL1_STRIDE         2
 
 // conv2
 `define CONV2_FM             27

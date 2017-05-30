@@ -19,8 +19,13 @@
 // conv5
 `define CONV5_FM_START_INDEX 0
 
+// layer data index
 `define LAYER_RAM_START_INDEX_0 0
 `define LAYER_RAM_START_INDEX_1 154587 // 227*227*3=154587
 
+// weight index
 `define WEIGHT_RAM_START_INDEX_0 0
 `define WEIGHT_RAM_START_INDEX_1 3456 // 3*3*384=3456
+
+// weight width
+`define WEIGHT_RAM_WIDTH 1936         // 11*11*16=1936
