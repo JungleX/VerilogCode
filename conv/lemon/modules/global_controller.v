@@ -44,7 +44,7 @@ module global_controller(
     output reg fcRst         // reset fc operation
     );
     
-    parameter IDLE  = 4'd0,
+    parameter   IDLE  = 4'd0,
                 CONV1 = 4'd1,       
                 POOL1 = 4'd2,
                 CONV2 = 4'd3,       

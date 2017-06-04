@@ -4,15 +4,25 @@
 `define CONV_MAX_LINE_SIZE   176     // 11*16=176
 `define KERNEL_MAX_DEPTH     384
 
-// conv1
-`define CONV1_FM             227
-`define CONV1_FM_DEPTH       3
-`define CONV1_FM_DATA_SIZE   154587 //227*227*3=154587
+// conv1 test
+`define CONV1_FM             11      // 11 for test
+`define CONV1_FM_DEPTH       1       // 1 for test        
+`define CONV1_FM_DATA_SIZE   121     // 11*11*1 for test    
 `define CONV1_KERNERL        11    
-`define CONV1_KERNERL_MATRIX 121    // 11*11=121
-`define CONV1_KERNEL_SIZE    34848  // 11*11*3*96=34848
-`define CONV1_KERNERL_NUMBER 96
+`define CONV1_KERNERL_MATRIX 121     // 11*11=121
+`define CONV1_KERNEL_SIZE    121     // 11*11*1*1 for test
+`define CONV1_KERNERL_NUMBER 3       // 3 for test
 `define CONV1_STRIDE         4
+
+// conv1
+//`define CONV1_FM             227
+//`define CONV1_FM_DEPTH       3
+//`define CONV1_FM_DATA_SIZE   154587 //227*227*3=154587
+//`define CONV1_KERNERL        11    
+//`define CONV1_KERNERL_MATRIX 121    // 11*11=121
+//`define CONV1_KERNEL_SIZE    34848  // 11*11*3*96=34848
+//`define CONV1_KERNERL_NUMBER 96
+//`define CONV1_STRIDE         4
 
 // pool1
 `define POOL1_FM             55

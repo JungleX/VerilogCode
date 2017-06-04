@@ -41,7 +41,7 @@ module pcie_controller(
     
     output reg layerWriteEn,
     output reg [15:0] writeLayerData,    // write data to layer data RAM
-    output reg [18:0] layerDataAddr,     // layer data addreses
+    output reg [18:0] writeLayerAddr,     // layer data addreses
     
     output reg weightWriteEn,
     output reg [1935:0] writeWeightData, // write data to weight RAM
@@ -54,7 +54,7 @@ module pcie_controller(
     output reg wea                       // ram a port, 1:for write
     );
     
-    parameter IDLE  = 4'd0,
+    parameter   IDLE  = 4'd0,
                 CONV1 = 4'd1,       
                 POOL1 = 4'd2,
                 CONV2 = 4'd3,       
@@ -94,7 +94,7 @@ module pcie_controller(
             weight_count = 0;
             
             pcDataReady = 0;
-            layerDataAddr = 0; 
+            writeLayerAddr = 0; 
             weightDataAddr = 0;
             biasDataAddr = 0;
             
@@ -109,8 +109,8 @@ module pcie_controller(
     end
     
     always @(posedge clk) begin
-        wea = 1;
         if(pcieRst) begin
+            wea = 1;
             case(runLayer)
                 IDLE: 
                     begin
@@ -128,8 +128,8 @@ module pcie_controller(
                                 pcDataReady = 1;
                             end
                             else if(pcieLayerCmd == 1) begin // write data to layer data RMA
-                                //if(fm_count >= `CONV1_FM_DATA_SIZE && weight_depth_count >= 6 && bias_count >= 2) begin // load data done
-                                if(fm_count >= 10 && weight_depth_count >= 6 && bias_count >= 2) begin // just for test
+                                if(fm_count >= `CONV1_FM_DATA_SIZE && weight_depth_count >= (`CONV1_FM_DEPTH * 2) && bias_count >= 2) begin // load data done
+                                //if(fm_count >= 10 && weight_depth_count >= 6 && bias_count >= 2) begin // just for test
                                     pcieDataReady = 1;
                                     
                                     layerWriteEn = 0;
@@ -138,13 +138,12 @@ module pcie_controller(
                                 end
                                 else begin
                                     // load layer data, load the whole feature map to layer data RAM
-                                    //if(fm_count < `CONV1_FM_DATA_SIZE) begin 
-                                    if(fm_count < 10) begin // just for test
+                                    if(fm_count < `CONV1_FM_DATA_SIZE) begin 
                                         layerWriteEn = 1;
                                         if(fm_count == 0)
-                                            layerDataAddr = 0;
+                                            writeLayerAddr = 0;
                                         else
-                                            layerDataAddr = layerDataAddr + 1;
+                                            writeLayerAddr = writeLayerAddr + 1;
                                             
                                         writeLayerData = pcie_data[fm_count];
 

@@ -41,7 +41,7 @@ module pcie_controller_tb();
     
     wire layerWriteEn;
     wire [31:0] writeLayerData;// write data to layer data RAM
-    wire [17:0] layerDataAddr;  // layer data addreses
+    wire [17:0] writeLayerAddr;  // layer data addreses
     
     wire weightWriteEn;
     wire [1935:0] writeWeightData;  // write data to weight RAM
@@ -72,7 +72,7 @@ module pcie_controller_tb();
         
         .layerWriteEn(layerWriteEn),
         .writeLayerData(writeLayerData),// write data to layer data RAM
-        .layerDataAddr(layerDataAddr),  // layer data addreses
+        .writeLayerAddr(writeLayerAddr),  // layer data addreses
         
         .weightWriteEn(weightWriteEn),
         .writeWeightData(writeWeightData),  // write data to weight RAM

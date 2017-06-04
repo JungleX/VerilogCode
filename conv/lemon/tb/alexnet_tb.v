@@ -28,7 +28,7 @@ module alexnet_tb();
 
     wire pcieDataReady;
     
-    reg convStatus;
+    wire convStatus;
     reg poolStatus;
     reg fcStatus;
 
@@ -45,10 +45,10 @@ module alexnet_tb();
     wire fcRst;
     
 
-    reg updateBias;
-    reg updateBiasAddr;
-    reg updateWeight;
-    reg [9:0] updateWeightAddr;
+    wire updateBias;
+    wire updateBiasAddr;
+    wire updateWeight;
+    wire [9:0] updateWeightAddr;
 
     wire updateBiasDone;   // 1:done
     wire updateWeightDone; // 1:done
@@ -57,7 +57,7 @@ module alexnet_tb();
     
     wire layerWriteEn;
     wire [15:0] writeLayerData;// write data to layer data RAM
-    wire [18:0] layerDataAddr;  // layer data addreses
+    wire [18:0] writeLayerAddr;// layer data addreses
     
     wire weightWriteEn;
     wire [1935:0] writeWeightData;  // write data to weight RAM
@@ -68,17 +68,34 @@ module alexnet_tb();
     wire biasDataAddr;
     wire wea;    
     
-    reg [18:0] layerReadAddr;
-    reg [9:0] weightReadAddr;
-    reg biasReadAddr;
+    wire [18:0] layerReadAddr;
+    wire [9:0] weightReadAddr;
+    wire biasReadAddr;
     
     wire [15:0] layerReadData;
     wire [1935:0] weightReadData;
     wire [15:0] biasReadData;
     
-    reg layerReadEnTest;
-    reg weightReadEnTest;
-    reg biasReadEnTest;
+    wire [15:0] writeOutputLayerData;
+    wire [18:0] writeOutputLayerAddr;
+
+    wire multRst;
+    wire multEna;
+    wire multResult;
+    wire multData;
+    wire multWeight;
+
+    wire addResultValid;
+    wire addAValid;
+    wire addBValid;
+
+    wire [15:0] addA;
+    wire [15:0] addB;
+    wire [15:0] addResult;
+
+//    reg layerReadEnTest;
+//    reg weightReadEnTest;
+//    reg biasReadEnTest;
 
     global_controller globalController(
     	// input
@@ -114,12 +131,12 @@ module alexnet_tb();
         .pcieLayerCmd(pcieLayerCmd),   
         .runLayer(runLayer),        
         
-        // output
         .updateBias(updateBias),      
         .updateBiasAddr(updateBiasAddr),
         .updateWeight(updateWeight),    
         .updateWeightAddr(updateWeightAddr),
         
+        // output
         .updateBiasDone(updateBiasDone),   
         .updateWeightDone(updateWeightDone), 
         
@@ -128,7 +145,7 @@ module alexnet_tb();
         
         .layerWriteEn(layerWriteEn),
         .writeLayerData(writeLayerData),
-        .layerDataAddr(layerDataAddr),  
+        .writeLayerAddr(writeLayerAddr),  
         
         .weightWriteEn(weightWriteEn),
         .writeWeightData(writeWeightData), 
@@ -142,7 +159,7 @@ module alexnet_tb();
     );
 
     layer_ram layerRam(
-        .addra(layerDataAddr),
+        .addra(writeLayerAddr),
         .clka(clk),
         .dina(writeLayerData),
         .ena(layerWriteEn),
@@ -151,8 +168,8 @@ module alexnet_tb();
         .addrb(layerReadAddr),
         .clkb(clk),
         .doutb(layerReadData),
-        //.enb(layerReadEn)
-        .enb(layerReadEnTest) // just for test
+        .enb(layerReadEn)
+//        .enb(layerReadEnTest) // just for test
     );
 
     weight_ram weightRam(
@@ -165,8 +182,8 @@ module alexnet_tb();
         .addrb(weightReadAddr),
         .clkb(clk),
         .doutb(weightReadData),
-        //.enb(weightReadEn)   
-        .enb(weightReadEnTest) // just for test
+        .enb(weightReadEn)   
+//        .enb(weightReadEnTest) // just for test
     );
     
     bias_ram biasRam(
@@ -179,9 +196,74 @@ module alexnet_tb();
         .addrb(biasReadAddr),
         .clkb(clk),
         .doutb(biasReadData),
-        //.enb(biasReadEn)   
-        .enb(biasReadEnTest)  // just for test   
+        .enb(biasReadEn)   
+//        .enb(biasReadEnTest)  // just for test   
     );
+
+    convolution conv(
+        .clk(clk),
+        .convRst(convRst),
+
+        .runLayer(runLayer),                
+
+        .readWeight(weightReadData), 
+        .readBias(biasReadData),          
+        .readFM(layerReadData),
+
+        .addResultValid(addResultValid),
+        .addResult(addResult),
+
+        .multResult(multResult),
+
+        .multData(multData),
+        .multWeight(multWeight),
+
+        .addAValid(),
+        .addBValid(),
+
+        .addA(addA),
+        .addB(addB),
+
+        .layerReadAddr(layerReadAddr),     
+        .weightReadAddr(weightReadAddr),    
+        .biasReadAddr(biasReadAddr),      
+
+        .writeOutputLayerData(writeOutputLayerData),
+        .writeOutputLayerAddr(writeOutputLayerAddr),
+
+        .updateBias(updateBias),               
+        .updateBiasAddr(updateBiasAddr),
+
+        .updateWeight(updateWeight),                 
+        .updateWeightAddr(updateWeightAddr),
+
+        .convStatus(convStatus),
+
+        .multRst(multRst),
+        .multEna(multEna)
+    );
+
+    multX11 mult(
+        .clk(clk),
+        .rst(multRst),
+        .ena(multEna),
+
+        .data(multData),
+        .weight(multWeight),
+
+        .out(multResult)
+        );
+
+    floating_point_add adder(
+        .s_axis_a_tvalid(addAValid),
+        .s_axis_a_tdata(addA),
+
+        .s_axis_b_tvalid(addBValid),
+        .s_axis_b_tdata(addB),
+
+        .m_axis_result_tvalid(addResultValid),
+        .m_axis_result_tdata(addResult)
+        );
 
     integer reading_size = 0;
 
@@ -200,62 +282,62 @@ module alexnet_tb();
         gcEna = 1; // enable the controller
         gcRst = 0; // reset the controller  
 
-        // 3
-        #(`clk_period*2)
+        // 5
+        #(`clk_period*4)
         gcEna = 1;
         gcRst = 1; // disable the reset 
         // idle
-        convStatus = 0; // no conv 
-        poolStatus = 0; // no pool
-        fcStatus = 0;   // no fc
+//        convStatus = 0; // no conv 
+//        poolStatus = 0; // no pool
+//        fcStatus = 0;   // no fc
 
         // 11
-        #(`clk_period*8)
+//        #(`clk_period*8)
         // read the RAM data
 
         // layerReadData
-        while(reading_size <= 10) begin 
-            #`clk_period
-            if(reading_size == 0)
-            	layerReadAddr = 0;
-            else 
-            	layerReadAddr = layerReadAddr + 1;
+//        while(reading_size <= 10) begin 
+//            #`clk_period
+//            if(reading_size == 0)
+//            	layerReadAddr = 0;
+//            else 
+//            	layerReadAddr = layerReadAddr + 1;
             
-            layerReadEnTest = 1;
-            reading_size = reading_size + 1;
-        end
-        #`clk_period
-        layerReadEnTest = 0;
+//            layerReadEnTest = 1;
+//            reading_size = reading_size + 1;
+//        end
+//        #`clk_period
+//        layerReadEnTest = 0;
 
         // weightReadData
-        reading_size = 0;
-        while(reading_size <= 6) begin 
-            #`clk_period
-            if(reading_size == 0)
-            	weightReadAddr = 0;
-            else 
-            	weightReadAddr = weightReadAddr + 1;
+//        reading_size = 0;
+//        while(reading_size <= 6) begin 
+//            #`clk_period
+//            if(reading_size == 0)
+//            	weightReadAddr = 0;
+//            else 
+//            	weightReadAddr = weightReadAddr + 1;
             
-            weightReadEnTest = 1;
-            reading_size = reading_size + 1;
-        end
-        #`clk_period
-        weightReadEnTest = 0;
+//            weightReadEnTest = 1;
+//            reading_size = reading_size + 1;
+//        end
+//        #`clk_period
+//        weightReadEnTest = 0;
 
         // biasReadData
-        reading_size = 0;
-        while(reading_size <= 2) begin 
-            #`clk_period
-            if(reading_size == 0)
-            	biasReadAddr = 0;
-            else 
-            	biasReadAddr = biasReadAddr + 1;
+//        reading_size = 0;
+//        while(reading_size <= 2) begin 
+//            #`clk_period
+//            if(reading_size == 0)
+//            	biasReadAddr = 0;
+//            else 
+//            	biasReadAddr = biasReadAddr + 1;
             
-            biasReadEnTest = 1;
-            reading_size = reading_size + 1;
-        end
-        #`clk_period
-        biasReadEnTest = 0;
+//            biasReadEnTest = 1;
+//            reading_size = reading_size + 1;
+//        end
+//        #`clk_period
+//        biasReadEnTest = 0;
 
     end
 endmodule
