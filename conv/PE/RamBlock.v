@@ -1,4 +1,4 @@
- module RamBlock(input clka, input ena, input wea, input dina, input clkb, input enb, input addrb, output doutb, output complete);
+ module RamBlock(input clka, input ena, input wea, input dina, input clkb, input enb, input addrb, output doutb, output ready, output complete);
 wire clka;
 wire ena;
 wire wea;
@@ -9,6 +9,7 @@ wire enb;
 wire [15 : 0] addrb;
 wire [15:0] doutb;
 reg complete = 0;
+reg ready = 0;
 
 reg [15:0] load_size = 16'd0;
 
@@ -26,13 +27,19 @@ blk_mem_16 inram0 (
 
 always @(posedge clka)
 begin
-    if(load_size < 36864)   //36K
-    begin
-        addra = load_size;
-        load_size = load_size+1;
+    if(ena) begin
+        if(ready == 1) begin
+            if(load_size < 36864)   //36K
+            begin
+                addra = load_size;
+                load_size = load_size+1;
+            end
+            else
+                complete = 1;
+            end
+        else
+            ready = 1;
     end
-    else
-        complete = 1;
 end
 
 endmodule
