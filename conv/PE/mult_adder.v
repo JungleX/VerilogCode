@@ -1,4 +1,4 @@
-`include "../bit_width.vh"
+`include "bit_width.vh"
 
 module mult_adder(
 	input clock,

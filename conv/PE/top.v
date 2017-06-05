@@ -15,7 +15,6 @@ reg[15:0] dina0;
 reg enb0;
 reg[15:0] addrb0;
 wire[15:0] doutb0;
-wire ready;
 wire load_complete;
 
 RamBlock bigram0(.clka(clk),
@@ -28,6 +27,18 @@ RamBlock bigram0(.clka(clk),
             .doutb(doutb0),
             .ready(ready),
             .complete(load_complete));
+            
+reg[3:0] layer;
+reg[15:0] weight;
+reg[127:0] infm;                 //16*8
+wire[127:0] outfm;
+wire[135:0] infm_addr;
+            
+conv convcal(.layer(layer),
+              .pcie_data(weight),
+               .infm(infm),
+               .outfm(outfm),
+               .addr(infm_addr));
 
 //×´Ì¬»ú²ÎÊý
 parameter START = 4'b0000,
@@ -67,6 +78,9 @@ always @(current_state) begin
                 ena0=1;
                 wea0=1;
             end
+        CONV1:
+            begin
+            end
     endcase
 end
 
@@ -83,6 +97,9 @@ begin
                 if(load_complete == 1)
                     next_state = CONV1; 
             end
+        CONV1:
+            begin
+            end
     endcase
 end
 
@@ -92,7 +109,10 @@ begin
         START: begin
             if(ready == 1)
                 dina0 = pcie_data;
-        end
+            end
+        CONV1:
+            begin
+            end
     endcase
 end
 
