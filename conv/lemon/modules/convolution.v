@@ -93,13 +93,13 @@ module convolution(
     reg [1:0] get_bias_number;         // count the bias number, get only one bias each time
     reg [11:0] get_fm_number;    // max value 3*3*384=3456 < 4096=2^12, count the fm matrix number
 
-    reg [`WEIGHT_RAM_WIDTH - 1:0] weight; // 11*11*16=1936
+//    reg [`WEIGHT_RAM_WIDTH - 1:0] weight; // 11*11*16=1936
     reg [15:0] bias;
     reg [15:0] fm[120:0];        // 11*11=121 max value
 
     reg [175:0] weight_window[10:0];    // max value 11 lines, each line 11*16=176
 
-    reg [3:0] mul_clk_count;
+    reg [4:0] mul_clk_count;
     reg write_to_layer_ram_count;
     reg bias_start_flag;
     reg [11:0]i;
@@ -125,7 +125,8 @@ module convolution(
             get_bias_number = 0;
             get_fm_number = 0;
 
-            writeOutputLayerAddr = 19'bx;
+            writeOutputLayerData = 0;
+            writeOutputLayerAddr = 524287; // 2^19 max value
 
             mul_clk_count = 0;
             write_to_layer_ram_count = 0;
@@ -167,7 +168,8 @@ module convolution(
                             get_bias_number = 0;
                             get_fm_number = 0;
 
-                            writeOutputLayerAddr = 19'bx;
+                            writeOutputLayerData = 0;
+                            writeOutputLayerAddr = 524287;
 
                             mul_clk_count = 0;
                             write_to_layer_ram_count = 0;
@@ -179,10 +181,10 @@ module convolution(
                             multEna = 1;
                             multRst = 1;
 
-                            if(weight_count < `CONV1_KERNERL_NUMBER) begin      // loop 4
-                                if(fm_y < `CONV1_FM) begin                      // loop 3, fm_y = fm_y + stride
-                                    if(fm_x < `CONV1_FM) begin                  // loop 3, fm_x = fm_x + stride
-                                        if(depth_count < `CONV1_FM_DEPTH) begin // loop 2
+                            if(weight_count < `CONV1_KERNERL_NUMBER) begin             // loop 4
+                                if(fm_y < (`CONV1_FM - `CONV1_KERNERL + 1)) begin      // loop 3, fm_y = fm_y + stride
+                                    if(fm_x < (`CONV1_FM - `CONV1_KERNERL + 1)) begin  // loop 3, fm_x = fm_x + stride
+                                        if(depth_count < `CONV1_FM_DEPTH) begin        // loop 2
                                             // read bias data
                                             if(get_bias_number < 1) begin
                                                 if(bias_start_flag == 0) begin
@@ -208,17 +210,27 @@ module convolution(
                                             if(get_weight_number < 1) begin
                                                 if (weightReadAddr == 1023) // start to read, go to the first weight
                                                     weightReadAddr = `WEIGHT_RAM_START_INDEX_0;
-                                                else if(weightReadAddr <  `WEIGHT_RAM_START_INDEX_0 + `CONV1_FM_DEPTH) // the first weight
+                                                else if((weightReadAddr + 1) <  `WEIGHT_RAM_START_INDEX_0 + `CONV1_FM_DEPTH) // the first weight
                                                     weightReadAddr = weightReadAddr + 1;
-                                                else if(weightReadAddr == `WEIGHT_RAM_START_INDEX_0 + `CONV1_FM_DEPTH) // change to the second weight
+                                                else if((weightReadAddr + 1) == `WEIGHT_RAM_START_INDEX_0 + `CONV1_FM_DEPTH) // change to the second weight
                                                     weightReadAddr = `WEIGHT_RAM_START_INDEX_1;
-                                                else if(weightReadAddr <  `WEIGHT_RAM_START_INDEX_1 + `CONV1_FM_DEPTH ) // the second weight
+                                                else if((weightReadAddr + 1) <  `WEIGHT_RAM_START_INDEX_1 + `CONV1_FM_DEPTH ) // the second weight
                                                     weightReadAddr = weightReadAddr + 1;
 
                                                 get_weight_number = 1;
                                             end
                                             else if(get_weight_number == 3) begin // get read value 
-                                                weight = readWeight;
+                                                weight_window[0]  = readWeight[`DATA_WIDTH * `CONV1_KERNERL - 1 :0];
+                                                weight_window[1]  = readWeight[`DATA_WIDTH * `CONV1_KERNERL * 2  - 1:`DATA_WIDTH * `CONV1_KERNERL];
+                                                weight_window[2]  = readWeight[`DATA_WIDTH * `CONV1_KERNERL * 3  - 1:`DATA_WIDTH * `CONV1_KERNERL * 2];
+                                                weight_window[3]  = readWeight[`DATA_WIDTH * `CONV1_KERNERL * 4  - 1:`DATA_WIDTH * `CONV1_KERNERL * 3];
+                                                weight_window[4]  = readWeight[`DATA_WIDTH * `CONV1_KERNERL * 5  - 1:`DATA_WIDTH * `CONV1_KERNERL * 4];
+                                                weight_window[5]  = readWeight[`DATA_WIDTH * `CONV1_KERNERL * 6  - 1:`DATA_WIDTH * `CONV1_KERNERL * 5];
+                                                weight_window[6]  = readWeight[`DATA_WIDTH * `CONV1_KERNERL * 7  - 1:`DATA_WIDTH * `CONV1_KERNERL * 6];
+                                                weight_window[7]  = readWeight[`DATA_WIDTH * `CONV1_KERNERL * 8  - 1:`DATA_WIDTH * `CONV1_KERNERL * 7];
+                                                weight_window[8]  = readWeight[`DATA_WIDTH * `CONV1_KERNERL * 9  - 1:`DATA_WIDTH * `CONV1_KERNERL * 8];
+                                                weight_window[9]  = readWeight[`DATA_WIDTH * `CONV1_KERNERL * 10 - 1:`DATA_WIDTH * `CONV1_KERNERL * 9];
+                                                weight_window[10] = readWeight[`DATA_WIDTH * `CONV1_KERNERL * 11 - 1:`DATA_WIDTH * `CONV1_KERNERL * 10];
                                                 //get_weight_number = 3;
                                             end
                                             else begin 
@@ -230,8 +242,8 @@ module convolution(
                                                 if(layerReadAddr == 524287) // the beginning
                                                     layerReadAddr = inputLayerStartIndex;
 
-                                                else if(((get_fm_number + 1) % `CONV1_KERNERL) == 0) // go to next line
-                                                    layerReadAddr = layerReadAddr + `CONV1_FM - `CONV1_KERNERL;
+                                                else if(((get_fm_number) % `CONV1_KERNERL) == 0) // go to next line
+                                                    layerReadAddr = layerReadAddr + `CONV1_FM - (`CONV1_KERNERL - 1);
                                                 else
                                                     layerReadAddr = layerReadAddr + 1;
 
@@ -252,44 +264,47 @@ module convolution(
                                                 && get_weight_number == 3
                                                 && get_fm_number == (`CONV1_KERNERL * `CONV1_KERNERL + 3)) begin
 
-                                                weight_window[0]  = weight[`DATA_WIDTH * `CONV1_KERNERL - 1 :0];
-                                                weight_window[1]  = weight[`DATA_WIDTH * `CONV1_KERNERL * 2  - 1:`DATA_WIDTH * `CONV1_KERNERL];
-                                                weight_window[2]  = weight[`DATA_WIDTH * `CONV1_KERNERL * 3  - 1:`DATA_WIDTH * `CONV1_KERNERL * 2];
-                                                weight_window[3]  = weight[`DATA_WIDTH * `CONV1_KERNERL * 4  - 1:`DATA_WIDTH * `CONV1_KERNERL * 3];
-                                                weight_window[4]  = weight[`DATA_WIDTH * `CONV1_KERNERL * 5  - 1:`DATA_WIDTH * `CONV1_KERNERL * 4];
-                                                weight_window[5]  = weight[`DATA_WIDTH * `CONV1_KERNERL * 6  - 1:`DATA_WIDTH * `CONV1_KERNERL * 5];
-                                                weight_window[6]  = weight[`DATA_WIDTH * `CONV1_KERNERL * 7  - 1:`DATA_WIDTH * `CONV1_KERNERL * 6];
-                                                weight_window[7]  = weight[`DATA_WIDTH * `CONV1_KERNERL * 8  - 1:`DATA_WIDTH * `CONV1_KERNERL * 7];
-                                                weight_window[8]  = weight[`DATA_WIDTH * `CONV1_KERNERL * 9  - 1:`DATA_WIDTH * `CONV1_KERNERL * 8];
-                                                weight_window[9]  = weight[`DATA_WIDTH * `CONV1_KERNERL * 10 - 1:`DATA_WIDTH * `CONV1_KERNERL * 9];
-                                                weight_window[10] = weight[`DATA_WIDTH * `CONV1_KERNERL * 11 - 1:`DATA_WIDTH * `CONV1_KERNERL * 10];
-
                                                 if(weight_line_count < `CONV1_KERNERL) begin
                                                     // multX11
                                                     i = weight_line_count * `CONV1_KERNERL;
                                                     multData = {fm[i+10], fm[i+9], fm[i+8], fm[i+7], fm[i+6], fm[i+5], fm[i+4], fm[i+3], fm[i+2], fm[i+1], fm[i]};
                                                     multWeight = weight_window[weight_line_count];
-                                                    weight_line_count = weight_line_count + 1;
+                                                    weight_line_count = weight_line_count + 1;   
+                                                end
 
-                                                    // wait 10 clk and add
-                                                    if(mul_clk_count == 10) begin
-                                                        addAValid = 1;
-                                                        addBValid = 1;
-                                                        addA = multResult;
-                                                        addB = addResult;
-                                                    end
-                                                    else begin
-                                                        mul_clk_count = mul_clk_count + 1;
-                                                    end
-                                                        
+                                                // wait 10 clk and add
+                                                if(mul_clk_count < 11) begin
+                                                    mul_clk_count = mul_clk_count + 1;
                                                 end
-                                                else begin
-                                                    // go to next weight depth
-                                                    weight_line_count = 0;
+                                                if((mul_clk_count >= 11) && (mul_clk_count < 23)) begin
+                                                    addAValid = 1;
+                                                    addBValid = 1;
+                                                    addA = multResult;
+                                                    addB = addResult;
+                                                    mul_clk_count = mul_clk_count + 1;
+                                                end
+                                                else if(mul_clk_count == 23) begin
+                                                    addA = writeOutputLayerData;
+                                                    addB = addResult;
+                                                    mul_clk_count = mul_clk_count + 1;
+                                                end
+                                                else if(mul_clk_count == 24) begin
+                                                    // save the temp result
+                                                    writeOutputLayerData = addResult; 
+                                                    addA = 0;
+                                                    addB = 0;
+
+                                                    // go to next depth
                                                     depth_count = depth_count + 1;
+                                                    get_weight_number = 0;
+                                                    get_fm_number = 0;
+                                                    weight_line_count = 0;
                                                     mul_clk_count = 0;
-                                                end
-                                                        
+
+                                                    // address
+                                                    // the last -1: when read fm data, it will +1
+                                                    layerReadAddr = layerReadAddr + (`CONV1_FM * `CONV1_FM) - ((`CONV1_KERNERL - 1) * `CONV1_FM) - (`CONV1_KERNERL - 1) - 1; 
+                                                end       
                                             end
                                         end
                                         else begin
@@ -298,7 +313,7 @@ module convolution(
                                             addBValid = 1;
 
                                             addA = bias;
-                                            addB = addResult; 
+                                            addB = writeOutputLayerData; 
 
                                             // write addResult to layer RAM  
                                             if(write_to_layer_ram_count == 0) begin
@@ -306,31 +321,46 @@ module convolution(
                                             end
                                             else if(write_to_layer_ram_count == 1) begin // write data
                                                 writeOutputLayerData = addResult;
-                                                if(writeOutputLayerAddr == 19'bx) begin
+                                                if(writeOutputLayerAddr == 524287) begin
                                                     writeOutputLayerAddr = outputLayerStartIndex;
                                                 end
                                                 else begin
                                                     writeOutputLayerAddr = writeOutputLayerAddr + 1;
                                                 end
 
+                                                write_to_layer_ram_count = 0;
+                                                depth_count = 0;
                                                 // go to next feature map part data
                                                 fm_x = fm_x + `CONV1_STRIDE;
                                                 get_fm_number = 0;
+                                                layerReadAddr = inputLayerStartIndex + fm_x + fm_y * `CONV1_FM ;
 
-                                                layerReadAddr = fm_x + fm_y * `CONV1_FM ;
+                                                get_weight_number = 0;
+                                                // work with read weight code can get the correct address
+                                                if(weightReadAddr <  `WEIGHT_RAM_START_INDEX_0 + `CONV1_FM_DEPTH) // the first weight
+                                                    weightReadAddr = 1023;
+                                                else if(weightReadAddr <  `WEIGHT_RAM_START_INDEX_1 + `CONV1_FM_DEPTH ) // the second weight
+                                                    weightReadAddr = `WEIGHT_RAM_START_INDEX_0 + `CONV1_FM_DEPTH;
                                             end
                                         end
                                     end
                                     else begin
                                         fm_x = 0;
                                         fm_y = fm_y + `CONV1_STRIDE;
+                                        layerReadAddr = inputLayerStartIndex + fm_x + fm_y * `CONV1_FM ;
                                     end
                                 end
                                 else begin
+                                    fm_x = 0;
                                     fm_y = 0;
+                                    layerReadAddr = 524287; // the beginning //layerReadAddr = inputLayerStartIndex;
+
                                     // go to next kernel
                                     get_weight_number = 0;
                                     weight_count = weight_count + 1;
+
+                                    // update weight
+                                    // todo
                                 end
                             end
                             else begin
