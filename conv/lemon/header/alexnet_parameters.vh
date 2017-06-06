@@ -11,7 +11,7 @@
 `define CONV1_KERNERL        11    
 `define CONV1_KERNERL_MATRIX 121     // 11*11=121
 `define CONV1_KERNEL_SIZE    121     // 11*11*1*1 for test
-`define CONV1_KERNERL_NUMBER 3       // 3 for test
+`define CONV1_KERNERL_NUMBER 4       // 3 for test
 `define CONV1_STRIDE         4
 
 // conv1

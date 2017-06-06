@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `define clk_period 10
+`include "alexnet_parameters.vh"
 
 module alexnet_tb();
     reg clk;
@@ -81,9 +82,9 @@ module alexnet_tb();
 
     wire multRst;
     wire multEna;
-    wire multResult;
-    wire multData;
-    wire multWeight;
+    wire [15:0] multResult;
+    wire [`CONV_MAX_LINE_SIZE - 1:0] multData;
+    wire [`CONV_MAX_LINE_SIZE - 1:0] multWeight;
 
     wire addResultValid;
     wire addAValid;
@@ -214,6 +215,9 @@ module alexnet_tb();
         .addResult(addResult),
 
         .multResult(multResult),
+
+        .updateBiasDone(updateBiasDone),
+        .updateWeightDone(updateWeightDone),
 
         .multData(multData),
         .multWeight(multWeight),

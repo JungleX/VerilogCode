@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "alexnet_parameters.vh"
+`include "ram_parameters.vh"
 
 module pcie_controller(
     input clk,
@@ -70,7 +71,7 @@ module pcie_controller(
     reg [3:0] currentLayer;
     
     reg [15:0] pcie_data[0:`CONV1_FM_DATA_SIZE - 1];   // get layer data from file, max value conv1
-    reg [15:0] weight_data[0:`CONV1_KERNEL_SIZE - 1];  // get weight data from file, max value conv1
+    reg [15:0] weight_data[0:(`CONV1_KERNEL_SIZE * `CONV1_KERNERL_NUMBER) - 1];  // get weight data from file, max value conv1
     reg [15:0] bias_data[0:`CONV4_KERNEL_SIZE - 1]; // get bias from file, max value conv4
     
     reg [17:0] fm_count;            // 18 bits, max value 262144 > 227*227*3=154587, count the feature map data
@@ -82,6 +83,9 @@ module pcie_controller(
     reg pcDataReady;                // 1:ready; todo set it according to connectPC
     
     reg [9:0] i;                    // 10 bits, max value 1024
+
+    reg update_weight_wait_clk;
+    reg updata_bias_wait_clk;
 
     always @(posedge clk or posedge pcieRst) begin
         if(!pcieRst) begin // reset
@@ -103,6 +107,9 @@ module pcie_controller(
             biasWriteEn = 0;
             
             currentLayer = IDLE;
+
+            update_weight_wait_clk = 0;
+            updata_bias_wait_clk = 0;
             
             wea = 1;
         end
@@ -129,7 +136,6 @@ module pcie_controller(
                             end
                             else if(pcieLayerCmd == 1) begin // write data to layer data RMA
                                 if(fm_count >= `CONV1_FM_DATA_SIZE && weight_depth_count >= (`CONV1_FM_DEPTH * 2) && bias_count >= 2) begin // load data done
-                                //if(fm_count >= 10 && weight_depth_count >= 6 && bias_count >= 2) begin // just for test
                                     pcieDataReady = 1;
                                     
                                     layerWriteEn = 0;
@@ -157,11 +163,16 @@ module pcie_controller(
                                     if(weight_depth_count < (`CONV1_FM_DEPTH * 2) ) begin
                                         weightWriteEn = 1;
                                         
-                                        if(weight_depth_count == 0)
-                                            weightDataAddr = 0;
-                                        else
-                                            weightDataAddr = weightDataAddr + 1;
-                                            
+                                        if(weight_depth_count == 0) begin
+                                            weightDataAddr = `WEIGHT_RAM_START_INDEX_0;
+                                        end
+                                        else if(weight_depth_count == `CONV1_FM_DEPTH) begin
+                                            weightDataAddr = `WEIGHT_RAM_START_INDEX_1;
+                                        end
+                                        else begin
+                                            weightDataAddr = weightDataAddr + 1; 
+                                        end
+
                                         i = weight_depth_count * `CONV1_KERNERL_MATRIX;
                                         writeWeightData = { weight_data[i+120], weight_data[i+119], weight_data[i+118], weight_data[i+117], weight_data[i+116], weight_data[i+115], weight_data[i+114],weight_data[i+113], weight_data[i+112], weight_data[i+111], weight_data[i+110],
                                                             weight_data[i+109], weight_data[i+108], weight_data[i+107], weight_data[i+106], weight_data[i+105], weight_data[i+104], weight_data[i+103],weight_data[i+102], weight_data[i+101], weight_data[i+100], weight_data[i+99],
@@ -216,28 +227,35 @@ module pcie_controller(
                             
                             weightWriteEn = 0;
                             biasWriteEn = 0;
+
+                            update_weight_wait_clk = 0;
+                            updata_bias_wait_clk = 0;
                         end
                         else begin
                             if(updateWeight == 1 && weight_count < `CONV1_KERNERL_NUMBER) begin
-                                if(weight_depth_count < `CONV1_FM_DEPTH ) begin
+                                if(weight_depth_count < `CONV1_FM_DEPTH) begin
                                     updateWeightDone = 0;
                                     weightWriteEn = 1;
                                     
-                                    i = weight_count * `CONV1_KERNERL_MATRIX * `CONV1_FM_DEPTH + weight_depth_count * `CONV1_KERNERL_MATRIX; // the start index of current weight
-                                    writeWeightData = { weight_data[i+120], weight_data[i+119], weight_data[i+118], weight_data[i+117], weight_data[i+116], weight_data[i+115], weight_data[i+114],weight_data[i+113], weight_data[i+112], weight_data[i+111], weight_data[i+110],
-                                                        weight_data[i+109], weight_data[i+108], weight_data[i+107], weight_data[i+106], weight_data[i+105], weight_data[i+104], weight_data[i+103],weight_data[i+102], weight_data[i+101], weight_data[i+100], weight_data[i+99],
-                                                        weight_data[i+98], weight_data[i+97], weight_data[i+96], weight_data[i+95], weight_data[i+94], weight_data[i+93], weight_data[i+92],weight_data[i+91], weight_data[i+90], weight_data[i+89], weight_data[i+88],
-                                                        weight_data[i+87], weight_data[i+86], weight_data[i+85], weight_data[i+84], weight_data[i+83], weight_data[i+82], weight_data[i+81],weight_data[i+80], weight_data[i+79], weight_data[i+78], weight_data[i+77],
-                                                        weight_data[i+76], weight_data[i+75], weight_data[i+74], weight_data[i+73], weight_data[i+72], weight_data[i+71], weight_data[i+70],weight_data[i+69], weight_data[i+68], weight_data[i+67], weight_data[i+66],
-                                                        weight_data[i+65], weight_data[i+64], weight_data[i+63], weight_data[i+62], weight_data[i+61], weight_data[i+60], weight_data[i+59],weight_data[i+58], weight_data[i+57], weight_data[i+56], weight_data[i+55],
-                                                        weight_data[i+54], weight_data[i+53], weight_data[i+52], weight_data[i+51], weight_data[i+50], weight_data[i+49], weight_data[i+48],weight_data[i+47], weight_data[i+46], weight_data[i+45], weight_data[i+44],
-                                                        weight_data[i+43], weight_data[i+42], weight_data[i+41], weight_data[i+40], weight_data[i+39], weight_data[i+38], weight_data[i+37],weight_data[i+36], weight_data[i+35], weight_data[i+34], weight_data[i+33],
-                                                        weight_data[i+32], weight_data[i+31], weight_data[i+30], weight_data[i+29], weight_data[i+28], weight_data[i+27], weight_data[i+26],weight_data[i+25], weight_data[i+24], weight_data[i+23], weight_data[i+22],
-                                                        weight_data[i+21], weight_data[i+20], weight_data[i+19], weight_data[i+18], weight_data[i+17], weight_data[i+16], weight_data[i+15],weight_data[i+14], weight_data[i+13], weight_data[i+12], weight_data[i+11],
-                                                        weight_data[i+10], weight_data[i+9], weight_data[i+8], weight_data[i+7], weight_data[i+6], weight_data[i+5], weight_data[i+4],weight_data[i+3], weight_data[i+2], weight_data[i+1], weight_data[i]}; 
-                                 
-                                    weightDataAddr = updateWeightAddr + weight_depth_count * 1;                                           
-                                    weight_depth_count = weight_depth_count + 1;                                
+                                    if(update_weight_wait_clk < `CONV1_FM_DEPTH) begin
+                                        i = weight_count * `CONV1_KERNERL_MATRIX * `CONV1_FM_DEPTH + weight_depth_count * `CONV1_KERNERL_MATRIX; // the start index of current weight
+                                        writeWeightData = { weight_data[i+120], weight_data[i+119], weight_data[i+118], weight_data[i+117], weight_data[i+116], weight_data[i+115], weight_data[i+114],weight_data[i+113], weight_data[i+112], weight_data[i+111], weight_data[i+110],
+                                                            weight_data[i+109], weight_data[i+108], weight_data[i+107], weight_data[i+106], weight_data[i+105], weight_data[i+104], weight_data[i+103],weight_data[i+102], weight_data[i+101], weight_data[i+100], weight_data[i+99],
+                                                            weight_data[i+98], weight_data[i+97], weight_data[i+96], weight_data[i+95], weight_data[i+94], weight_data[i+93], weight_data[i+92],weight_data[i+91], weight_data[i+90], weight_data[i+89], weight_data[i+88],
+                                                            weight_data[i+87], weight_data[i+86], weight_data[i+85], weight_data[i+84], weight_data[i+83], weight_data[i+82], weight_data[i+81],weight_data[i+80], weight_data[i+79], weight_data[i+78], weight_data[i+77],
+                                                            weight_data[i+76], weight_data[i+75], weight_data[i+74], weight_data[i+73], weight_data[i+72], weight_data[i+71], weight_data[i+70],weight_data[i+69], weight_data[i+68], weight_data[i+67], weight_data[i+66],
+                                                            weight_data[i+65], weight_data[i+64], weight_data[i+63], weight_data[i+62], weight_data[i+61], weight_data[i+60], weight_data[i+59],weight_data[i+58], weight_data[i+57], weight_data[i+56], weight_data[i+55],
+                                                            weight_data[i+54], weight_data[i+53], weight_data[i+52], weight_data[i+51], weight_data[i+50], weight_data[i+49], weight_data[i+48],weight_data[i+47], weight_data[i+46], weight_data[i+45], weight_data[i+44],
+                                                            weight_data[i+43], weight_data[i+42], weight_data[i+41], weight_data[i+40], weight_data[i+39], weight_data[i+38], weight_data[i+37],weight_data[i+36], weight_data[i+35], weight_data[i+34], weight_data[i+33],
+                                                            weight_data[i+32], weight_data[i+31], weight_data[i+30], weight_data[i+29], weight_data[i+28], weight_data[i+27], weight_data[i+26],weight_data[i+25], weight_data[i+24], weight_data[i+23], weight_data[i+22],
+                                                            weight_data[i+21], weight_data[i+20], weight_data[i+19], weight_data[i+18], weight_data[i+17], weight_data[i+16], weight_data[i+15],weight_data[i+14], weight_data[i+13], weight_data[i+12], weight_data[i+11],
+                                                            weight_data[i+10], weight_data[i+9], weight_data[i+8], weight_data[i+7], weight_data[i+6], weight_data[i+5], weight_data[i+4],weight_data[i+3], weight_data[i+2], weight_data[i+1], weight_data[i]}; 
+                                     
+                                        weightDataAddr = updateWeightAddr + weight_depth_count * 1;                                           
+                                        weight_depth_count = weight_depth_count + 1;  
+                                        update_weight_wait_clk = update_weight_wait_clk + 1; 
+                                    end
+                                                                 
                                 end
                                 else begin
                                     updateWeightDone = 1;
@@ -247,15 +265,23 @@ module pcie_controller(
                                     weight_count = weight_count + 1;
                                 end
                             end
+                            else begin
+                                weight_depth_count = 0;
+                                update_weight_wait_clk = 0;
+                            end
                         
                             if(updateBias == 1 && bias_count < `CONV1_KERNERL_NUMBER) begin
                                 if(bias_write_count < 1) begin
                                     updateBiasDone = 0;
                                     biasWriteEn = 1;
 
-                                    writeBiasData = bias_data[bias_count];
-                                    biasDataAddr = updateBiasAddr;
-                                    bias_write_count = 1;
+                                    if(updata_bias_wait_clk == 0) begin
+                                        writeBiasData = bias_data[bias_count];
+                                        biasDataAddr = updateBiasAddr;
+                                        bias_write_count = 1;
+                                        updata_bias_wait_clk = 1;
+                                    end
+                                    
                                 end
                                 else begin
                                     updateBiasDone = 1;
@@ -265,6 +291,10 @@ module pcie_controller(
                                     bias_count = bias_count + 1;
                                 end
                             end 
+                            else begin
+                                bias_write_count = 0;
+                                updata_bias_wait_clk = 0;
+                            end
                         end 
                     end                 
                 POOL1:
@@ -286,6 +316,9 @@ module pcie_controller(
                             weightWriteEn = 0;
                             biasWriteEn = 0;
 
+                            updata_bias_wait_clk = 0;
+                            update_weight_wait_clk = 0;
+
                             $readmemb("conv2_weight.mem", weight_data); 
                             $readmemb("conv2_bias.mem", bias_data);                 
                         end   
@@ -295,15 +328,19 @@ module pcie_controller(
                                     updateWeightDone = 0; 
                                     weightWriteEn = 1;
 
-                                    i = weight_count * `CONV2_KERNERL_MATRIX * `CONV2_FM_DEPTH + weight_depth_count * `CONV2_KERNERL_MATRIX; // the start index of current weight
-                                    writeWeightData = { weight_data[i+24], weight_data[i+23], weight_data[i+22], weight_data[i+21], weight_data[i+20], 
-                                                        weight_data[i+19], weight_data[i+18], weight_data[i+17], weight_data[i+16], weight_data[i+15],
-                                                        weight_data[i+14], weight_data[i+13], weight_data[i+12], weight_data[i+11], weight_data[i+10], 
-                                                        weight_data[i+9],  weight_data[i+8],  weight_data[i+7],  weight_data[i+6],  weight_data[i+5], 
-                                                        weight_data[i+4],  weight_data[i+3],  weight_data[i+2],  weight_data[i+1],  weight_data[i]}; 
-                                 
-                                    weightDataAddr = updateWeightAddr + weight_depth_count * 1;                                           
-                                    weight_depth_count = weight_depth_count + 1;                                
+                                    if(update_weight_wait_clk < `CONV2_FM_DEPTH) begin
+                                        i = weight_count * `CONV2_KERNERL_MATRIX * `CONV2_FM_DEPTH + weight_depth_count * `CONV2_KERNERL_MATRIX; // the start index of current weight
+                                        writeWeightData = { weight_data[i+24], weight_data[i+23], weight_data[i+22], weight_data[i+21], weight_data[i+20], 
+                                                            weight_data[i+19], weight_data[i+18], weight_data[i+17], weight_data[i+16], weight_data[i+15],
+                                                            weight_data[i+14], weight_data[i+13], weight_data[i+12], weight_data[i+11], weight_data[i+10], 
+                                                            weight_data[i+9],  weight_data[i+8],  weight_data[i+7],  weight_data[i+6],  weight_data[i+5], 
+                                                            weight_data[i+4],  weight_data[i+3],  weight_data[i+2],  weight_data[i+1],  weight_data[i]}; 
+                                     
+                                        weightDataAddr = updateWeightAddr + weight_depth_count * 1;                                           
+                                        weight_depth_count = weight_depth_count + 1;
+                                        update_weight_wait_clk = update_weight_wait_clk + 1;
+                                    end
+                                                                    
                                 end
                                 else begin
                                     updateWeightDone = 1;
@@ -313,15 +350,23 @@ module pcie_controller(
                                     weight_count = weight_count + 1;
                                 end
                             end
+                            else begin
+                                weight_depth_count = 0;
+                                update_weight_wait_clk = 0;
+                            end
                         
                             if(updateBias == 1 && bias_count < `CONV2_KERNERL_NUMBER) begin
                                 if(bias_write_count < 1) begin
                                     updateBiasDone =  0;
                                     biasWriteEn = 1;
 
-                                    writeBiasData = bias_data[bias_count];
-                                    biasDataAddr = updateBiasAddr;
-                                    bias_write_count = 1;
+                                    if(updata_bias_wait_clk == 0) begin
+                                        writeBiasData = bias_data[bias_count];
+                                        biasDataAddr = updateBiasAddr;
+                                        bias_write_count = 1;
+                                        updata_bias_wait_clk = 1;
+                                    end
+                                    
                                 end
                                 else begin
                                     updateBiasDone = 1;
@@ -330,6 +375,10 @@ module pcie_controller(
                                     bias_write_count = 0;
                                     bias_count = bias_count + 1;
                                 end
+                            end
+                            else begin
+                                bias_write_count = 0;
+                                updata_bias_wait_clk = 0; 
                             end 
                         end               
                     end 
@@ -348,9 +397,12 @@ module pcie_controller(
 
                             updateWeightDone = 0;   
                             updateBiasDone = 0;
-
+                            
                             weightWriteEn = 0;
                             biasWriteEn = 0;
+
+                            updata_bias_wait_clk = 0;
+                            update_weight_wait_clk = 0;
 
                             $readmemb("conv3_weight.mem", weight_data); 
                             $readmemb("conv3_bias.mem", bias_data);                  
@@ -361,13 +413,17 @@ module pcie_controller(
                                     updateWeightDone = 0; 
                                     weightWriteEn = 1;
 
-                                    i = weight_count * `CONV3_KERNERL_MATRIX * `CONV3_FM_DEPTH + weight_depth_count * `CONV3_KERNERL_MATRIX; // the start index of current weight
-                                    writeWeightData = { weight_data[i+8], weight_data[i+7], weight_data[i+6],  
-                                                        weight_data[i+5], weight_data[i+4], weight_data[i+3],  
-                                                        weight_data[i+2], weight_data[i+1], weight_data[i]}; 
-                                 
-                                    weightDataAddr = updateWeightAddr + weight_depth_count * 1;                                           
-                                    weight_depth_count = weight_depth_count + 1;                                
+                                    if(update_weight_wait_clk < `CONV3_FM_DEPTH) begin
+                                        i = weight_count * `CONV3_KERNERL_MATRIX * `CONV3_FM_DEPTH + weight_depth_count * `CONV3_KERNERL_MATRIX; // the start index of current weight
+                                        writeWeightData = { weight_data[i+8], weight_data[i+7], weight_data[i+6],  
+                                                            weight_data[i+5], weight_data[i+4], weight_data[i+3],  
+                                                            weight_data[i+2], weight_data[i+1], weight_data[i]}; 
+                                     
+                                        weightDataAddr = updateWeightAddr + weight_depth_count * 1;                                           
+                                        weight_depth_count = weight_depth_count + 1; 
+                                        update_weight_wait_clk = update_weight_wait_clk + 1;
+                                    end
+                                                                   
                                 end
                                 else begin
                                     updateWeightDone = 1;
@@ -377,15 +433,23 @@ module pcie_controller(
                                     weight_count = weight_count + 1;
                                 end
                             end
+                            else begin
+                                weight_depth_count = 0;
+                                update_weight_wait_clk = 0;
+                            end
                         
                             if(updateBias == 1 && bias_count < `CONV3_KERNERL_NUMBER) begin
                                 if(bias_write_count < 1) begin
                                     updateBiasDone =  0;
                                     biasWriteEn = 1;
 
-                                    writeBiasData = bias_data[bias_count];
-                                    biasDataAddr = updateBiasAddr;
-                                    bias_write_count = 1;
+                                    if(updata_bias_wait_clk == 0) begin
+                                        writeBiasData = bias_data[bias_count];
+                                        biasDataAddr = updateBiasAddr;
+                                        bias_write_count = 1;
+                                        updata_bias_wait_clk = 1;
+                                    end
+
                                 end
                                 else begin
                                     updateBiasDone = 1;
@@ -395,6 +459,10 @@ module pcie_controller(
                                     bias_count = bias_count + 1;
                                 end
                             end   
+                            else begin
+                                bias_write_count = 0;
+                                updata_bias_wait_clk = 0; 
+                            end 
                         end                
                     end 
                 CONV4:
@@ -404,14 +472,17 @@ module pcie_controller(
                             bias_write_count = 0;
                             bias_count = 0;
                             weight_count = 0;
-                            currentLayer = runLayer; 
+                            currentLayer = runLayer;
 
                             updateWeightDone = 0;   
                             updateBiasDone = 0;
-
+                            
                             weightWriteEn = 0;
-                            biasWriteEn = 0;  
- 
+                            biasWriteEn = 0;
+
+                            updata_bias_wait_clk = 0;
+                            update_weight_wait_clk = 0;
+
                             $readmemb("conv4_weight.mem", weight_data); 
                             $readmemb("conv4_bias.mem", bias_data);               
                         end 
@@ -421,13 +492,17 @@ module pcie_controller(
                                     updateWeightDone = 0; 
                                     weightWriteEn = 1;
 
-                                    i = weight_count * `CONV4_KERNERL_MATRIX * `CONV4_FM_DEPTH + weight_depth_count * `CONV4_KERNERL_MATRIX; // the start index of current weight
-                                    writeWeightData = { weight_data[i+8], weight_data[i+7], weight_data[i+6],  
-                                                        weight_data[i+5], weight_data[i+4], weight_data[i+3],  
-                                                        weight_data[i+2], weight_data[i+1], weight_data[i]}; 
-                                 
-                                    weightDataAddr = updateWeightAddr + weight_depth_count * 1;                                           
-                                    weight_depth_count = weight_depth_count + 1;                                
+                                    if(update_weight_wait_clk < `CONV4_FM_DEPTH) begin
+                                        i = weight_count * `CONV4_KERNERL_MATRIX * `CONV4_FM_DEPTH + weight_depth_count * `CONV4_KERNERL_MATRIX; // the start index of current weight
+                                        writeWeightData = { weight_data[i+8], weight_data[i+7], weight_data[i+6],  
+                                                            weight_data[i+5], weight_data[i+4], weight_data[i+3],  
+                                                            weight_data[i+2], weight_data[i+1], weight_data[i]}; 
+                                     
+                                        weightDataAddr = updateWeightAddr + weight_depth_count * 1;                                           
+                                        weight_depth_count = weight_depth_count + 1;  
+                                        update_weight_wait_clk = update_weight_wait_clk + 1;
+                                    end
+                                                                  
                                 end
                                 else begin
                                     updateWeightDone = 1;
@@ -437,15 +512,23 @@ module pcie_controller(
                                     weight_count = weight_count + 1;
                                 end
                             end
+                            else begin
+                                weight_depth_count = 0;
+                                update_weight_wait_clk = 0;
+                            end
                         
                             if(updateBias == 1 && bias_count < `CONV4_KERNERL_NUMBER) begin
                                 if(bias_write_count < 1) begin
                                     updateBiasDone = 0;
                                     biasWriteEn = 1;
 
-                                    writeBiasData = bias_data[bias_count];
-                                    biasDataAddr = updateBiasAddr;
-                                    bias_write_count = 1;
+                                    if(updata_bias_wait_clk == 0) begin
+                                        writeBiasData = bias_data[bias_count];
+                                        biasDataAddr = updateBiasAddr;
+                                        bias_write_count = 1;
+                                        updata_bias_wait_clk = 1;
+                                    end
+
                                 end
                                 else begin
                                     updateBiasDone = 1;
@@ -455,6 +538,10 @@ module pcie_controller(
                                     bias_count = bias_count + 1;
                                 end
                             end
+                            else begin
+                                bias_write_count = 0;
+                                updata_bias_wait_clk = 0; 
+                            end 
                         end                
                     end 
                 CONV5:
@@ -464,13 +551,16 @@ module pcie_controller(
                             bias_write_count = 0;
                             bias_count = 0;
                             weight_count = 0;
-                            currentLayer = runLayer;  
+                            currentLayer = runLayer;
 
                             updateWeightDone = 0;   
                             updateBiasDone = 0;
-                             
+                            
                             weightWriteEn = 0;
                             biasWriteEn = 0;
+
+                            updata_bias_wait_clk = 0;
+                            update_weight_wait_clk = 0;
 
                             $readmemb("conv5_weight.mem", weight_data); 
                             $readmemb("conv5_bias.mem", bias_data);                
@@ -481,13 +571,17 @@ module pcie_controller(
                                     updateWeightDone = 0;
                                     weightWriteEn = 1;
 
-                                    i = weight_count * `CONV5_KERNERL_MATRIX * `CONV5_FM_DEPTH + weight_depth_count * `CONV5_KERNERL_MATRIX; // the start index of current weight
-                                    writeWeightData = { weight_data[i+8], weight_data[i+7], weight_data[i+6],  
-                                                        weight_data[i+5], weight_data[i+4], weight_data[i+3],  
-                                                        weight_data[i+2], weight_data[i+1], weight_data[i]}; 
-                                 
-                                    weightDataAddr = updateWeightAddr + weight_depth_count * 1;                                           
-                                    weight_depth_count = weight_depth_count + 1;                                
+                                    if(update_weight_wait_clk < `CONV5_FM_DEPTH) begin
+                                        i = weight_count * `CONV5_KERNERL_MATRIX * `CONV5_FM_DEPTH + weight_depth_count * `CONV5_KERNERL_MATRIX; // the start index of current weight
+                                        writeWeightData = { weight_data[i+8], weight_data[i+7], weight_data[i+6],  
+                                                            weight_data[i+5], weight_data[i+4], weight_data[i+3],  
+                                                            weight_data[i+2], weight_data[i+1], weight_data[i]}; 
+                                     
+                                        weightDataAddr = updateWeightAddr + weight_depth_count * 1;                                           
+                                        weight_depth_count = weight_depth_count + 1;  
+                                        update_weight_wait_clk = update_weight_wait_clk + 1;
+                                    end
+                                                                  
                                 end
                                 else begin
                                     updateWeightDone = 1;
@@ -497,15 +591,23 @@ module pcie_controller(
                                     weight_count = weight_count + 1;
                                 end
                             end
+                            else begin
+                                weight_depth_count = 0;
+                                update_weight_wait_clk = 0;
+                            end
                         
                             if(updateBias == 1 && bias_count < `CONV5_KERNERL_NUMBER) begin
                                 if(bias_write_count < 1) begin
                                     updateBiasDone = 0;
                                     biasWriteEn = 1;
 
-                                    writeBiasData = bias_data[bias_count];
-                                    biasDataAddr = updateBiasAddr;
-                                    bias_write_count = 1;
+                                    if(updata_bias_wait_clk == 0) begin
+                                        writeBiasData = bias_data[bias_count];
+                                        biasDataAddr = updateBiasAddr;
+                                        bias_write_count = 1;
+                                        updata_bias_wait_clk = 1;
+                                    end
+                                    
                                 end
                                 else begin
                                     updateBiasDone = 1;
@@ -514,6 +616,10 @@ module pcie_controller(
                                     bias_write_count = 0;
                                     bias_count = bias_count + 1;
                                 end
+                            end 
+                            else begin
+                                bias_write_count = 0;
+                                updata_bias_wait_clk = 0; 
                             end 
                         end
                     end 
