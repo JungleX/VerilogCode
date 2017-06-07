@@ -6,12 +6,12 @@
 
 // conv1 test
 `define CONV1_FM             12      // 11 for test
-`define CONV1_FM_DEPTH       1       // 1 for test        
-`define CONV1_FM_DATA_SIZE   144     // 12*12*1 for test    
+`define CONV1_FM_DEPTH       2       // 1 for test        
+`define CONV1_FM_DATA_SIZE   288     // 12*12*2 for test    
 `define CONV1_KERNERL        11    
 `define CONV1_KERNERL_MATRIX 121     // 11*11=121
-`define CONV1_KERNEL_SIZE    121     // 11*11*1*1 for test
-`define CONV1_KERNERL_NUMBER 4       // 3 for test
+`define CONV1_KERNEL_SIZE    242     // 11*11*2*1 for test
+`define CONV1_KERNERL_NUMBER 4       // for test
 `define CONV1_STRIDE         1
 
 // conv1

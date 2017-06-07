@@ -209,7 +209,7 @@ module convolution(
                                     updateBias = 0;
                                 end
 
-                                if((updateWeightDone == 1) && (updateBiasDone == 1)) begin
+                                if((updateWeight == 0) && (updateBias == 0)) begin
                                     update_kernel_clk_count = 0;    
                                 end
                             end
@@ -286,7 +286,7 @@ module convolution(
                                             // read feature map part data
                                             if(get_fm_number < (`CONV1_KERNERL * `CONV1_KERNERL)) begin
                                                 if(layerReadAddr == 524287) // the beginning
-                                                    layerReadAddr = inputLayerStartIndex;
+                                                    layerReadAddr = inputLayerStartIndex + depth_count * `CONV1_FM_DATA_SIZE;
 
                                                 else if(get_fm_number > 0 && ((get_fm_number) % `CONV1_KERNERL) == 0) // go to next line
                                                     layerReadAddr = layerReadAddr + `CONV1_FM - (`CONV1_KERNERL - 1);
@@ -352,7 +352,7 @@ module convolution(
                                                     // next depth address
                                                     // the last -1: when read fm data, it will +1
                                                     if(depth_count < `CONV1_FM_DEPTH) begin
-                                                        layerReadAddr = layerReadAddr + (`CONV1_FM * `CONV1_FM) - ((`CONV1_KERNERL - 1) * `CONV1_FM) - (`CONV1_KERNERL - 1) - 1;
+                                                        layerReadAddr = inputLayerStartIndex + depth_count * `CONV1_FM * `CONV1_FM + fm_x + fm_y * `CONV1_FM - 1;
                                                     end
                                                 end       
                                             end
@@ -371,6 +371,8 @@ module convolution(
                                             end
                                             else if(write_to_layer_ram_count == 1) begin // write data
                                                 writeOutputLayerData = addResult;
+                                                $display("%h\n", writeOutputLayerData); // just for test
+
                                                 conv_temp_result = 0;
                                                 
                                                 addA = 0;
@@ -389,7 +391,7 @@ module convolution(
                                                 // go to next feature map part data
                                                 fm_x = fm_x + `CONV1_STRIDE;
                                                 get_fm_number = 0;
-                                                layerReadAddr = inputLayerStartIndex + fm_x + fm_y * `CONV1_FM - 1;
+                                                layerReadAddr = inputLayerStartIndex + depth_count * `CONV1_FM * `CONV1_FM + fm_x + fm_y * `CONV1_FM - 1;
 
                                                 get_weight_number = 0;
                                                 

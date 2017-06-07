@@ -75,16 +75,16 @@ module pcie_controller(
     reg [15:0] bias_data[0:`CONV4_KERNEL_SIZE - 1]; // get bias from file, max value conv4
     
     reg [17:0] fm_count;            // 18 bits, max value 262144 > 227*227*3=154587, count the feature map data
-    reg [8:0] weight_depth_count;   // 9  bits, amx value 512 > 384 > 256 > 96 > 3*2=6
-    reg [8:0] weight_count;         // 9  bits, amx value 512 > 384 > 256 > 96
+    reg [8:0] weight_depth_count;   // 9  bits, max value 512 > 384 > 256 > 96 > 3*2=6
+    reg [8:0] weight_count;         // 9  bits, max value 512 > 384 > 256 > 96
     reg bias_write_count;
-    reg [8:0] bias_count;           // 9  bits, amx value 512 > 384 > 256 > 96
+    reg [8:0] bias_count;           // 9  bits, max value 512 > 384 > 256 > 96
 
     reg pcDataReady;                // 1:ready; todo set it according to connectPC
     
     reg [9:0] i;                    // 10 bits, max value 1024
 
-    reg update_weight_wait_clk;
+    reg [8:0] update_weight_wait_clk; // 9  bits, max value 512 > 384
     reg updata_bias_wait_clk;
 
     always @(posedge clk or posedge pcieRst) begin
