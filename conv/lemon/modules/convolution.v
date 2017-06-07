@@ -288,7 +288,7 @@ module convolution(
                                                 if(layerReadAddr == 524287) // the beginning
                                                     layerReadAddr = inputLayerStartIndex;
 
-                                                else if(((get_fm_number) % `CONV1_KERNERL) == 0) // go to next line
+                                                else if(get_fm_number > 0 && ((get_fm_number) % `CONV1_KERNERL) == 0) // go to next line
                                                     layerReadAddr = layerReadAddr + `CONV1_FM - (`CONV1_KERNERL - 1);
                                                 else
                                                     layerReadAddr = layerReadAddr + 1;
@@ -349,9 +349,11 @@ module convolution(
                                                     weight_line_count = 0;
                                                     mul_clk_count = 0;
 
-                                                    // address
+                                                    // next depth address
                                                     // the last -1: when read fm data, it will +1
-                                                    layerReadAddr = layerReadAddr + (`CONV1_FM * `CONV1_FM) - ((`CONV1_KERNERL - 1) * `CONV1_FM) - (`CONV1_KERNERL - 1) - 1; 
+                                                    if(depth_count < `CONV1_FM_DEPTH) begin
+                                                        layerReadAddr = layerReadAddr + (`CONV1_FM * `CONV1_FM) - ((`CONV1_KERNERL - 1) * `CONV1_FM) - (`CONV1_KERNERL - 1) - 1;
+                                                    end
                                                 end       
                                             end
                                         end
@@ -402,8 +404,6 @@ module convolution(
                                         end
                                     end
                                     else begin // go to next fm matrix line
-                                        layerReadAddr = inputLayerStartIndex + fm_x + fm_y * `CONV1_FM - 1;
-
                                         if(current_weight == 0 || current_weight == 1) begin
                                             current_weight = 0;
                                         end
@@ -416,6 +416,7 @@ module convolution(
 
                                         fm_x = 0;
                                         fm_y = fm_y + `CONV1_STRIDE;
+                                        layerReadAddr = inputLayerStartIndex + fm_x + fm_y * `CONV1_FM - 1;
 
                                         get_weight_number = 0;
                                         get_fm_number = 0;
