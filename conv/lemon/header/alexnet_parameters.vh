@@ -3,6 +3,8 @@
 `define CONV_MAX             11     
 `define CONV_MAX_LINE_SIZE   176     // 11*16=176
 `define KERNEL_MAX_DEPTH     384
+`define POOL_SIZE            144     // 16*9=144
+`define COMPARE_RESULT_WIDTH 7
 
 // conv1 test
 `define CONV1_FM             12      // 11 for test
@@ -27,7 +29,9 @@
 // pool1
 `define POOL1_FM             55
 `define POOL1_DEPTH          96
-`define POOL1_WINDOW         3      // 3*3
+`define POOL1_FM_DATA        3025 //55*55
+`define POOL1_WINDOW         3      
+`define POOL1_WINDOW_SIZE    9      // 3*3
 `define POOL1_STRIDE         2
 
 // conv2

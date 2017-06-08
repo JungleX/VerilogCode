@@ -30,8 +30,8 @@ module alexnet_tb();
     wire pcieDataReady;
     
     wire convStatus;
-    reg poolStatus;
-    reg fcStatus;
+    wire poolStatus;
+    wire fcStatus;
 
     wire[3:0] runLayer;
     wire pcieLayerCmd;
@@ -45,7 +45,6 @@ module alexnet_tb();
     wire poolRst;
     wire fcRst;
     
-
     wire updateBias;
     wire updateBiasAddr;
     wire updateWeight;
@@ -80,6 +79,9 @@ module alexnet_tb();
     wire [15:0] writeOutputLayerData;
     wire [18:0] writeOutputLayerAddr;
 
+    wire [15:0] writeLayerRAMData;
+    wire [18:0] writeLayerRAMAddr;
+
     wire multRst;
     wire multEna;
     wire [15:0] multResult;
@@ -93,6 +95,11 @@ module alexnet_tb();
     wire [15:0] addA;
     wire [15:0] addB;
     wire [15:0] addResult;
+
+    wire maxpoolRst;
+    wire maxpoolEna;
+    wire [`POOL_SIZE - 1:0] maxpoolIn;
+    wire [15:0] maxpoolOut;
 
 //    reg layerReadEnTest;
 //    reg weightReadEnTest;
@@ -122,6 +129,21 @@ module alexnet_tb();
         .convRst(convRst),     
         .poolRst(poolRst),      
         .fcRst(fcRst)          
+    );
+
+    layer_ram_write_switch layerRamSwitch(
+        .runLayer(runLayer), 
+
+        // pcie, write at IDLE
+        .writeLayerData(writeLayerData),
+        .writeLayerAddr(writeLayerAddr),
+
+        // conv, pool and fc, write at CONV, POOL, FC
+        .writeOutputLayerData(writeOutputLayerData),
+        .writeOutputLayerAddr(writeOutputLayerAddr),
+
+        .writeLayerRAMData(writeLayerRAMData),
+        .writeLayerRAMAddr(writeLayerRAMAddr)
     );
 
     pcie_controller pcieController(
@@ -160,9 +182,9 @@ module alexnet_tb();
     );
 
     layer_ram layerRam(
-        .addra(writeLayerAddr),
+        .addra(writeLayerRAMAddr),
         .clka(clk),
-        .dina(writeLayerData),
+        .dina(writeLayerRAMData),
         .ena(layerWriteEn),
         .wea(wea),
         
@@ -201,9 +223,11 @@ module alexnet_tb();
 //        .enb(biasReadEnTest)  // just for test   
     );
 
-    convolution conv(
+    convolution conv_op(
         .clk(clk),
         .convRst(convRst),
+        .poolRst(poolRst),
+        .fcRst(fcRst),
 
         .runLayer(runLayer),                
 
@@ -215,12 +239,15 @@ module alexnet_tb();
         .addResult(addResult),
 
         .multResult(multResult),
+        .maxpoolOut(maxpoolOut),
 
         .updateBiasDone(updateBiasDone),
         .updateWeightDone(updateWeightDone),
 
         .multData(multData),
         .multWeight(multWeight),
+
+        .maxpoolIn(maxpoolIn),
 
         .addAValid(),
         .addBValid(),
@@ -242,9 +269,14 @@ module alexnet_tb();
         .updateWeightAddr(updateWeightAddr),
 
         .convStatus(convStatus),
+        .poolStatus(poolStatus),
+        .fcStatus(fcStatus),
 
         .multRst(multRst),
-        .multEna(multEna)
+        .multEna(multEna),
+
+        .maxpoolRst(maxpoolRst),
+        .maxpoolEna(maxpoolEna)
     );
 
     multX11 mult(
@@ -269,7 +301,14 @@ module alexnet_tb();
         .m_axis_result_tdata(addResult)
         );
 
-    integer reading_size = 0;
+    max_pool maxPool(
+        .clk(clk),
+        .ena(maxpoolEna),
+        .reset(maxpoolRst),
+        
+        .in_vector(maxpoolIn),
+        .pool_out(maxpoolOut)
+    );
 
     initial 
         clk = 1'b0;

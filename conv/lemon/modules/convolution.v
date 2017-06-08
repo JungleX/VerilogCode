@@ -25,6 +25,8 @@
 module convolution(
 	input clk,
 	input convRst,
+    input poolRst,
+    input fcRst,
 
 	input [3:0] runLayer,                // which layer to run
 
@@ -36,12 +38,15 @@ module convolution(
     input [15:0] addResult,
 
     input [15:0] multResult,
+    input [15:0] maxpoolOut,
 
     input updateBiasDone,
     input updateWeightDone,
 
     output reg [`CONV_MAX_LINE_SIZE - 1:0] multData,
     output reg [`CONV_MAX_LINE_SIZE - 1:0] multWeight,
+
+    output reg [`POOL_SIZE - 1:0] maxpoolIn,// todo
 
     output reg addAValid,
     output reg addBValid,
@@ -63,9 +68,14 @@ module convolution(
     output reg [9:0] updateWeightAddr,
 
    	output reg convStatus,               // conv status, 0:idle or running; 1:done, done means the conv finish and output data is ready
+    output reg poolStatus,               // pool status, 0:idle or running; 1:done, done means the pool finish and output data is ready
+    output reg fcStatus,                 // fc status,   0:idle or running; 1:done, done means the pool finish and output data is ready
 
     output reg multRst,
-    output reg multEna
+    output reg multEna,
+
+    output reg maxpoolRst,
+    output reg maxpoolEna
     );
 
     parameter   IDLE  = 4'd0,
@@ -96,7 +106,6 @@ module convolution(
     reg [1:0] get_bias_number;         // count the bias number, get only one bias each time
     reg [11:0] get_fm_number;    // max value 3*3*384=3456 < 4096=2^12, count the fm matrix number
 
-//    reg [`WEIGHT_RAM_WIDTH - 1:0] weight; // 11*11*16=1936
     reg [15:0] bias;
     reg [15:0] fm[120:0];        // 11*11=121 max value
 
@@ -115,6 +124,9 @@ module convolution(
     always @(posedge clk or posedge convRst) begin
         if(!convRst) begin // reset
             convStatus = 0;
+            poolStatus = 0;
+            fcStatus = 0;
+
             currentLayer = IDLE;
 
             layerReadAddr = 524287; // 2^19 max value
@@ -146,7 +158,6 @@ module convolution(
 
             multEna = 1;
             multRst = 0;
-            // todo more 
         end
     end
 
@@ -465,7 +476,76 @@ module convolution(
                     end
                 POOL1:
                     begin
-                        currentLayer = runLayer;
+                        if(currentLayer != runLayer) begin // initial
+                            poolStatus = 0;
+                            currentLayer = runLayer;
+
+                            inputLayerStartIndex = `LAYER_RAM_START_INDEX_1;
+                            outputLayerStartIndex = `LAYER_RAM_START_INDEX_0;
+                            layerReadAddr = 524287; // 2^19 max value
+
+                            depth_count = 0;
+
+                            fm_x = 0;
+                            fm_y = 0;
+
+                            // load data
+                            get_fm_number = 0;
+
+                            writeOutputLayerData = 0;
+                            writeOutputLayerAddr = 524287; // 2^19 max value
+
+                            maxpoolEna = 1;
+                            maxpoolRst = 0;
+                        end
+                        else begin
+                            maxpoolEna = 1;
+                            maxpoolRst = 1;
+
+                            // just for test, read the layer data
+//                            if(get_fm_number < 17) begin
+//                                if(layerReadAddr == 524287) begin// the beginning
+//                                    layerReadAddr = inputLayerStartIndex;
+//                                end
+//                                else begin
+//                                    layerReadAddr = layerReadAddr + 1;
+//                                end
+//                            end
+                            // end of test
+
+                            if(depth_count < `POOL1_DEPTH) begin 
+                                // read feature map part data
+                                if(get_fm_number < `POOL1_WINDOW_SIZE) begin
+                                    if(layerReadAddr == 524287) begin// the beginning
+                                        layerReadAddr = inputLayerStartIndex + depth_count * `POOL1_FM_DATA;
+                                    end
+                                    else if(get_fm_number > 0 && ((get_fm_number) % `POOL1_WINDOW) == 0) // go to next line
+                                        layerReadAddr = layerReadAddr + `POOL1_FM - (`POOL1_WINDOW - 1);
+                                    else
+                                        layerReadAddr = layerReadAddr + 1;
+
+                                    get_fm_number = get_fm_number + 1;
+
+                                    if (get_fm_number >= 4) begin
+                                        fm[get_fm_number - 4] = readFM;
+                                    end
+
+                                end
+                                else if(get_fm_number < (`POOL1_WINDOW_SIZE + 3)) begin
+                                    get_fm_number = get_fm_number + 1;
+                                    fm[get_fm_number - 4] = readFM;
+                                end
+
+                                if(get_fm_number == (`POOL1_WINDOW_SIZE + 3)) begin
+
+                                    // todo
+                                end
+
+                            end
+                            else begin
+                                poolStatus = 1;
+                            end
+                        end
                     end 
                 CONV2:
                     begin
@@ -1671,12 +1751,15 @@ module convolution(
                     end
                 FC6:
                     begin
+                        currentLayer = runLayer;
                     end 
                 FC7:
                     begin
+                        currentLayer = runLayer;
                     end 
                 FC8:
                     begin
+                        currentLayer = runLayer;
                     end     
             endcase
         end

@@ -20,33 +20,34 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "cnn_parameters.vh"
+
+`include "alexnet_parameters.vh"
 
 module max_pool(
     input clk,
     input ena,
     input reset,
-    input [`NH_VECTOR_WIDTH - 1:0] in_vector,
-    output [`POOL_OUT_WIDTH - 1:0] pool_out
+    input [`POOL_SIZE - 1:0] in_vector,
+    output reg [`DATA_WIDTH - 1:0] pool_out
     );
-    reg [`POOL_OUT_WIDTH - 1:0] pool_out;
+    //reg [`DATA_WIDTH - 1:0] pool_out;
     
     reg com_a_valid;
     reg com_b_valid;
     
-    reg [`NH_VECTOR_WIDTH - 1:0] nh_vector;
+    reg [`POOL_SIZE - 1:0] nh_vector;
     
-    reg [`NN_WIDTH - 1:0] com_num_0;
-    reg [`NN_WIDTH - 1:0] com_num_1;
-    reg [`NN_WIDTH - 1:0] com_num_2;
-    reg [`NN_WIDTH - 1:0] com_num_3;
+    reg [`DATA_WIDTH - 1:0] com_num_0;
+    reg [`DATA_WIDTH - 1:0] com_num_1;
+    reg [`DATA_WIDTH - 1:0] com_num_2;
+    reg [`DATA_WIDTH - 1:0] com_num_3;
     
-    reg [`NN_WIDTH - 1:0] com_num_4;
-    reg [`NN_WIDTH - 1:0] com_num_5;
+    reg [`DATA_WIDTH - 1:0] com_num_4;
+    reg [`DATA_WIDTH - 1:0] com_num_5;
     
-    reg [`NN_WIDTH - 1:0] com_num_6;
+    reg [`DATA_WIDTH - 1:0] com_num_6;
     
-    reg [`NN_WIDTH - 1:0] com_num_7;
+    reg [`DATA_WIDTH - 1:0] com_num_7;
     
     wire [`COMPARE_RESULT_WIDTH - 1:0] adder_tree_wire0;
     wire [`COMPARE_RESULT_WIDTH - 1:0] adder_tree_wire1;
@@ -62,36 +63,36 @@ module max_pool(
     
     floating_point_compare fpc0(
      .s_axis_a_tvalid(com_a_valid),
-     .s_axis_a_tdata(nh_vector[`NN_WIDTH - 1:0]),
+     .s_axis_a_tdata(nh_vector[`DATA_WIDTH - 1:0]),
      .s_axis_b_tvalid(com_b_valid),
-     .s_axis_b_tdata(nh_vector[`NN_WIDTH*2-1:`NN_WIDTH]),
+     .s_axis_b_tdata(nh_vector[`DATA_WIDTH*2-1:`DATA_WIDTH]),
      .m_axis_result_tvalid(com_re_valid),
      .m_axis_result_tdata(adder_tree_wire0)
     );
   
     floating_point_compare fpc1(
         .s_axis_a_tvalid(com_a_valid),
-        .s_axis_a_tdata(nh_vector[`NN_WIDTH*3 - 1:`NN_WIDTH*2] ),
+        .s_axis_a_tdata(nh_vector[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] ),
         .s_axis_b_tvalid(com_b_valid),
-        .s_axis_b_tdata(nh_vector[`NN_WIDTH*4 - 1:`NN_WIDTH*3]),
+        .s_axis_b_tdata(nh_vector[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]),
         .m_axis_result_tvalid(com_re_valid),
         .m_axis_result_tdata(adder_tree_wire1)
     );  
 
     floating_point_compare fpc2(
         .s_axis_a_tvalid(com_a_valid),
-        .s_axis_a_tdata(nh_vector[`NN_WIDTH*5 - 1:`NN_WIDTH*4]),
+        .s_axis_a_tdata(nh_vector[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]),
         .s_axis_b_tvalid(com_b_valid),
-        .s_axis_b_tdata(nh_vector[`NN_WIDTH*6 - 1:`NN_WIDTH*5]),
+        .s_axis_b_tdata(nh_vector[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]),
         .m_axis_result_tvalid(com_re_valid),
         .m_axis_result_tdata(adder_tree_wire2)
     ); 
  
      floating_point_compare fpc3(
         .s_axis_a_tvalid(com_a_valid),
-        .s_axis_a_tdata(nh_vector[`NN_WIDTH*7 - 1:`NN_WIDTH*6]),
+        .s_axis_a_tdata(nh_vector[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]),
         .s_axis_b_tvalid(com_b_valid),
-        .s_axis_b_tdata(nh_vector[`NN_WIDTH*8 - 1:`NN_WIDTH*7]),
+        .s_axis_b_tdata(nh_vector[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]),
         .m_axis_result_tvalid(com_re_valid),
         .m_axis_result_tdata(adder_tree_wire3)
     ); 
@@ -127,7 +128,7 @@ module max_pool(
            .s_axis_a_tvalid(com_a_valid),
            .s_axis_a_tdata(com_num_6),
            .s_axis_b_tvalid(com_b_valid),
-           .s_axis_b_tdata(nh_vector[`NN_WIDTH*9-1:`NN_WIDTH*8]),
+           .s_axis_b_tdata(nh_vector[`DATA_WIDTH*9-1:`DATA_WIDTH*8]),
            .m_axis_result_tvalid(com_re_valid),
            .m_axis_result_tdata(adder_tree_wire7)
     );
@@ -164,13 +165,13 @@ module max_pool(
                 com_b_valid <= 1;
                            
                 // clk 1
-                nh_vector <= in_vector[`NH_VECTOR_WIDTH - 1:0];
+                nh_vector <= in_vector[`POOL_SIZE - 1:0];
                 
                 // clk 2
-                com_num_0 <= adder_tree_wire0[0] == 1 ? nh_vector[`NN_WIDTH - 1:0]             : nh_vector[`NN_WIDTH*2-1:`NN_WIDTH];
-                com_num_1 <= adder_tree_wire1[0] == 1 ? nh_vector[`NN_WIDTH*3 - 1:`NN_WIDTH*2] : nh_vector[`NN_WIDTH*4 - 1:`NN_WIDTH*3];
-                com_num_2 <= adder_tree_wire2[0] == 1 ? nh_vector[`NN_WIDTH*5 - 1:`NN_WIDTH*4] : nh_vector[`NN_WIDTH*6 - 1:`NN_WIDTH*5];
-                com_num_3 <= adder_tree_wire3[0] == 1 ? nh_vector[`NN_WIDTH*7 - 1:`NN_WIDTH*6] : nh_vector[`NN_WIDTH*8 - 1:`NN_WIDTH*7];
+                com_num_0 <= adder_tree_wire0[0] == 1 ? nh_vector[`DATA_WIDTH - 1:0]             : nh_vector[`DATA_WIDTH*2-1:`DATA_WIDTH];
+                com_num_1 <= adder_tree_wire1[0] == 1 ? nh_vector[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] : nh_vector[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3];
+                com_num_2 <= adder_tree_wire2[0] == 1 ? nh_vector[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] : nh_vector[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5];
+                com_num_3 <= adder_tree_wire3[0] == 1 ? nh_vector[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] : nh_vector[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7];
                 
                 // clk 3
                 com_num_4 <= adder_tree_wire4[0] == 1 ? com_num_0 : com_num_1;
@@ -180,21 +181,21 @@ module max_pool(
                 com_num_6 <= adder_tree_wire6[0] == 1 ? com_num_4 : com_num_5;
                 
                 // clk 5
-                com_num_7 <= adder_tree_wire7[0] == 1 ? com_num_6 : nh_vector[`NN_WIDTH*9-1:`NN_WIDTH*8];
+                com_num_7 <= adder_tree_wire7[0] == 1 ? com_num_6 : nh_vector[`DATA_WIDTH*9-1:`DATA_WIDTH*8];
            end
     end
     
     // integer compare        
-//    assign adder_tree_wire0 = (nh_vector[`NN_WIDTH - 1:0] >= nh_vector[`NN_WIDTH*2-1:`NN_WIDTH])?nh_vector[`NN_WIDTH - 1:0]:nh_vector[`NN_WIDTH*2-1:`NN_WIDTH];
-//    assign adder_tree_wire1 = (nh_vector[`NN_WIDTH*3 - 1:`NN_WIDTH*2] >= nh_vector[`NN_WIDTH*4 - 1:`NN_WIDTH*3])?nh_vector[`NN_WIDTH*3 - 1:`NN_WIDTH*2]:nh_vector[`NN_WIDTH*4 - 1:`NN_WIDTH*3];
-//    assign adder_tree_wire2 = (nh_vector[`NN_WIDTH*5 - 1:`NN_WIDTH*4] >= nh_vector[`NN_WIDTH*6 - 1:`NN_WIDTH*5])?nh_vector[`NN_WIDTH*5 - 1:`NN_WIDTH*4]:nh_vector[`NN_WIDTH*6 - 1:`NN_WIDTH*5];
-//    assign adder_tree_wire3 = (nh_vector[`NN_WIDTH*7 - 1:`NN_WIDTH*6] >= nh_vector[`NN_WIDTH*8 - 1:`NN_WIDTH*7])?nh_vector[`NN_WIDTH*7 - 1:`NN_WIDTH*6]:nh_vector[`NN_WIDTH*8 - 1:`NN_WIDTH*7];
+//    assign adder_tree_wire0 = (nh_vector[`DATA_WIDTH - 1:0] >= nh_vector[`DATA_WIDTH*2-1:`DATA_WIDTH])?nh_vector[`DATA_WIDTH - 1:0]:nh_vector[`DATA_WIDTH*2-1:`DATA_WIDTH];
+//    assign adder_tree_wire1 = (nh_vector[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] >= nh_vector[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3])?nh_vector[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]:nh_vector[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3];
+//    assign adder_tree_wire2 = (nh_vector[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] >= nh_vector[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5])?nh_vector[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]:nh_vector[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5];
+//    assign adder_tree_wire3 = (nh_vector[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] >= nh_vector[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7])?nh_vector[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]:nh_vector[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7];
     
 //    assign adder_tree_wire4 = (adder_tree_wire0 >= adder_tree_wire1)?adder_tree_wire0:adder_tree_wire1;
 //    assign adder_tree_wire5 = (adder_tree_wire2 >= adder_tree_wire3)?adder_tree_wire2:adder_tree_wire3;
     
 //    assign adder_tree_wire6 = (adder_tree_wire4 >= adder_tree_wire5)?adder_tree_wire4:adder_tree_wire5;
              
-//    assign pool_out = (adder_tree_wire6 >= nh_vector[`NN_WIDTH*9-1:`NN_WIDTH*8])?adder_tree_wire6:nh_vector[`NN_WIDTH*9-1:`NN_WIDTH*8];
+//    assign pool_out = (adder_tree_wire6 >= nh_vector[`DATA_WIDTH*9-1:`DATA_WIDTH*8])?adder_tree_wire6:nh_vector[`DATA_WIDTH*9-1:`DATA_WIDTH*8];
     
 endmodule

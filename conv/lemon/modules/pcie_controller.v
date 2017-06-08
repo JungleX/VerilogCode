@@ -227,6 +227,7 @@ module pcie_controller(
                             
                             weightWriteEn = 0;
                             biasWriteEn = 0;
+                            layerWriteEn = 1;
 
                             update_weight_wait_clk = 0;
                             updata_bias_wait_clk = 0;
@@ -300,6 +301,7 @@ module pcie_controller(
                 POOL1:
                     begin
                         currentLayer = runLayer;
+                        layerWriteEn = 1;
                     end   
                 CONV2:
                     begin
@@ -315,6 +317,7 @@ module pcie_controller(
                             
                             weightWriteEn = 0;
                             biasWriteEn = 0;
+                            layerWriteEn = 1;
 
                             updata_bias_wait_clk = 0;
                             update_weight_wait_clk = 0;
@@ -385,6 +388,7 @@ module pcie_controller(
                 POOL2:
                     begin
                         currentLayer = runLayer;
+                        layerWriteEn = 1;
                     end 
                 CONV3:
                     begin
@@ -400,6 +404,7 @@ module pcie_controller(
                             
                             weightWriteEn = 0;
                             biasWriteEn = 0;
+                            layerWriteEn = 1;
 
                             updata_bias_wait_clk = 0;
                             update_weight_wait_clk = 0;
@@ -479,6 +484,7 @@ module pcie_controller(
                             
                             weightWriteEn = 0;
                             biasWriteEn = 0;
+                            layerWriteEn = 1;
 
                             updata_bias_wait_clk = 0;
                             update_weight_wait_clk = 0;
@@ -558,6 +564,7 @@ module pcie_controller(
                             
                             weightWriteEn = 0;
                             biasWriteEn = 0;
+                            layerWriteEn = 1;
 
                             updata_bias_wait_clk = 0;
                             update_weight_wait_clk = 0;
@@ -626,15 +633,22 @@ module pcie_controller(
                 POOL5:
                     begin
                         currentLayer = runLayer;
+                        layerWriteEn = 1;
                     end 
                 FC6:
                     begin
+                        currentLayer = runLayer;
+                        layerWriteEn = 1;
                     end 
                 FC7:
                     begin
+                        currentLayer = runLayer;
+                        layerWriteEn = 1;
                     end 
                 FC8:
                     begin
+                        currentLayer = runLayer;
+                        layerWriteEn = 1;
                     end     
             endcase
         end
