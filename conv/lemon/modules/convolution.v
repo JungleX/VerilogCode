@@ -288,7 +288,7 @@ module convolution(
                                             // read feature map part data
                                             if(get_fm_number < (`CONV1_KERNERL * `CONV1_KERNERL)) begin
                                                 if(layerReadAddr == 524287) // the beginning
-                                                    layerReadAddr = inputLayerStartIndex + depth_count * `CONV1_FM_DATA_SIZE;
+                                                    layerReadAddr = inputLayerStartIndex;
 
                                                 else if(get_fm_number > 0 && ((get_fm_number) % `CONV1_KERNERL) == 0) // go to next line
                                                     layerReadAddr = layerReadAddr + `CONV1_FM - (`CONV1_KERNERL - 1);
@@ -392,7 +392,7 @@ module convolution(
                                                 // go to next feature map part data
                                                 fm_x = fm_x + `CONV1_STRIDE;
                                                 get_fm_number = 0;
-                                                layerReadAddr = inputLayerStartIndex + depth_count * `CONV1_FM * `CONV1_FM + fm_x + fm_y * `CONV1_FM - 1;
+                                                layerReadAddr = inputLayerStartIndex + fm_x + fm_y * `CONV1_FM - 1;
 
                                                 get_weight_number = 0;
                                                 
@@ -503,48 +503,48 @@ module convolution(
                             maxpoolRst = 1;
 
                             // just for test, read the layer data
-//                            if(get_fm_number < 17) begin
-//                                if(layerReadAddr == 524287) begin// the beginning
-//                                    layerReadAddr = inputLayerStartIndex;
-//                                end
-//                                else begin
-//                                    layerReadAddr = layerReadAddr + 1;
-//                                end
-//                            end
+                            if(get_fm_number < 17) begin
+                                if(layerReadAddr == 524287) begin// the beginning
+                                    layerReadAddr = inputLayerStartIndex;
+                                end
+                                else begin
+                                    layerReadAddr = layerReadAddr + 1;
+                                end
+                            end
                             // end of test
 
-                            if(depth_count < `POOL1_DEPTH) begin 
-                                // read feature map part data
-                                if(get_fm_number < `POOL1_WINDOW_SIZE) begin
-                                    if(layerReadAddr == 524287) begin// the beginning
-                                        layerReadAddr = inputLayerStartIndex + depth_count * `POOL1_FM_DATA;
-                                    end
-                                    else if(get_fm_number > 0 && ((get_fm_number) % `POOL1_WINDOW) == 0) // go to next line
-                                        layerReadAddr = layerReadAddr + `POOL1_FM - (`POOL1_WINDOW - 1);
-                                    else
-                                        layerReadAddr = layerReadAddr + 1;
+//                            if(depth_count < `POOL1_DEPTH) begin 
+//                                // read feature map part data
+//                                if(get_fm_number < `POOL1_WINDOW_SIZE) begin
+//                                    if(layerReadAddr == 524287) begin// the beginning
+//                                        layerReadAddr = inputLayerStartIndex + depth_count * `POOL1_FM_DATA;
+//                                    end
+//                                    else if(get_fm_number > 0 && ((get_fm_number) % `POOL1_WINDOW) == 0) // go to next line
+//                                        layerReadAddr = layerReadAddr + `POOL1_FM - (`POOL1_WINDOW - 1);
+//                                    else
+//                                        layerReadAddr = layerReadAddr + 1;
 
-                                    get_fm_number = get_fm_number + 1;
+//                                    get_fm_number = get_fm_number + 1;
 
-                                    if (get_fm_number >= 4) begin
-                                        fm[get_fm_number - 4] = readFM;
-                                    end
+//                                    if (get_fm_number >= 4) begin
+//                                        fm[get_fm_number - 4] = readFM;
+//                                    end
 
-                                end
-                                else if(get_fm_number < (`POOL1_WINDOW_SIZE + 3)) begin
-                                    get_fm_number = get_fm_number + 1;
-                                    fm[get_fm_number - 4] = readFM;
-                                end
+//                                end
+//                                else if(get_fm_number < (`POOL1_WINDOW_SIZE + 3)) begin
+//                                    get_fm_number = get_fm_number + 1;
+//                                    fm[get_fm_number - 4] = readFM;
+//                                end
 
-                                if(get_fm_number == (`POOL1_WINDOW_SIZE + 3)) begin
+//                                if(get_fm_number == (`POOL1_WINDOW_SIZE + 3)) begin
 
-                                    // todo
-                                end
+//                                    // todo
+//                                end
 
-                            end
-                            else begin
-                                poolStatus = 1;
-                            end
+//                            end
+//                            else begin
+//                                poolStatus = 1;
+//                            end
                         end
                     end 
                 CONV2:
@@ -661,7 +661,7 @@ module convolution(
                                             // read feature map part data
                                             if(get_fm_number < (`CONV2_KERNERL * `CONV2_KERNERL)) begin
                                                 if(layerReadAddr == 524287) // the beginning
-                                                    layerReadAddr = inputLayerStartIndex + depth_count * `CONV2_FM_DATA_SIZE;
+                                                    layerReadAddr = inputLayerStartIndex;
 
                                                 else if(get_fm_number > 0 && ((get_fm_number) % `CONV2_KERNERL) == 0) // go to next line
                                                     layerReadAddr = layerReadAddr + `CONV2_FM - (`CONV2_KERNERL - 1);
@@ -765,7 +765,7 @@ module convolution(
                                                 // go to next feature map part data
                                                 fm_x = fm_x + `CONV2_STRIDE;
                                                 get_fm_number = 0;
-                                                layerReadAddr = inputLayerStartIndex + depth_count * `CONV2_FM * `CONV2_FM + fm_x + fm_y * `CONV2_FM - 1;
+                                                layerReadAddr = inputLayerStartIndex + fm_x + fm_y * `CONV2_FM - 1;
 
                                                 get_weight_number = 0;
                                                 
@@ -963,7 +963,7 @@ module convolution(
                                             // read feature map part data
                                             if(get_fm_number < (`CONV3_KERNERL * `CONV3_KERNERL)) begin
                                                 if(layerReadAddr == 524287) // the beginning
-                                                    layerReadAddr = inputLayerStartIndex + depth_count * `CONV3_FM_DATA_SIZE;
+                                                    layerReadAddr = inputLayerStartIndex;
 
                                                 else if(get_fm_number > 0 && ((get_fm_number) % `CONV3_KERNERL) == 0) // go to next line
                                                     layerReadAddr = layerReadAddr + `CONV3_FM - (`CONV3_KERNERL - 1);
@@ -1067,7 +1067,7 @@ module convolution(
                                                 // go to next feature map part data
                                                 fm_x = fm_x + `CONV3_STRIDE;
                                                 get_fm_number = 0;
-                                                layerReadAddr = inputLayerStartIndex + depth_count * `CONV3_FM * `CONV3_FM + fm_x + fm_y * `CONV3_FM - 1;
+                                                layerReadAddr = inputLayerStartIndex + fm_x + fm_y * `CONV3_FM - 1;
 
                                                 get_weight_number = 0;
                                                 
@@ -1261,7 +1261,7 @@ module convolution(
                                             // read feature map part data
                                             if(get_fm_number < (`CONV4_KERNERL * `CONV4_KERNERL)) begin
                                                 if(layerReadAddr == 524287) // the beginning
-                                                    layerReadAddr = inputLayerStartIndex + depth_count * `CONV4_FM_DATA_SIZE;
+                                                    layerReadAddr = inputLayerStartIndex;
 
                                                 else if(get_fm_number > 0 && ((get_fm_number) % `CONV4_KERNERL) == 0) // go to next line
                                                     layerReadAddr = layerReadAddr + `CONV4_FM - (`CONV4_KERNERL - 1);
@@ -1365,7 +1365,7 @@ module convolution(
                                                 // go to next feature map part data
                                                 fm_x = fm_x + `CONV4_STRIDE;
                                                 get_fm_number = 0;
-                                                layerReadAddr = inputLayerStartIndex + depth_count * `CONV4_FM * `CONV4_FM + fm_x + fm_y * `CONV4_FM - 1;
+                                                layerReadAddr = inputLayerStartIndex + fm_x + fm_y * `CONV4_FM - 1;
 
                                                 get_weight_number = 0;
                                                 
@@ -1559,7 +1559,7 @@ module convolution(
                                             // read feature map part data
                                             if(get_fm_number < (`CONV5_KERNERL * `CONV5_KERNERL)) begin
                                                 if(layerReadAddr == 524287) // the beginning
-                                                    layerReadAddr = inputLayerStartIndex + depth_count * `CONV5_FM_DATA_SIZE;
+                                                    layerReadAddr = inputLayerStartIndex;
 
                                                 else if(get_fm_number > 0 && ((get_fm_number) % `CONV5_KERNERL) == 0) // go to next line
                                                     layerReadAddr = layerReadAddr + `CONV5_FM - (`CONV5_KERNERL - 1);
@@ -1663,7 +1663,7 @@ module convolution(
                                                 // go to next feature map part data
                                                 fm_x = fm_x + `CONV5_STRIDE;
                                                 get_fm_number = 0;
-                                                layerReadAddr = inputLayerStartIndex + depth_count * `CONV5_FM * `CONV5_FM + fm_x + fm_y * `CONV5_FM - 1;
+                                                layerReadAddr = inputLayerStartIndex + fm_x + fm_y * `CONV5_FM - 1;
 
                                                 get_weight_number = 0;
                                                 
