@@ -46,7 +46,7 @@ module convolution(
     output reg [`CONV_MAX_LINE_SIZE - 1:0] multData,
     output reg [`CONV_MAX_LINE_SIZE - 1:0] multWeight,
 
-    output reg [`POOL_SIZE - 1:0] maxpoolIn,// todo
+    output reg [`POOL_SIZE - 1:0] maxpoolIn,
 
     output reg addAValid,
     output reg addBValid,
@@ -118,6 +118,8 @@ module convolution(
 
     reg [1:0] current_weight; // 0: 1 weight start; 1: 1 weight running; 2: 2 weight start; 3: 2 weight running
 
+    reg [4:0] pool_clk_count;
+
     reg [15:0] conv_temp_result;
     reg [11:0]i;
 
@@ -174,7 +176,7 @@ module convolution(
                             convStatus = 0;
                             currentLayer = runLayer; // change status
 
-                    		inputLayerStartIndex = `LAYER_RAM_START_INDEX_0;
+                            inputLayerStartIndex = `LAYER_RAM_START_INDEX_0;
                             outputLayerStartIndex = `LAYER_RAM_START_INDEX_1;
                             layerReadAddr = 524287; // 2^19 max value
                             weightReadAddr = 1023;  // 2^10 max value
@@ -495,6 +497,8 @@ module convolution(
                             writeOutputLayerData = 0;
                             writeOutputLayerAddr = 524287; // 2^19 max value
 
+                            pool_clk_count = 0;
+
                             maxpoolEna = 1;
                             maxpoolRst = 0;
                         end
@@ -502,49 +506,78 @@ module convolution(
                             maxpoolEna = 1;
                             maxpoolRst = 1;
 
-                            // just for test, read the layer data
-                            if(get_fm_number < 17) begin
-                                if(layerReadAddr == 524287) begin// the beginning
-                                    layerReadAddr = inputLayerStartIndex;
+                            if(depth_count < `POOL1_DEPTH) begin 
+                                if(fm_y < (`POOL1_FM - `POOL1_WINDOW + 1)) begin
+                                    if(fm_x < (`POOL1_FM - `POOL1_WINDOW + 1)) begin
+                                        // read feature map part data
+                                        if(get_fm_number < `POOL1_WINDOW_SIZE) begin
+                                            if(layerReadAddr == 524287) begin// the beginning
+                                                layerReadAddr = inputLayerStartIndex;
+                                            end
+                                            else if(get_fm_number > 0 && ((get_fm_number) % `POOL1_WINDOW) == 0) // go to next line
+                                                layerReadAddr = layerReadAddr + `POOL1_FM - (`POOL1_WINDOW - 1);
+                                            else
+                                                layerReadAddr = layerReadAddr + 1;
+
+                                            get_fm_number = get_fm_number + 1;
+
+                                            if (get_fm_number >= 4) begin
+                                                fm[get_fm_number - 4] = readFM;
+                                            end
+
+                                        end
+                                        else if(get_fm_number < (`POOL1_WINDOW_SIZE + 3)) begin
+                                            get_fm_number = get_fm_number + 1;
+                                            fm[get_fm_number - 4] = readFM;
+                                        end
+
+                                        // max pool
+                                        if(get_fm_number == (`POOL1_WINDOW_SIZE + 3)) begin
+                                            maxpoolIn = {fm[8], fm[7], fm[6], fm[5], fm[4], fm[3], fm[2], fm[1], fm[0]};
+
+                                            // get max pool result
+                                            if(pool_clk_count < 6) begin
+                                                pool_clk_count = pool_clk_count + 1;
+                                            end
+                                            else begin
+                                                if(writeOutputLayerAddr == 524287) begin
+                                                    writeOutputLayerAddr = outputLayerStartIndex;
+                                                end
+                                                else begin
+                                                    writeOutputLayerAddr = writeOutputLayerAddr + 1;
+                                                end
+
+                                                writeOutputLayerData = maxpoolOut;
+
+                                                pool_clk_count = 0;
+
+                                                // go to next feature map part data
+                                                fm_x = fm_x + `POOL1_STRIDE;
+                                                get_fm_number = 0;
+                                                layerReadAddr = inputLayerStartIndex + depth_count * `POOL1_FM_DATA + fm_x + fm_y * `POOL1_FM - 1;
+                                            end
+                                        end
+                                    end
+                                    else begin
+                                        pool_clk_count = 0;
+
+                                        // go to next fm matrix line
+                                        fm_x = 0;
+                                        fm_y = fm_y + `POOL1_STRIDE;
+                                        layerReadAddr = inputLayerStartIndex + depth_count * `POOL1_FM_DATA + fm_y * `POOL1_FM - 1;
+                                    end
                                 end
                                 else begin
-                                    layerReadAddr = layerReadAddr + 1;
+                                    // go to next depth
+                                    fm_x = 0;
+                                    fm_y = 0;
+                                    depth_count = depth_count + 1;
+                                    layerReadAddr = inputLayerStartIndex + depth_count * `POOL1_FM_DATA - 1;
                                 end
                             end
-                            // end of test
-
-//                            if(depth_count < `POOL1_DEPTH) begin 
-//                                // read feature map part data
-//                                if(get_fm_number < `POOL1_WINDOW_SIZE) begin
-//                                    if(layerReadAddr == 524287) begin// the beginning
-//                                        layerReadAddr = inputLayerStartIndex + depth_count * `POOL1_FM_DATA;
-//                                    end
-//                                    else if(get_fm_number > 0 && ((get_fm_number) % `POOL1_WINDOW) == 0) // go to next line
-//                                        layerReadAddr = layerReadAddr + `POOL1_FM - (`POOL1_WINDOW - 1);
-//                                    else
-//                                        layerReadAddr = layerReadAddr + 1;
-
-//                                    get_fm_number = get_fm_number + 1;
-
-//                                    if (get_fm_number >= 4) begin
-//                                        fm[get_fm_number - 4] = readFM;
-//                                    end
-
-//                                end
-//                                else if(get_fm_number < (`POOL1_WINDOW_SIZE + 3)) begin
-//                                    get_fm_number = get_fm_number + 1;
-//                                    fm[get_fm_number - 4] = readFM;
-//                                end
-
-//                                if(get_fm_number == (`POOL1_WINDOW_SIZE + 3)) begin
-
-//                                    // todo
-//                                end
-
-//                            end
-//                            else begin
-//                                poolStatus = 1;
-//                            end
+                            else begin
+                                poolStatus = 1;
+                            end
                         end
                     end 
                 CONV2:
@@ -849,7 +882,107 @@ module convolution(
                     end
                 POOL2:
                     begin
-                        currentLayer = runLayer;
+                        if(currentLayer != runLayer) begin // initial
+                            poolStatus = 0;
+                            currentLayer = runLayer;
+
+                            inputLayerStartIndex = `LAYER_RAM_START_INDEX_1;
+                            outputLayerStartIndex = `LAYER_RAM_START_INDEX_0;
+                            layerReadAddr = 524287; // 2^19 max value
+
+                            depth_count = 0;
+
+                            fm_x = 0;
+                            fm_y = 0;
+
+                            // load data
+                            get_fm_number = 0;
+
+                            writeOutputLayerData = 0;
+                            writeOutputLayerAddr = 524287; // 2^19 max value
+
+                            pool_clk_count = 0;
+
+                            maxpoolEna = 1;
+                            maxpoolRst = 0;
+                        end
+                        else begin
+                            maxpoolEna = 1;
+                            maxpoolRst = 1;
+
+                            if(depth_count < `POOL2_DEPTH) begin 
+                                if(fm_y < (`POOL2_FM - `POOL2_WINDOW + 1)) begin
+                                    if(fm_x < (`POOL2_FM - `POOL2_WINDOW + 1)) begin
+                                        // read feature map part data
+                                        if(get_fm_number < `POOL2_WINDOW_SIZE) begin
+                                            if(layerReadAddr == 524287) begin// the beginning
+                                                layerReadAddr = inputLayerStartIndex;
+                                            end
+                                            else if(get_fm_number > 0 && ((get_fm_number) % `POOL2_WINDOW) == 0) // go to next line
+                                                layerReadAddr = layerReadAddr + `POOL2_FM - (`POOL2_WINDOW - 1);
+                                            else
+                                                layerReadAddr = layerReadAddr + 1;
+
+                                            get_fm_number = get_fm_number + 1;
+
+                                            if (get_fm_number >= 4) begin
+                                                fm[get_fm_number - 4] = readFM;
+                                            end
+
+                                        end
+                                        else if(get_fm_number < (`POOL2_WINDOW_SIZE + 3)) begin
+                                            get_fm_number = get_fm_number + 1;
+                                            fm[get_fm_number - 4] = readFM;
+                                        end
+
+                                        // max pool
+                                        if(get_fm_number == (`POOL2_WINDOW_SIZE + 3)) begin
+                                            maxpoolIn = {fm[8], fm[7], fm[6], fm[5], fm[4], fm[3], fm[2], fm[1], fm[0]};
+
+                                            // get max pool result
+                                            if(pool_clk_count < 6) begin
+                                                pool_clk_count = pool_clk_count + 1;
+                                            end
+                                            else begin
+                                                if(writeOutputLayerAddr == 524287) begin
+                                                    writeOutputLayerAddr = outputLayerStartIndex;
+                                                end
+                                                else begin
+                                                    writeOutputLayerAddr = writeOutputLayerAddr + 1;
+                                                end
+
+                                                writeOutputLayerData = maxpoolOut;
+
+                                                pool_clk_count = 0;
+
+                                                // go to next feature map part data
+                                                fm_x = fm_x + `POOL2_STRIDE;
+                                                get_fm_number = 0;
+                                                layerReadAddr = inputLayerStartIndex + depth_count * `POOL2_FM_DATA + fm_x + fm_y * `POOL2_FM - 1;
+                                            end
+                                        end
+                                    end
+                                    else begin
+                                        pool_clk_count = 0;
+
+                                        // go to next fm matrix line
+                                        fm_x = 0;
+                                        fm_y = fm_y + `POOL2_STRIDE;
+                                        layerReadAddr = inputLayerStartIndex + depth_count * `POOL2_FM_DATA + fm_y * `POOL2_FM - 1;
+                                    end
+                                end
+                                else begin
+                                    // go to next depth
+                                    fm_x = 0;
+                                    fm_y = 0;
+                                    depth_count = depth_count + 1;
+                                    layerReadAddr = inputLayerStartIndex + depth_count * `POOL2_FM_DATA - 1;
+                                end
+                            end
+                            else begin
+                                poolStatus = 1;
+                            end
+                        end
                     end
                 CONV3:
                     begin
@@ -1747,7 +1880,107 @@ module convolution(
                     end
                 POOL5:
                     begin
-                        currentLayer = runLayer;
+                        if(currentLayer != runLayer) begin // initial
+                            poolStatus = 0;
+                            currentLayer = runLayer;
+
+                            inputLayerStartIndex = `LAYER_RAM_START_INDEX_1;
+                            outputLayerStartIndex = `LAYER_RAM_START_INDEX_0;
+                            layerReadAddr = 524287; // 2^19 max value
+
+                            depth_count = 0;
+
+                            fm_x = 0;
+                            fm_y = 0;
+
+                            // load data
+                            get_fm_number = 0;
+
+                            writeOutputLayerData = 0;
+                            writeOutputLayerAddr = 524287; // 2^19 max value
+
+                            pool_clk_count = 0;
+
+                            maxpoolEna = 1;
+                            maxpoolRst = 0;
+                        end
+                        else begin
+                            maxpoolEna = 1;
+                            maxpoolRst = 1;
+
+                            if(depth_count < `POOL5_DEPTH) begin 
+                                if(fm_y < (`POOL5_FM - `POOL5_WINDOW + 1)) begin
+                                    if(fm_x < (`POOL5_FM - `POOL5_WINDOW + 1)) begin
+                                        // read feature map part data
+                                        if(get_fm_number < `POOL5_WINDOW_SIZE) begin
+                                            if(layerReadAddr == 524287) begin// the beginning
+                                                layerReadAddr = inputLayerStartIndex;
+                                            end
+                                            else if(get_fm_number > 0 && ((get_fm_number) % `POOL5_WINDOW) == 0) // go to next line
+                                                layerReadAddr = layerReadAddr + `POOL5_FM - (`POOL5_WINDOW - 1);
+                                            else
+                                                layerReadAddr = layerReadAddr + 1;
+
+                                            get_fm_number = get_fm_number + 1;
+
+                                            if (get_fm_number >= 4) begin
+                                                fm[get_fm_number - 4] = readFM;
+                                            end
+
+                                        end
+                                        else if(get_fm_number < (`POOL5_WINDOW_SIZE + 3)) begin
+                                            get_fm_number = get_fm_number + 1;
+                                            fm[get_fm_number - 4] = readFM;
+                                        end
+
+                                        // max pool
+                                        if(get_fm_number == (`POOL5_WINDOW_SIZE + 3)) begin
+                                            maxpoolIn = {fm[8], fm[7], fm[6], fm[5], fm[4], fm[3], fm[2], fm[1], fm[0]};
+
+                                            // get max pool result
+                                            if(pool_clk_count < 6) begin
+                                                pool_clk_count = pool_clk_count + 1;
+                                            end
+                                            else begin
+                                                if(writeOutputLayerAddr == 524287) begin
+                                                    writeOutputLayerAddr = outputLayerStartIndex;
+                                                end
+                                                else begin
+                                                    writeOutputLayerAddr = writeOutputLayerAddr + 1;
+                                                end
+
+                                                writeOutputLayerData = maxpoolOut;
+
+                                                pool_clk_count = 0;
+
+                                                // go to next feature map part data
+                                                fm_x = fm_x + `POOL5_STRIDE;
+                                                get_fm_number = 0;
+                                                layerReadAddr = inputLayerStartIndex + depth_count * `POOL5_FM_DATA + fm_x + fm_y * `POOL5_FM - 1;
+                                            end
+                                        end
+                                    end
+                                    else begin
+                                        pool_clk_count = 0;
+
+                                        // go to next fm matrix line
+                                        fm_x = 0;
+                                        fm_y = fm_y + `POOL5_STRIDE;
+                                        layerReadAddr = inputLayerStartIndex + depth_count * `POOL5_FM_DATA + fm_y * `POOL5_FM - 1;
+                                    end
+                                end
+                                else begin
+                                    // go to next depth
+                                    fm_x = 0;
+                                    fm_y = 0;
+                                    depth_count = depth_count + 1;
+                                    layerReadAddr = inputLayerStartIndex + depth_count * `POOL5_FM_DATA - 1;
+                                end
+                            end
+                            else begin
+                                poolStatus = 1;
+                            end
+                        end
                     end
                 FC6:
                     begin
