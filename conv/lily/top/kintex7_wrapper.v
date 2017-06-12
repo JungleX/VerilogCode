@@ -1,5 +1,3 @@
-`include "dw_params.vh"
-
 module stratix_wrapper #(
 	parameter DATA_WIDTH     = 16,
 	parameter WEIGHT_WIDTH   = 16,
