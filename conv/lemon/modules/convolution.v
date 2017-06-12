@@ -123,6 +123,8 @@ module convolution(
     reg [15:0] conv_temp_result;
     reg [11:0]i;
 
+    reg fc_fm_count;
+
     always @(posedge clk or posedge convRst) begin
         if(!convRst) begin // reset
             convStatus = 0;
@@ -1984,7 +1986,94 @@ module convolution(
                     end
                 FC6:
                     begin
-                        currentLayer = runLayer;
+                        if(currentLayer != runLayer) begin // initial
+                            fcStatus = 0;
+                            currentLayer = runLayer;
+
+                            inputLayerStartIndex = `LAYER_RAM_START_INDEX_0;
+                            outputLayerStartIndex = `LAYER_RAM_START_INDEX_1;
+
+                            layerReadAddr = 524287; // 2^19 max value
+                            weightReadAddr = 1023;  // 2^10 max value
+                            biasReadAddr = 0;
+                            bias_start_flag = 0;
+
+                            weight_count = 0;
+
+                            // load data
+                            get_weight_number = 0;
+                            get_bias_number = 0;
+                            get_fm_number = 0;
+
+                            writeOutputLayerData = 0;
+                            writeOutputLayerAddr = 524287; // 2^19 max value  
+
+                            fc_fm_count = 0;
+                            update_kernel_clk_count = 0;
+
+                            current_weight = 0;
+                        end
+                        else begin
+                            if(update_kernel_clk_count == 1) begin
+                                if(updateWeightDone == 1) begin
+                                    updateWeight = 0;
+                                end
+
+                                if(updateBiasDone == 1) begin
+                                    updateBias = 0;
+                                end
+
+                                if((updateWeight == 0) && (updateBias == 0)) begin
+                                    update_kernel_clk_count = 0;
+                                end
+                            end
+
+                            if(weight_count < `FC6_KERNEL_NUMBER) begin
+                                if(fc_fm_count < `FC6_FM_SIZE) begin
+                                    // todo
+
+                                end
+                                else begin
+                                    // goto next kernel
+                                    layerReadAddr = 524287;
+
+                                    // change to another kernel
+                                    if(current_weight == 0 || current_weight == 1) begin
+                                        current_weight = 2;
+                                    end
+                                    else if(current_weight == 2 || current_weight == 3) begin
+                                        current_weight = 0;
+                                    end
+
+                                    weight_count = weight_count + 1;
+                                    fc_fm_count = 0;
+
+                                    get_weight_number = 0;
+                                    get_bias_number = 0;
+                                    get_fm_number = 0;
+
+                                    if(update_kernel_clk_count == 0) begin
+                                        // update weight
+                                        updateWeight = 1;
+                                        if(current_weight == 0) begin
+                                            updateWeightAddr = `WEIGHT_RAM_START_INDEX_1;
+                                        end
+                                        else if(current_weight == 2) begin
+                                            updateWeightAddr = `WEIGHT_RAM_START_INDEX_0;
+                                        end
+
+                                        // update bias
+                                        updateBias = 1;
+                                        updateBiasAddr = biasReadAddr;
+
+                                        update_kernel_clk_count = 1;
+                                    end
+                                end
+                            end
+                            else begin
+                                fcStatus = 1;
+                            end
+                        end
                     end 
                 FC7:
                     begin

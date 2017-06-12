@@ -97,3 +97,15 @@
 `define POOL5_WINDOW         3      
 `define POOL5_WINDOW_SIZE    9      // 3*3
 `define POOL5_STRIDE         2
+
+// fc6
+`define FC6_FM_SIZE          9216   // 6*6*256=9216  matrix*depth
+`define FC6_KERNEL_NUMBER    4096
+
+// fc7
+`define FC7_FM_SIZE          4096   // 4096*1*1=4096
+`define FC7_KERNEL_NUMBER    4096
+
+//fc8
+`define FC8_FM_SIZE          4096   // 4096*1*1=4096
+`define FC8_KERNEL_NUMBER    17     // 17 oxford flowers

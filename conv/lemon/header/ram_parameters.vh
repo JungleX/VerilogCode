@@ -25,7 +25,7 @@
 
 // weight index
 `define WEIGHT_RAM_START_INDEX_0 0
-`define WEIGHT_RAM_START_INDEX_1 3456 // 3*3*384=3456
+`define WEIGHT_RAM_START_INDEX_1 384  // 384
 
 // weight width
 `define WEIGHT_RAM_WIDTH 1936         // 11*11*16=1936
