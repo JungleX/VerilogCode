@@ -95,7 +95,7 @@ module mult_add(
     		multB <= weight;
 
     		// clk 2 addition
-    		addA = sum;
+    		addA <= sum;
     		addB <= multResult;
 
     		// clk 3 

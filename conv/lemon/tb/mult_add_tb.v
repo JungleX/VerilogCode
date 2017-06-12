@@ -61,7 +61,7 @@ module mult_add_tb();
     	data = 16'h3c00;   // 1
     	weight = 16'h4200; // 3
     	sum  = 16'h4500;   // 5
-    	// 1*3+5=8 4800
+    	// 1*3+5=8 4800 
 
     	#`clk_period
     	multAddRst = 1;
