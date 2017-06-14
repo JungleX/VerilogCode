@@ -2,10 +2,32 @@
 
 module top_tb();
 
-localparam TYPE                  = "PU";
-localparam integer NUM_PE        = 4;
-localparam integer DATA_WIDTH    = 16;
+// System Signals
+reg                                  ACLK;
+reg                                  ARESETN;
 
+// TXN REQ
+reg                                  tx_req;
+
+initial begin
+        ACLK = 0;
+        ARESETN = 1;
+        tx_req = 0;
+        @(negedge ACLK);
+        ARESETN = 0;
+        @(negedge ACLK);
+        ARESETN = 1;
+        @(negedge ACLK);
+        @(negedge ACLK);
+        @(negedge ACLK);
+        tx_req = 1;
+end
+
+always #1 ACLK = ~ACLK;
+
+initial begin
+        #100000 $finish;
+end
 
 
 endmodule
