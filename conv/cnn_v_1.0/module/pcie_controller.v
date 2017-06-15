@@ -25,9 +25,9 @@ module pcie_controller(
 	input pcieConRst,
 
 	// pcie 
-	input [31:0] sigIn,         // idle write done sig(1 bits), write FM done sig(1 bits), update kernel done sig(1 bits), undefine(29 bits)
+	input [31:0] sigIn,         // idle write done sig(1 bit), write FM done sig(1 bit), update kernel done sig(1 bit), undefine(29 bits)
 
-	output reg [31:0] sigOut_1, // init prepare ram data(1 bits), write FM sig(1 bit), updata kernel sig(1 bits), updata kernel number(1 bits for 2 kernel), undefine(28 bits)
+	output reg [31:0] sigOut_1, // 0: init prepare ram data(1 bit), 1: write FM sig(1 bit), 2: updata kernel sig(1 bit), 3: updata kernel number(1 bit for 2 kernel), undefine(28 bits)
 	output reg [31:0] sigOut_2, // write FM data(16 bits), undefine(16 bits)
 	output reg [31:0] sigOut_3, // write FM address(32 bits)
 
@@ -41,9 +41,9 @@ module pcie_controller(
 	input [32:0] writeFMAddr,
 	output reg writeFMDone,
 
-	input updataKernel,
-	input updataKernelNumber,
-	output reg updataKernelDone
+	input updateKernel,
+	input updateKernelNumber,
+	output reg updateKernelDone
     );
 
 	parameter   IDLE  = 10'b0;
@@ -56,7 +56,7 @@ module pcie_controller(
 
 			writeInitDone    <= 0;
 			writeFMDone      <= 0;
-			updataKernelDone <= 0;
+			updateKernelDone <= 0;
 		end
 	end
 
@@ -66,6 +66,7 @@ module pcie_controller(
 				sigOut_1[0:0] <= 1;
 			end
 
+			// write fm
 			if (writeFM == 1) begin
 				sigOut_1[1:1]  <= 1;
 				sigOut_2[15:0] <= writeFMData;
@@ -75,17 +76,18 @@ module pcie_controller(
 				sigOut_1[1:1]  <= 0;
 			end
 
-			if (updataKernel == 1) begin
+			// update kernel
+			if (updateKernel == 1) begin
 				sigOut_1[2:2]  <= 1;
-				sigOut_1[3:3]  <= updataKernelNumber;
+				sigOut_1[3:3]  <= updateKernelNumber;
 			end
-			else if (updataKernel == 0) begin
+			else if (updateKernel == 0) begin
 				sigOut_1[2:2]  <= 0;
 			end
 
 			writeInitDone    <= sigIn[0:0];
 			writeFMDone      <= sigIn[1:1];
-			updataKernelDone <= sigIn[2:2];
+			updateKernelDone <= sigIn[2:2];
 		end
 	end
 

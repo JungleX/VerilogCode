@@ -40,9 +40,9 @@ module pcie_controller_tb();
 	reg [32:0] writeFMAddr;
 	wire writeFMDone;
 
-	reg updataKernel;
-	reg updataKernelNumber;
-	wire updataKernelDone;
+	reg updateKernel;
+	reg updateKernelNumber;
+	wire updateKernelDone;
 
 	pcie_controller pc(
 		.pcieConClk(clk),
@@ -65,9 +65,9 @@ module pcie_controller_tb();
 		.writeFMAddr(writeFMAddr),
 		.writeFMDone(writeFMDone),
 
-		.updataKernel(updataKernel),
-		.updataKernelNumber(updataKernelNumber),
-		.updataKernelDone(updataKernelDone)
+		.updateKernel(updateKernel),
+		.updateKernelNumber(updateKernelNumber),
+		.updateKernelDone(updateKernelDone)
     );
 
 	initial 
@@ -105,19 +105,19 @@ module pcie_controller_tb();
     	writeFMData = 16'h3c00;
     	writeFMAddr = 32'h0;
 
-    	updataKernel = 1;
-    	updataKernelNumber = 0;
+    	updateKernel = 1;
+    	updateKernelNumber = 0;
 
     	#`clk_period
     	writeFM = 0;
 
-    	updataKernel = 1;
-    	updataKernelNumber = 1;
+    	updateKernel = 1;
+    	updateKernelNumber = 1;
 
     	#`clk_period
     	writeFM = 0;
 
-    	updataKernel = 0;
+    	updateKernel = 0;
 
     end
 
