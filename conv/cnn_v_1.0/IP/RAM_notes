@@ -1,0 +1,28 @@
+RAM 说明：
+1、weight_ram
+	一次读写一个16 bits 的 float 数据；
+	最大的 weight 尺寸为 3*3*384=3456；
+	同时存世 2 个 weight 数据，即总深度为 3456*2 = 6912；
+
+2、layer_ram
+	每次读写一个16 bits 的 float 数据；
+	分为上下两部分，分别作为每层运算的输入和输出存储位置；
+	存储的最大值为：227*227*3+55*55*96=154586+290400=444986；
+	上部分存储的最大值为 227*227*3=154587；
+	所以，以 index = 154587 区分输入输出的两部分空间；
+
+3、bias_ram
+	每次读写一个16 bits 的 float 数据；
+	同时存储 2 个 bias，即总深度为 2；
+
+4、写数据
+	不设置 wea 或 wea = 0，仅设置 ena = 1 时，无法写入数据，参考“ram_cannot_write_without_wea”
+	需要设置 wea = 1，ena = 1 来使能写操作
+
+5、读数据
+	wea = 1 或 wea = 0，都可以读取数据，参考“ram_read_wea_0_also_ok”，“ram_read_and_write_at_the_same_clk_with_wea_1”
+	读数据会有一个 clk 延迟，当前 clk 指定读数据的地址，下一个 clk 上升沿获得读取的数据
+
+6、写与读数据
+	写数据、读数据可以同时进行，参考“ram_read_and_write_at_the_same_clk_with_wea_1”
+	当前 clk 写数据，下个 clk 使能读数据，再下一个 clk 才能获取到实际的数据，”ram_wirte_and_read_at_next_clk“
