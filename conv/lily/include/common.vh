@@ -1,1 +1,1 @@
-`define CTRL_WIDTH   16
+`define CTRL_WIDTH   30
