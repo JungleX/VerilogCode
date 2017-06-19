@@ -1,0 +1,3 @@
+`define PRECISION_OP 16
+`define PRECISION_ACC 16
+`define PRECISION_FRAC 8
