@@ -199,18 +199,11 @@ module file_data_controller(
                     end
 
                     // write init data done
-/*                    if (   fm_write_count     >= (`CONV1_FM_SIZE * `CONV1_FM_SIZE * `CONV1_DEPTH_NUMBER) 
-                    	&& weight_write_count >= (`CONV1_WEIGHT_MATRIX_NUMBER * `CONV1_DEPTH_NUMBER * 2) 
-                    	&& bias_write_count   >= 2) begin*/
 					if (   FMWriteEn     == 0
                     	&& weightWriteEn ==0
                     	&& biasWriteEn   == 0) begin
                     	sig[0:0]        = 1; // write init data done
                     	write_init_done = 1;
-                                    
-/*                        FMWriteEn     = 0;
-						weightWriteEn = 0;
-						biasWriteEn   = 0;*/
 
 						fm_write_count     = 0;
 						weight_write_count = 0;
@@ -274,18 +267,10 @@ module file_data_controller(
                     end
 
                     // update kernel done
-/*                    if (   weight_write_count >= (`CONV1_WEIGHT_MATRIX_NUMBER * `CONV1_DEPTH_NUMBER) 
-                    	&& bias_write_count >= 1) begin*/
 					if (weightWriteEn == 0 && biasWriteEn == 0) begin
                     	sig[2:2] = 1; // update kernel done
 
                     	update_kernel_wait_clk = update_kernel_wait_clk + 1;
-
-                    	/*if (update_kernel_wait_clk >= 3) begin
-                    		weight_write_count = 0;
-                    		bias_write_count   = 0;
-                    		update_kernel_wait_clk = 0;
-                    	end*/
                     end
 				end
 				else if (update_kernel == 1 && update_kernel_wait_clk < 3) begin
@@ -306,8 +291,6 @@ module file_data_controller(
                     FMWriteAddr = write_FM_addr;
 
                     sig[1:1]    = 1; // write fm done
-
-                    biasWriteEn = 0;
 				end
 			end
 		end

@@ -281,12 +281,14 @@ module alexnet_model(
             		bias_add_clk_count <= 0;
                     // update_kernel_status = 0;
 
-                    current_weight = 0;
+                    current_weight <= 0;
 
-                    conv_temp_result = 0;
+                    conv_temp_result <= 0;
 
-                    multEna = 1;
-                    multRst = 0;
+                    multEna <= 1;
+                    multRst <= 0;
+
+                    writeFM <=0;
 
     				// set parameters
 	    			case(runLayer)
@@ -555,6 +557,8 @@ module alexnet_model(
                                             bias_add_clk_count = 1;
                                         end
                                         else if(bias_add_clk_count == 1) begin // write data
+                                        	writeFM = 1;
+                                        	
                                             writeFMData = addResult;
 
                                             conv_temp_result = 0;
@@ -753,6 +757,7 @@ module alexnet_model(
                                     if(get_fm_number < pool_matrix_number) begin
                                         if(read_fm_start == 0) begin// the beginning
                                             FMReadAddr = input_fm_start_index;
+                                            read_fm_start = 1;
                                         end
                                         else if(get_fm_number > 0 && ((get_fm_number) % pool_size) == 0) // go to next line
                                             FMReadAddr = FMReadAddr + fm_size - (pool_size - 1);
