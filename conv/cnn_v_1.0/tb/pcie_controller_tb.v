@@ -37,7 +37,7 @@ module pcie_controller_tb();
 
 	reg writeFM;
 	reg [15:0] writeFMData;
-	reg [32:0] writeFMAddr;
+	reg [31:0] writeFMAddr;
 	wire writeFMDone;
 
 	reg updateKernel;

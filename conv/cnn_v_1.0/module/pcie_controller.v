@@ -38,7 +38,7 @@ module pcie_controller(
 
 	input writeFM,
 	input [15:0] writeFMData,
-	input [32:0] writeFMAddr,
+	input [31:0] writeFMAddr,
 	output reg writeFMDone,
 
 	input updateKernel,
