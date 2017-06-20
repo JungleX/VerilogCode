@@ -14,7 +14,7 @@
 	parameter OP_1_WIDTH = `PRECISION_OP,
 	parameter ACC_WIDTH  = `PRECISION_ACC,
 	parameter OUT_WIDTH  = `PRECISION_OP,
-        parameter TYPE = "FIXED_POINT"
+    parameter TYPE = "FIXED_POINT",
 	parameter FRAC_BITS = `PRECISION_FRAC,
 	parameter INT_BITS = `PRECISION_OP - 1 - `PRECISION_FRAC
  )(
