@@ -77,6 +77,16 @@ module alexnet_model(
     reg [3:0] weight_matrix_count;  // loop 1, max value 11 < 16=2^4, the kernel matrix line
     reg [13:0] fm_matrix_count;
 
+    reg [5:0] padding_up;
+    reg [5:0] padding_down;
+    reg [5:0] padding_left;
+    reg [5:0] padding_right;
+
+    reg [5:0] padding_up_count;
+    reg [5:0] padding_down_count;
+    reg [5:0] padding_left_count;
+    reg [5:0] padding_right_count;
+
     reg [8:0] kernel_number;
     reg [8:0] depth_number;
     reg [6:0] weight_matrix_number;
@@ -97,6 +107,8 @@ module alexnet_model(
     reg [11:0] get_weight_number; 
     reg [1:0]  get_bias_number;         // count the bias number, get only one bias each time
     reg [11:0] get_fm_number;           // max value 3*3*384=3456 < 4096=2^12, count the fm matrix number
+
+    reg [11:0] set_fm_count;
 
     reg [`DATA_WIDTH - 1:0] bias;
     reg [`DATA_WIDTH - 1:0] fm[120:0];               // 11*11=121 max value
@@ -119,7 +131,10 @@ module alexnet_model(
 
     reg [`DATA_WIDTH - 1:0] conv_temp_result;
     reg [`DATA_WIDTH - 1:0] fc_temp_result;
+    
     reg [11:0] i;
+    reg [11:0] j;
+    reg [11:0] k;
 
     reg [3:0] update_kernel_clk_count;
 
@@ -213,12 +228,19 @@ module alexnet_model(
             depth_count         <= 0;
             weight_matrix_count <= 0;
 
+            padding_up_count    <= 0;
+            padding_down_count  <= 0;
+            padding_left_count  <= 0;
+            padding_right_count <= 0;
+
             fm_x <= 0;
             fm_y <= 0;
 
             get_weight_number <= 0;
             get_bias_number   <= 0;
             get_fm_number     <= 0;
+
+            set_fm_count      <= 0;
 
             read_fm_start     <= 0;
             read_weight_start <= 0;
@@ -264,12 +286,19 @@ module alexnet_model(
 		            depth_count         <= 0;
 		            weight_matrix_count <= 0;
 
+		            padding_up_count    <= 0;
+		            padding_down_count  <= 0;
+		            padding_left_count  <= 0;
+		            padding_right_count <= 0;
+
 		            fm_x <= 0;
 		            fm_y <= 0;
 
 		            get_weight_number <= 0;
 		            get_bias_number   <= 0;
 		            get_fm_number     <= 0;
+
+		            set_fm_count      <= 0;
 
 		            read_fm_start     <= 0;
 		            read_weight_start <= 0;
@@ -297,12 +326,17 @@ module alexnet_model(
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_0;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_1;
 
+                            	padding_up            <= `CONV1_FM_PADDING_UP;
+                            	padding_down          <= `CONV1_FM_PADDING_DOWN;
+                            	padding_left          <= `CONV1_FM_PADDING_LEFT;
+                            	padding_right         <= `CONV1_FM_PADDING_RIGHT;
+
                             	kernel_number         <= `CONV1_KERNEL_NUMBER;
     							depth_number          <= `CONV1_DEPTH_NUMBER;
     							weight_matrix_number  <= `CONV1_WEIGHT_MATRIX_NUMBER;
 
-    							fm_x_max              <= `CONV1_FM_SIZE - `CONV1_WEIGHT_MATRIX_SIZE + 1;
-    							fm_y_max              <= `CONV1_FM_SIZE - `CONV1_WEIGHT_MATRIX_SIZE + 1;
+    							fm_x_max              <= `CONV1_FM_SIZE + `CONV1_FM_PADDING_LEFT + `CONV1_FM_PADDING_RIGHT - `CONV1_WEIGHT_MATRIX_SIZE + 1;
+    							fm_y_max              <= `CONV1_FM_SIZE + `CONV1_FM_PADDING_UP + `CONV1_FM_PADDING_DOWN - `CONV1_WEIGHT_MATRIX_SIZE + 1;
 
     							fm_size               <= `CONV1_FM_SIZE;
     							weight_size           <= `CONV1_WEIGHT_MATRIX_SIZE;
@@ -313,12 +347,17 @@ module alexnet_model(
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_0;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_1;
 
+                            	padding_up            <= `CONV2_FM_PADDING_UP;
+                            	padding_down          <= `CONV2_FM_PADDING_DOWN;
+                            	padding_left          <= `CONV2_FM_PADDING_LEFT;
+                            	padding_right         <= `CONV2_FM_PADDING_RIGHT;
+
                             	kernel_number         <= `CONV2_KERNEL_NUMBER;
     							depth_number          <= `CONV2_DEPTH_NUMBER;
     							weight_matrix_number  <= `CONV2_WEIGHT_MATRIX_NUMBER;
 
-    							fm_x_max              <= `CONV2_FM_SIZE - `CONV2_WEIGHT_MATRIX_SIZE + 1;
-    							fm_y_max              <= `CONV2_FM_SIZE - `CONV2_WEIGHT_MATRIX_SIZE + 1;
+    							fm_x_max              <= `CONV2_FM_SIZE + `CONV2_FM_PADDING_LEFT + `CONV2_FM_PADDING_RIGHT - `CONV2_WEIGHT_MATRIX_SIZE + 1;
+    							fm_y_max              <= `CONV2_FM_SIZE + `CONV2_FM_PADDING_UP + `CONV2_FM_PADDING_DOWN - `CONV2_WEIGHT_MATRIX_SIZE + 1;
 
     							fm_size               <= `CONV2_FM_SIZE;
     							weight_size           <= `CONV2_WEIGHT_MATRIX_SIZE;
@@ -329,12 +368,17 @@ module alexnet_model(
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_0;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_1;
 
+                            	padding_up            <= `CONV3_FM_PADDING_UP;
+                            	padding_down          <= `CONV3_FM_PADDING_DOWN;
+                            	padding_left          <= `CONV3_FM_PADDING_LEFT;
+                            	padding_right         <= `CONV3_FM_PADDING_RIGHT;
+
                             	kernel_number         <= `CONV3_KERNEL_NUMBER;
     							depth_number          <= `CONV3_DEPTH_NUMBER;
     							weight_matrix_number  <= `CONV3_WEIGHT_MATRIX_NUMBER;
 
-    							fm_x_max              <= `CONV3_FM_SIZE - `CONV3_WEIGHT_MATRIX_SIZE + 1;
-    							fm_y_max              <= `CONV3_FM_SIZE - `CONV3_WEIGHT_MATRIX_SIZE + 1;
+    							fm_x_max              <= `CONV3_FM_SIZE + `CONV3_FM_PADDING_LEFT + `CONV3_FM_PADDING_RIGHT - `CONV3_WEIGHT_MATRIX_SIZE + 1;
+    							fm_y_max              <= `CONV3_FM_SIZE + `CONV3_FM_PADDING_UP + `CONV3_FM_PADDING_DOWN - `CONV3_WEIGHT_MATRIX_SIZE + 1;
 
     							fm_size               <= `CONV3_FM_SIZE;
     							weight_size           <= `CONV3_WEIGHT_MATRIX_SIZE;
@@ -345,12 +389,17 @@ module alexnet_model(
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_1;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_0;
 
+                            	padding_up            <= `CONV4_FM_PADDING_UP;
+                            	padding_down          <= `CONV4_FM_PADDING_DOWN;
+                            	padding_left          <= `CONV4_FM_PADDING_LEFT;
+                            	padding_right         <= `CONV4_FM_PADDING_RIGHT;
+
                             	kernel_number         <= `CONV4_KERNEL_NUMBER;
     							depth_number          <= `CONV4_DEPTH_NUMBER;
     							weight_matrix_number  <= `CONV4_WEIGHT_MATRIX_NUMBER;
 	                		
-	                			fm_x_max              <= `CONV4_FM_SIZE - `CONV4_WEIGHT_MATRIX_SIZE + 1;
-    							fm_y_max              <= `CONV4_FM_SIZE - `CONV4_WEIGHT_MATRIX_SIZE + 1;
+	                			fm_x_max              <= `CONV4_FM_SIZE + `CONV4_FM_PADDING_LEFT + `CONV4_FM_PADDING_RIGHT - `CONV4_WEIGHT_MATRIX_SIZE + 1;
+    							fm_y_max              <= `CONV4_FM_SIZE + `CONV4_FM_PADDING_UP + `CONV4_FM_PADDING_DOWN - `CONV4_WEIGHT_MATRIX_SIZE + 1;
 
     							fm_size               <= `CONV4_FM_SIZE;
     							weight_size           <= `CONV4_WEIGHT_MATRIX_SIZE;
@@ -361,12 +410,17 @@ module alexnet_model(
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_0;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_1;
 
+                            	padding_up            <= `CONV5_FM_PADDING_UP;
+                            	padding_down          <= `CONV5_FM_PADDING_DOWN;
+                            	padding_left          <= `CONV5_FM_PADDING_LEFT;
+                            	padding_right         <= `CONV5_FM_PADDING_RIGHT;
+
                             	kernel_number         <= `CONV5_KERNEL_NUMBER;
     							depth_number          <= `CONV5_DEPTH_NUMBER;
     							weight_matrix_number  <= `CONV5_WEIGHT_MATRIX_NUMBER;
 
-    							fm_x_max              <= `CONV5_FM_SIZE - `CONV5_WEIGHT_MATRIX_SIZE + 1;
-    							fm_y_max              <= `CONV5_FM_SIZE - `CONV5_WEIGHT_MATRIX_SIZE + 1;
+    							fm_x_max              <= `CONV5_FM_SIZE + `CONV5_FM_PADDING_LEFT + `CONV5_FM_PADDING_RIGHT - `CONV5_WEIGHT_MATRIX_SIZE + 1;
+    							fm_y_max              <= `CONV5_FM_SIZE + `CONV5_FM_PADDING_UP + `CONV5_FM_PADDING_DOWN - `CONV5_WEIGHT_MATRIX_SIZE + 1;
 
     							fm_size               <= `CONV5_FM_SIZE;
     							weight_size           <= `CONV5_WEIGHT_MATRIX_SIZE;
@@ -444,31 +498,115 @@ module alexnet_model(
                                         end
 
                                         // read feature map part data
-                                        if(get_fm_number < weight_matrix_number) begin
+                                        if (get_fm_number == 0) begin
+                                        	// up
+		                                    padding_up_count = 0;
+		                                    if (fm_y < padding_up) begin
+		                                        padding_up_count = padding_up - fm_y;
+		                                        set_fm_count = 0;
+		                                        i = 0;
+		                                        while (i < (weight_size * padding_up_count)) begin
+		                                        	fm[set_fm_count + i] = 0;
+		                                        	i = i + 1;
+		                                        end
+		                                    end
+
+		                                    // down
+		                                    padding_down_count = 0;
+		                                    if ((fm_y + weight_size) > (padding_up + fm_size)) begin
+		                                        padding_down_count = (fm_y + weight_size) - (padding_up + fm_size);
+		                                        set_fm_count = ((fm_size + padding_up) - fm_y) * weight_size;
+		                                        i = 0;
+		                                        while (i < (weight_size * padding_down_count)) begin
+		                                        	fm[set_fm_count + i] = 0;
+		                                        	i = i + 1;
+		                                        end
+		                                    end
+
+		                                    // left
+		                                    padding_left_count = 0;
+		                                    if (fm_x < padding_left) begin
+		                                        padding_left_count = padding_left - fm_x;
+		                                        set_fm_count = padding_up_count * weight_size;
+		                                        i = 0;
+		                                        j = 0;
+		                                        k = weight_size - padding_up_count - padding_down_count;
+		                                        while (i < k) begin
+		                                        	while (j < padding_left_count) begin
+		                                        		fm[set_fm_count + j] = 0;
+		                                        		j = j + 1;
+		                                        	end
+		                                        	j = 0;
+		                                        	i = i + 1;
+		                                        	set_fm_count = set_fm_count + weight_size;
+		                                        end
+		                                    end
+
+		                                    // right
+		                                    padding_right_count = 0;
+		                                    if ((fm_x + weight_size) > (padding_left + fm_size)) begin
+		                                        padding_right_count = (fm_x + weight_size) - (padding_left + fm_size);
+		                                        set_fm_count = padding_up_count * weight_size + (weight_size - padding_right_count);
+		                                        i = 0;
+		                                        j = 0;
+		                                        k = weight_size - padding_up_count - padding_down_count;
+		                                        while (i < k) begin
+		                                        	while (j < padding_right_count) begin
+		                                        		fm[set_fm_count + j] = 0;
+		                                        		j = j + 1;
+		                                        	end
+		                                        	j = 0;
+		                                        	i = i + 1;
+		                                        	set_fm_count = set_fm_count + weight_size;
+		                                        end
+		                                    end
+
+		                                    // for others
+		                                    set_fm_count = padding_up_count * weight_size + padding_left_count - 1;
+		                                    j = weight_size - padding_left_count - padding_right_count; // a line of weight matrix others
+		                                    k =  (weight_size - padding_up_count   - padding_down_count) * j;
+                                        end
+
+                                        // others
+                                        if(get_fm_number < k) begin
                                             if(read_fm_start == 0) begin // the beginning
                                                 FMReadAddr = input_fm_start_index;
                                                 read_fm_start = 1;
                                             end
-                                            else if(get_fm_number > 0 && ((get_fm_number) % weight_size) == 0) // go to next line
-                                                FMReadAddr = FMReadAddr + fm_size - (weight_size - 1);
-                                            else
-                                                FMReadAddr = FMReadAddr + 1;
-
-                                            get_fm_number = get_fm_number + 1;
-
-                                            if (get_fm_number >= 4) begin
-                                                fm[get_fm_number - 4] = FMReadData;
+                                            //else if(get_fm_number > 0 && ((get_fm_number) % weight_size) == 0) // go to next line
+                                            else if(get_fm_number > 0 && ((get_fm_number) % j) == 0) begin// go to next line
+                                                FMReadAddr = FMReadAddr + fm_size - (j - 1);
                                             end
-                                        end
-                                        else if(get_fm_number < (weight_matrix_number + 3)) begin
+                                            else begin
+                                                FMReadAddr = FMReadAddr + 1;
+                                            end
+
                                             get_fm_number = get_fm_number + 1;
-                                            fm[get_fm_number - 4] = FMReadData;
+                                        end
+
+                                        if (   (get_fm_number >= 4) 
+                                        	&& (get_fm_number < (k + 4))) begin
+
+                                            get_fm_number = get_fm_number - 4;
+                                            if ((get_fm_number) > 0 && ((get_fm_number) % j) == 0) begin
+                                            	set_fm_count = set_fm_count + weight_size - (j - 1);
+                                            end
+                                            else
+                                            	set_fm_count = set_fm_count + 1;
+
+                                            fm[set_fm_count] = FMReadData;
+                                                
+                                            get_fm_number = get_fm_number + 4;
+
+                                            if (get_fm_number >= k) begin
+	                                        	get_fm_number = get_fm_number + 1;
+	                                        end
                                         end
 
                                         // kernel(weight and bias) is ready and do the conv
                                         if(    get_bias_number   == 3 
                                             && get_weight_number == (weight_matrix_number + 3)
-                                            && get_fm_number     == (weight_matrix_number + 3)) begin
+                                            && get_fm_number     == (k + 4)) begin
 
                                             if(weight_matrix_count < weight_size) begin // each line
                                                 // multX11
@@ -539,7 +677,9 @@ module alexnet_model(
                                                 // next depth address
                                                 // the last -1: when read fm data, it will +1
                                                 if(depth_count < depth_number) begin
-                                                    FMReadAddr = input_fm_start_index + depth_count * fm_size * fm_size + fm_x + fm_y * fm_size - 1;
+                                                    FMReadAddr = input_fm_start_index + depth_count * fm_size * fm_size 
+                                                    			+ (fm_x < padding_left ? 0: fm_x - padding_left) 
+                                                    			+ (fm_y < padding_up   ? 0: fm_y - padding_up) * fm_size - 1;
                                                 end
                                             end       
                                         end
@@ -558,7 +698,7 @@ module alexnet_model(
                                         end
                                         else if(bias_add_clk_count == 1) begin // write data
                                         	writeFM = 1;
-                                        	
+
                                             writeFMData = addResult;
 
                                             conv_temp_result = 0;
@@ -580,7 +720,9 @@ module alexnet_model(
                                             // go to next feature map part data
                                             fm_x = fm_x + stride;
                                             get_fm_number = 0;
-                                            FMReadAddr = input_fm_start_index + fm_x + fm_y * fm_size - 1;
+                                            FMReadAddr = input_fm_start_index 
+                                            			+ (fm_x < padding_left ? 0: fm_x - padding_left) 
+                                            			+ (fm_y < padding_up   ? 0: fm_y - padding_up) * fm_size - 1;
 
                                             get_weight_number = 0;
                                                 
@@ -606,7 +748,9 @@ module alexnet_model(
 
                                     fm_x = 0;
                                     fm_y = fm_y + stride;
-                                    FMReadAddr = input_fm_start_index + fm_x + fm_y * fm_size - 1;
+                                    FMReadAddr = input_fm_start_index 
+                                    			+ (fm_x < padding_left ? 0: fm_x - padding_left) 
+                                    			+ (fm_y < padding_up   ? 0: fm_y - padding_up) * fm_size - 1;
 
                                     get_weight_number = 0;
                                     get_fm_number = 0;
