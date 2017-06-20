@@ -60,4 +60,11 @@ register #(
     .DOUT        ( src_2_sel_dd)
 );
 
+macc #(
+	.OP_0_WIDTH        (OP_WIDTH            ),
+	.OP_1_WIDTH        (OP_WIDTH            ),
+	.ACC_WIDTH         (
+) MACC_pe (
+);
+
 endmodule
