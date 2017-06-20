@@ -574,7 +574,7 @@ module alexnet_model(
                                                 read_fm_start = 1;
                                             end
                                             //else if(get_fm_number > 0 && ((get_fm_number) % weight_size) == 0) // go to next line
-                                            else if(get_fm_number > 0 && ((get_fm_number) % j) == 0) begin// go to next line
+                                            else if((get_fm_number > 0) && ((get_fm_number % j) == 0)) begin// go to next line
                                                 FMReadAddr = FMReadAddr + fm_size - (j - 1);
                                             end
                                             else begin
@@ -583,12 +583,15 @@ module alexnet_model(
 
                                             get_fm_number = get_fm_number + 1;
                                         end
+                                        else if (k < 4 && get_fm_number < 4) begin
+                                            get_fm_number = get_fm_number + 1;
+                                        end
 
                                         if (   (get_fm_number >= 4) 
                                         	&& (get_fm_number < (k + 4))) begin
 
                                             get_fm_number = get_fm_number - 4;
-                                            if ((get_fm_number) > 0 && ((get_fm_number) % j) == 0) begin
+                                            if ((get_fm_number > 0) && ((get_fm_number % j) == 0)) begin
                                             	set_fm_count = set_fm_count + weight_size - (j - 1);
                                             end
                                             else
@@ -826,6 +829,11 @@ module alexnet_model(
 
                     depth_count <= 0;
 
+                    padding_up_count    <= 0;
+		            padding_down_count  <= 0;
+		            padding_left_count  <= 0;
+		            padding_right_count <= 0;
+
                     fm_x <= 0;
                     fm_y <= 0;
 
@@ -847,11 +855,16 @@ module alexnet_model(
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_1;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_0;
 
+                                padding_up            <= `POOL1_FM_PADDING_UP;
+                                padding_down          <= `POOL1_FM_PADDING_DOWN;
+                                padding_left          <= `POOL1_FM_PADDING_LEFT;
+                                padding_right         <= `POOL1_FM_PADDING_RIGHT;
+
     							depth_number          <= `POOL1_DEPTH_NUMBER;
     							pool_matrix_number    <= `POOL1_POOL_MATRIX_NUMBER;
 
-    							fm_x_max              <= `POOL1_FM_SIZE - `POOL1_POOL_MATRIX_SIZE + 1;
-    							fm_y_max              <= `POOL1_FM_SIZE - `POOL1_POOL_MATRIX_SIZE + 1;
+    							fm_x_max              <= `POOL1_FM_SIZE + `POOL1_FM_PADDING_LEFT + `POOL1_FM_PADDING_RIGHT - `POOL1_POOL_MATRIX_SIZE + 1;
+    							fm_y_max              <= `POOL1_FM_SIZE + `POOL1_FM_PADDING_UP + `POOL1_FM_PADDING_DOWN - `POOL1_POOL_MATRIX_SIZE + 1;
 
     							fm_size               <= `POOL1_FM_SIZE;
     							pool_size             <= `POOL1_POOL_MATRIX_SIZE;
@@ -862,11 +875,16 @@ module alexnet_model(
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_1;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_0;
 
+                                padding_up            <= `POOL2_FM_PADDING_UP;
+                                padding_down          <= `POOL2_FM_PADDING_DOWN;
+                                padding_left          <= `POOL2_FM_PADDING_LEFT;
+                                padding_right         <= `POOL2_FM_PADDING_RIGHT;
+
     							depth_number          <= `POOL2_DEPTH_NUMBER;
     							pool_matrix_number    <= `POOL2_POOL_MATRIX_NUMBER;
 
-    							fm_x_max              <= `POOL2_FM_SIZE - `POOL2_POOL_MATRIX_SIZE + 1;
-    							fm_y_max              <= `POOL2_FM_SIZE - `POOL2_POOL_MATRIX_SIZE + 1;
+    							fm_x_max              <= `POOL2_FM_SIZE + `POOL2_FM_PADDING_LEFT + `POOL2_FM_PADDING_RIGHT - `POOL2_POOL_MATRIX_SIZE + 1;
+    							fm_y_max              <= `POOL2_FM_SIZE + `POOL2_FM_PADDING_UP + `POOL2_FM_PADDING_DOWN - `POOL2_POOL_MATRIX_SIZE + 1;
 
     							fm_size               <= `POOL2_FM_SIZE;
     							pool_size             <= `POOL2_POOL_MATRIX_SIZE;
@@ -877,11 +895,16 @@ module alexnet_model(
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_1;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_0;
 
+                                padding_up            <= `POOL5_FM_PADDING_UP;
+                                padding_down          <= `POOL5_FM_PADDING_DOWN;
+                                padding_left          <= `POOL5_FM_PADDING_LEFT;
+                                padding_right         <= `POOL5_FM_PADDING_RIGHT;
+
     							depth_number          <= `POOL5_DEPTH_NUMBER;
     							pool_matrix_number    <= `POOL5_POOL_MATRIX_NUMBER;
 
-    							fm_x_max              <= `POOL5_FM_SIZE - `POOL5_POOL_MATRIX_SIZE + 1;
-    							fm_y_max              <= `POOL5_FM_SIZE - `POOL5_POOL_MATRIX_SIZE + 1;
+    							fm_x_max              <= `POOL5_FM_SIZE + `POOL5_FM_PADDING_LEFT + `POOL5_FM_PADDING_RIGHT - `POOL5_POOL_MATRIX_SIZE + 1;
+    							fm_y_max              <= `POOL5_FM_SIZE + `POOL5_FM_PADDING_UP + `POOL5_FM_PADDING_DOWN - `POOL5_POOL_MATRIX_SIZE + 1;
 
     							fm_size               <= `POOL5_FM_SIZE;
     							pool_size             <= `POOL5_POOL_MATRIX_SIZE;
@@ -898,29 +921,112 @@ module alexnet_model(
                             if(fm_y < fm_y_max) begin
                                 if(fm_x < fm_x_max) begin
                                     // read feature map part data
-                                    if(get_fm_number < pool_matrix_number) begin
+                                    if (get_fm_number == 0) begin
+                                    	// up
+		                                padding_up_count = 0;
+		                                if (fm_y < padding_up) begin
+		                                    padding_up_count = padding_up - fm_y;
+		                                    set_fm_count = 0;
+		                                    i = 0;
+		                                    while (i < (pool_size * padding_up_count)) begin
+		                                        fm[set_fm_count + i] = 0;
+		                                        i = i + 1;
+		                                    end
+		                                end
+
+		                                // down
+		                                padding_down_count = 0;
+		                                if ((fm_y + pool_size) > (padding_up + fm_size)) begin
+		                                    padding_down_count = (fm_y + pool_size) - (padding_up + fm_size);
+		                                    set_fm_count = ((fm_size + padding_up) - fm_y) * pool_size;
+		                                    i = 0;
+		                                    while (i < (pool_size * padding_down_count)) begin
+		                                        fm[set_fm_count + i] = 0;
+		                                        i = i + 1;
+		                                    end
+		                                end
+
+		                                // left
+		                                padding_left_count = 0;
+		                                if (fm_x < padding_left) begin
+		                                    padding_left_count = padding_left - fm_x;
+		                                    set_fm_count = padding_up_count * pool_size;
+		                                    i = 0;
+		                                    j = 0;
+		                                    k = pool_size - padding_up_count - padding_down_count;
+		                                    while (i < k) begin
+		                                        while (j < padding_left_count) begin
+		                                            fm[set_fm_count + j] = 0;
+		                                        	j = j + 1;
+		                                        end
+		                                        j = 0;
+		                                        i = i + 1;
+		                                        set_fm_count = set_fm_count + pool_size;
+		                                    end
+		                                end
+
+		                                // right
+		                                padding_right_count = 0;
+		                                if ((fm_x + pool_size) > (padding_left + fm_size)) begin
+		                                    padding_right_count = (fm_x + pool_size) - (padding_left + fm_size);
+		                                    set_fm_count = padding_up_count * pool_size + (pool_size - padding_right_count);
+		                                    i = 0;
+		                                    j = 0;
+		                                    k = pool_size - padding_up_count - padding_down_count;
+		                                    while (i < k) begin
+		                                        while (j < padding_right_count) begin
+		                                        	fm[set_fm_count + j] = 0;
+		                                        	j = j + 1;
+		                                        end
+		                                        j = 0;
+		                                        i = i + 1;
+		                                        set_fm_count = set_fm_count + pool_size;
+		                                    end
+		                                end
+
+		                                // for others
+		                                set_fm_count = padding_up_count * pool_size + padding_left_count - 1;
+		                                j = pool_size - padding_left_count - padding_right_count; // a line of weight matrix others
+		                                k =  (pool_size - padding_up_count   - padding_down_count) * j;
+                                    end
+
+                                    if(get_fm_number < k) begin
                                         if(read_fm_start == 0) begin// the beginning
                                             FMReadAddr = input_fm_start_index;
                                             read_fm_start = 1;
                                         end
-                                        else if(get_fm_number > 0 && ((get_fm_number) % pool_size) == 0) // go to next line
-                                            FMReadAddr = FMReadAddr + fm_size - (pool_size - 1);
+                                        else if((get_fm_number > 0) && ((get_fm_number % j) == 0)) // go to next line
+                                            FMReadAddr = FMReadAddr + fm_size - (j - 1);
                                         else
                                             FMReadAddr =  FMReadAddr + 1;
 
-                                        get_fm_number = get_fm_number + 1;
-
-                                        if (get_fm_number >= 4) begin
-                                            fm[get_fm_number - 4] = FMReadData;
-                                        end
-                                    end
-                                    else if(get_fm_number < (pool_matrix_number + 3)) begin
                                             get_fm_number = get_fm_number + 1;
-                                            fm[get_fm_number - 4] = FMReadData;
+                                    end
+                                    else if (k < 4 && get_fm_number < 4) begin
+                                         get_fm_number = get_fm_number + 1;
+                                    end
+
+                                    if ( get_fm_number >= 4 && (get_fm_number < (k + 4))) begin
+
+                                        get_fm_number = get_fm_number - 4;
+                                        if ((get_fm_number > 0) && ((get_fm_number % j) == 0)) begin
+                                            set_fm_count = set_fm_count + pool_size - (j - 1);
+                                        end
+                                        else begin
+                                            set_fm_count = set_fm_count + 1;
+                                        end
+
+                                            fm[set_fm_count] = FMReadData;
+
+                                            get_fm_number = get_fm_number + 4;
+
+                                            if (get_fm_number >= k) begin
+                                                get_fm_number = get_fm_number + 1;
+                                            end
                                     end
 
                                     // max pool
-                                    if(get_fm_number == (pool_matrix_number + 3)) begin
+                                    if(get_fm_number == (k + 4)) begin
                                         maxpoolIn = {fm[8], fm[7], fm[6], fm[5], fm[4], fm[3], fm[2], fm[1], fm[0]};
 
                                         // get max pool result
@@ -943,7 +1049,9 @@ module alexnet_model(
                                             // go to next feature map part data
                                             fm_x = fm_x + stride;
                                             get_fm_number = 0;
-                                            FMReadAddr = input_fm_start_index + depth_count * fm_size * fm_size + fm_x + fm_y * fm_size - 1;
+                                            FMReadAddr = input_fm_start_index + depth_count * fm_size * fm_size 
+                                                        + (fm_x < padding_left ? 0: fm_x - padding_left)
+                                                        + (fm_y < padding_up   ? 0: fm_y - padding_up) * fm_size - 1;
                                         end
                                     end
                                 end
@@ -953,7 +1061,8 @@ module alexnet_model(
                                     // go to next fm matrix line
                                     fm_x = 0;
                                     fm_y = fm_y + stride;
-                                    FMReadAddr = input_fm_start_index + depth_count * fm_size * fm_size + fm_y * fm_size - 1;
+                                    FMReadAddr = input_fm_start_index + depth_count * fm_size * fm_size 
+                                                + (fm_y < padding_up   ? 0: fm_y - padding_up) * fm_size - 1;
                                 end
                             end
                             else begin
