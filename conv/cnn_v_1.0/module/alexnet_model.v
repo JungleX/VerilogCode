@@ -323,6 +323,8 @@ module alexnet_model(
 	    			case(runLayer)
 	                	CONV1: 
 	                		begin
+                                $display("CONV1"); // for debug
+
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_0;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_1;
 
@@ -344,6 +346,8 @@ module alexnet_model(
 	                		end
 	                	CONV2:
 	                		begin
+                                $display("CONV2"); // for debug
+
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_0;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_1;
 
@@ -365,6 +369,8 @@ module alexnet_model(
 	                		end
 	                	CONV3:
 	                		begin
+                                $display("CONV3"); // for debug
+
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_0;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_1;
 
@@ -386,6 +392,8 @@ module alexnet_model(
 	                		end
 	                	CONV4:
 	                		begin
+                                $display("CONV4"); // for debug
+
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_1;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_0;
 
@@ -407,6 +415,8 @@ module alexnet_model(
 	                		end
 	                	CONV5:
 	                		begin
+                                $display("CONV5"); // for debug
+
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_0;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_1;
 
@@ -704,6 +714,8 @@ module alexnet_model(
 
                                             writeFMData = addResult;
 
+                                            $display("%h", writeFMData); // for debug
+
                                             conv_temp_result = 0;
                                                 
                                             addA = 0;
@@ -763,6 +775,7 @@ module alexnet_model(
                                 end
                             end
                             else begin // go to next kernel
+                                $display("next kernel"); // for debug
                                     
                                 read_fm_start = 0; // the beginning
 
@@ -852,6 +865,8 @@ module alexnet_model(
 	    			case(runLayer)
 	                	POOL1: 
 	                		begin
+                                $display("POOL1"); // for debug
+
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_1;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_0;
 
@@ -872,6 +887,8 @@ module alexnet_model(
 	                		end
 	                	POOL2:
 	                		begin
+                                $display("POOL2"); // for debug
+
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_1;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_0;
 
@@ -892,6 +909,8 @@ module alexnet_model(
 	                		end
 	                	POOL5:
 	                		begin
+                                $display("POOL5"); // for debug
+
 	                			input_fm_start_index  <= `LAYER_RAM_START_INDEX_1;
                             	output_fm_start_index <= `LAYER_RAM_START_INDEX_0;
 
@@ -1036,6 +1055,8 @@ module alexnet_model(
                                         else begin // write max pool result to ram
                                         	writeFMData = maxpoolOut;
 
+                                            $display("%h", writeFMData); // for debug
+
                                             if(write_fm_start == 0) begin
                                                 writeFMAddr = output_fm_start_index;
                                                 write_fm_start = 1;
@@ -1067,6 +1088,9 @@ module alexnet_model(
                             end
                             else begin
                                 // go to next depth
+
+                                $display("next depth"); // for debug
+
                                 fm_x = 0;
                                 fm_y = 0;
                                 depth_count = depth_count + 1;

@@ -18,10 +18,10 @@
 
 // conv1 test
 `define CONV1_FM_SIZE               12   
-`define CONV1_FM_PADDING_UP         0
-`define CONV1_FM_PADDING_DOWN       0 // 1+2=3
-`define CONV1_FM_PADDING_LEFT       0
-`define CONV1_FM_PADDING_RIGHT      0 // 1+2=3
+`define CONV1_FM_PADDING_UP         1
+`define CONV1_FM_PADDING_DOWN       2 // 1+2=3
+`define CONV1_FM_PADDING_LEFT       2
+`define CONV1_FM_PADDING_RIGHT      1 // 1+2=3
 `define CONV1_STRIDE                1
 `define CONV1_KERNEL_NUMBER         4
 `define CONV1_DEPTH_NUMBER          2
@@ -29,11 +29,11 @@
 `define CONV1_WEIGHT_MATRIX_NUMBER  121 // 11*11=121
 
 // pool1 test
-`define POOL1_FM_SIZE               2 //5
-`define POOL1_FM_PADDING_UP         2
-`define POOL1_FM_PADDING_DOWN       3
-`define POOL1_FM_PADDING_LEFT       2
-`define POOL1_FM_PADDING_RIGHT      3
+`define POOL1_FM_SIZE               5
+`define POOL1_FM_PADDING_UP         0
+`define POOL1_FM_PADDING_DOWN       0
+`define POOL1_FM_PADDING_LEFT       0
+`define POOL1_FM_PADDING_RIGHT      0
 `define POOL1_STRIDE                1
 `define POOL1_DEPTH_NUMBER          4
 `define POOL1_POOL_MATRIX_SIZE      3
