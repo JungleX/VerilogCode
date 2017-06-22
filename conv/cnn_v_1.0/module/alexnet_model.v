@@ -105,7 +105,7 @@ module alexnet_model(
     reg [2:0] pool_size;
 
     reg [11:0] get_weight_number; 
-    reg [1:0]  get_bias_number;         // count the bias number, get only one bias each time
+    reg [2:0]  get_bias_number;         // count the bias number, get only one bias each time
     reg [11:0] get_fm_number;           // max value 3*3*384=3456 < 4096=2^12, count the fm matrix number
 
     reg [11:0] set_fm_count;
@@ -318,6 +318,17 @@ module alexnet_model(
                     multRst <= 0;
 
                     writeFM <=0;
+
+                    if (runLayer != CONV1) begin
+                        if(updateKernel == 0) begin
+                            // update weight
+                            updateKernel = 1;
+                            if(current_weight == 0) 
+                                updateKernelNumber = 1;
+                            else if(current_weight == 2)
+                                updateKernelNumber = 2;
+                        end
+                    end
 
     				// set parameters
 	    			case(runLayer)
@@ -813,7 +824,7 @@ module alexnet_model(
                         end
     				end
     				else if (conv_status == 1) begin // conv is done
-    					// change to next layer
+                        // change to next layer
     					case(currentLayer)
     						CONV1:
     							runLayer <= POOL1;
@@ -935,6 +946,16 @@ module alexnet_model(
     				if (pool_status == 0) begin      // pool is running
     					maxpoolEna = 1;
                         maxpoolRst = 1;
+
+                        if(updateKernel == 1) begin
+                            update_kernel_clk_count = update_kernel_clk_count + 1;
+                            if (update_kernel_clk_count >= 4) begin
+                                if(updateKernelDone == 1) begin
+                                    updateKernel = 0;  
+                                    update_kernel_clk_count = 0;
+                                end
+                            end
+                        end
 
                         if(depth_count < depth_number) begin 
                             if(fm_y < fm_y_max) begin
@@ -1105,7 +1126,8 @@ module alexnet_model(
     					// change to next layer
     					case(currentLayer)
     						POOL1:
-    							runLayer <= CONV2;
+    							//runLayer <= CONV2;
+                                runLayer <= FC6; // for debug
     						POOL2:
     							runLayer <= CONV3;
     						POOL5:
@@ -1145,6 +1167,15 @@ module alexnet_model(
 
     				multAddRst <= 0;
 
+                    if(updateKernel == 0) begin
+                        // update weight
+                        updateKernel = 1;
+                        if(current_weight == 0) 
+                            updateKernelNumber = 1;
+                        else if(current_weight == 2)
+                            updateKernelNumber = 2;
+                    end
+
     				// set parameters
 	    			case(runLayer)
 	                	FC6: 
@@ -1178,11 +1209,15 @@ module alexnet_model(
     				if (fc_status == 0) begin      // fc is running
     					multAddRst = 1;
 
-    					if (updateKernel == 1) begin
-    						if (updateKernelDone == 1) begin
-    							updateKernel = 0;
-    						end
-    					end
+                        if(updateKernel == 1) begin
+                            update_kernel_clk_count = update_kernel_clk_count + 1;
+                            if (update_kernel_clk_count >= 4) begin
+                                if(updateKernelDone == 1) begin
+                                    updateKernel = 0;  
+                                    update_kernel_clk_count = 0;
+                                end
+                            end
+                        end
 
     					if (kernel_count < kernel_number) begin
     						if (fm_matrix_count < fm_matrix_number) begin
@@ -1201,8 +1236,9 @@ module alexnet_model(
                                 end
                                 else if(get_bias_number == 3) begin // get read value
                                     bias = biasReadData;
+                                    get_bias_number = get_bias_number + 1;
                                 end
-                                else begin  
+                                else if(get_bias_number < 3)begin  
                                     get_bias_number = get_bias_number + 1;
                                 end
 
@@ -1227,8 +1263,9 @@ module alexnet_model(
                                 end
                                 else if(get_weight_number == 3) begin // get read value 
                                     weight[0] = weightReadData;
+                                    get_weight_number = get_weight_number + 1;
                                 end
-                                else begin
+                                else if(get_weight_number < 3)begin
                                 	get_weight_number = get_weight_number + 1;
                                 end
 
@@ -1246,21 +1283,22 @@ module alexnet_model(
                                 end
                                 else if(get_fm_number == 3) begin // get read value
                                     fm[0] = FMReadData;
+                                    get_fm_number = get_fm_number + 1;
                                 end
-                                else begin
+                                else if(get_fm_number < 3) begin
                                 	get_fm_number = get_fm_number + 1;
                                 end
 
                                 // fc
-                                if (	get_bias_number   == 3
-                                	 &&	get_weight_number == 3
-                                	 && get_fm_number     == 3) begin
+                                if (	get_bias_number   == 4
+                                	 &&	get_weight_number == 4
+                                	 && get_fm_number     == 4) begin
 
                                 	multAddData   = fm[0];
                                 	multAddWeight = weight[0];
                                 	multAddSum    = fc_temp_result;
 
-                                	if (fc_clk_count < 3) begin // todo test
+                                	if (fc_clk_count < 3) begin 
                                 		fc_clk_count = fc_clk_count + 1;
                                 	end
                                 	else if (fc_clk_count == 3) begin
@@ -1268,6 +1306,10 @@ module alexnet_model(
 
                                 		get_weight_number = 0;
                                 		get_fm_number     = 0;
+
+                                        fc_clk_count = 0;
+
+                                        fm_matrix_count = fm_matrix_count + 1;
                                 	end 
                                 end
     						end
@@ -1285,7 +1327,7 @@ module alexnet_model(
                                 	read_fm_start = 0; // the beginning
 
 	    							// write fc result to ram
-	    							writeFMData = multAddResult;
+	    							writeFMData = multAddResult; 
 
 	                                if(write_fm_start == 0) begin
 	                                    writeFMAddr = output_fm_start_index;

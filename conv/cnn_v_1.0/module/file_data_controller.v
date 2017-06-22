@@ -68,8 +68,10 @@ module file_data_controller(
 
     reg file_data_done;
     reg [15:0] fm_data    [0:(`CONV1_FM_SIZE * `CONV1_FM_SIZE * `CONV1_KERNEL_NUMBER - 1)]; // get layer data from conv1 file
-    reg [15:0] weight_data[0:(`CONV1_WEIGHT_MATRIX_NUMBER * `CONV1_DEPTH_NUMBER * `CONV1_KERNEL_NUMBER) - 1];  // get weight data from file
-    reg [15:0] bias_data  [0:(`CONV1_KERNEL_NUMBER - 1)]; // get bias from file
+    //reg [15:0] weight_data[0:(`CONV1_WEIGHT_MATRIX_NUMBER * `CONV1_DEPTH_NUMBER * `CONV1_KERNEL_NUMBER) - 1];  // get weight data from file
+    //reg [15:0] bias_data  [0:(`CONV1_KERNEL_NUMBER - 1)]; // get bias from file
+    reg [15:0] weight_data[0:(`CONV1_WEIGHT_MATRIX_NUMBER * `CONV1_DEPTH_NUMBER * (`CONV1_KERNEL_NUMBER + `FC6_KERNEL_NUMBER)) - 1];  // get weight data from file
+    reg [15:0] bias_data  [0:(`CONV1_KERNEL_NUMBER + `FC6_KERNEL_NUMBER - 1)]; // get bias from file
 
 	always @(posedge clk or posedge rst) begin
 		if(!rst) begin // reset

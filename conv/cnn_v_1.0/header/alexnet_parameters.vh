@@ -39,6 +39,10 @@
 `define POOL1_POOL_MATRIX_SIZE      3
 `define POOL1_POOL_MATRIX_NUMBER    9 // 3*3=9
 
+// fc6
+`define FC6_FM_MATRIX_SIZE          36 // 3*3*4=36
+`define FC6_KERNEL_NUMBER           3
+
 // conv1
 //`define CONV1_FM_SIZE               224
 //`define CONV1_FM_PADDING_UP         1
@@ -133,8 +137,8 @@
 `define POOL5_POOL_MATRIX_NUMBER    9 // 3*3=9
 
 // fc6
-`define FC6_FM_MATRIX_SIZE          9216 // 6*6*256=9216
-`define FC6_KERNEL_NUMBER           4096
+//`define FC6_FM_MATRIX_SIZE          9216 // 6*6*256=9216
+//`define FC6_KERNEL_NUMBER           4096
 
 // fc7
 `define FC7_FM_MATRIX_SIZE          4096 // 1*4096=4096
