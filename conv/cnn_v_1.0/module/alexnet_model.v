@@ -87,7 +87,7 @@ module alexnet_model(
     reg [5:0] padding_left_count;
     reg [5:0] padding_right_count;
 
-    reg [8:0] kernel_number;
+    reg [12:0] kernel_number;
     reg [8:0] depth_number;
     reg [6:0] weight_matrix_number;
     reg [3:0] pool_matrix_number;
@@ -318,17 +318,6 @@ module alexnet_model(
                     multRst <= 0;
 
                     writeFM <=0;
-
-                    if (runLayer != CONV1) begin
-                        if(updateKernel == 0) begin
-                            // update weight
-                            updateKernel = 1;
-                            if(current_weight == 0) 
-                                updateKernelNumber = 1;
-                            else if(current_weight == 2)
-                                updateKernelNumber = 2;
-                        end
-                    end
 
     				// set parameters
 	    			case(runLayer)
@@ -1166,15 +1155,6 @@ module alexnet_model(
     				fc_temp_result <= 0;
 
     				multAddRst <= 0;
-
-                    if(updateKernel == 0) begin
-                        // update weight
-                        updateKernel = 1;
-                        if(current_weight == 0) 
-                            updateKernelNumber = 1;
-                        else if(current_weight == 2)
-                            updateKernelNumber = 2;
-                    end
 
     				// set parameters
 	    			case(runLayer)
