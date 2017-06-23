@@ -1307,7 +1307,7 @@ module alexnet_model(
                                 	read_fm_start = 0; // the beginning
 
 	    							// write fc result to ram
-	    							writeFMData = multAddResult; 
+	    							writeFMData = addResult; 
 
 	                                if(write_fm_start == 0) begin
 	                                    writeFMAddr = output_fm_start_index;
@@ -1327,6 +1327,7 @@ module alexnet_model(
 
 	                                kernel_count    = kernel_count + 1;
 	                                fm_matrix_count = 0;
+                                    fc_temp_result  = 0;
 
 	                                get_weight_number = 0;
 	                                get_bias_number   = 0;
