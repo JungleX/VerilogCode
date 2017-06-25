@@ -270,6 +270,7 @@ module alexnet_model(
     			end
     			else if (writeInitDone == 1) begin // fm of conv1 is ready, change to conv1
     				runLayer <= CONV1;
+                    //runLayer <= FC6; // for debug
     			end
     		end
     		else if ((runLayer >= CONV1) && (runLayer <= CONV5)) begin      // convolution
@@ -308,7 +309,6 @@ module alexnet_model(
 
                     mult_clk_count           <= 0;
             		bias_add_clk_count <= 0;
-                    // update_kernel_status = 0;
 
                     current_weight <= 0;
 
@@ -1115,8 +1115,8 @@ module alexnet_model(
     					// change to next layer
     					case(currentLayer)
     						POOL1:
-    							//runLayer <= CONV2;
-                                runLayer <= FC6; // for debug
+    							runLayer <= CONV2;
+                                //runLayer <= FC6; // for debug
     						POOL2:
     							runLayer <= CONV3;
     						POOL5:
@@ -1305,6 +1305,8 @@ module alexnet_model(
                                 end
                                 else if(bias_add_clk_count == 1) begin // write data
                                 	read_fm_start = 0; // the beginning
+
+                                    bias_add_clk_count = 0;
 
 	    							// write fc result to ram
 	    							writeFMData = addResult; 
