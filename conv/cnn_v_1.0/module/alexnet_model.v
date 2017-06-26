@@ -27,17 +27,6 @@ module alexnet_model(
 
 	output reg [9:0] runLayer,
 
-	input writeInitDone,
-
-	output reg writeFM,
-	output reg [`DATA_WIDTH - 1:0] writeFMData,
-	output reg [31:0] writeFMAddr,
-	input writeFMDone,
-	
-	output reg updateKernel,
-	output reg updateKernelNumber,
-	input updateKernelDone,
-
 	output reg FMReadEn,
 	input [`DATA_WIDTH - 1:0] FMReadData,
 	output reg [31:0] FMReadAddr,
@@ -48,7 +37,14 @@ module alexnet_model(
 
 	output reg biasReadEn,
 	input [`DATA_WIDTH - 1:0] biasReadData,
-	output reg biasReadAddr
+	output reg biasReadAddr,
+
+    // pcie 
+    input [31:0] sigIn,         // idle write done sig(1 bit), write FM done sig(1 bit), update kernel done sig(1 bit), undefine(29 bits)
+
+    output reg [31:0] sigOut_1, // 0: init prepare ram data(1 bit), 1: write FM sig(1 bit), 2: updata kernel sig(1 bit), 3: updata kernel number(1 bit for 2 kernel), undefine(28 bits)
+    output reg [31:0] sigOut_2, // write FM data(16 bits), undefine(16 bits)
+    output reg [31:0] sigOut_3 // write FM address(32 bits)
     );
 
 	parameter   IDLE  = 10'd0,
@@ -66,6 +62,17 @@ module alexnet_model(
                 FC6   = 10'd9,
                 FC7   = 10'd10,
                 FC8   = 10'd11; 
+
+    reg writeInitDone;
+    
+    reg writeFM;
+    reg [`DATA_WIDTH - 1:0] writeFMData;
+    reg [31:0] writeFMAddr;
+    reg writeFMDone;
+
+    reg updateKernel;
+    reg updateKernelNumber;
+    reg updateKernelDone;
 
     reg [9:0] currentLayer;
 
@@ -256,11 +263,20 @@ module alexnet_model(
             conv_status <= 0;
             pool_status <= 0;
             fc_status   <= 0;
+
+            sigOut_1 <= 32'b0;
+            sigOut_2 <= 32'b0;
+            sigOut_3 <= 32'b0;
         end
     end    
 
     always @(posedge clk) begin
     	if(modelRst) begin
+            // pcie input signal
+            writeInitDone    = sigIn[0:0];
+            writeFMDone      = sigIn[1:1];
+            updateKernelDone = sigIn[2:2];
+
     		if (runLayer == IDLE) begin
     			currentLayer <= runLayer;
     			updateKernel = 0;
@@ -1363,6 +1379,31 @@ module alexnet_model(
     				end
     			end
     		end
+
+
+            // pcie output signal
+            if (runLayer == IDLE) begin
+                sigOut_1[0:0] <= 1;
+            end
+
+            // write fm
+            if (writeFM == 1) begin
+                sigOut_1[1:1]  <= 1;
+                sigOut_2[15:0] <= writeFMData;
+                sigOut_3       <= writeFMAddr;
+            end
+            else if (writeFM == 0) begin
+                sigOut_1[1:1]  <= 0;
+            end
+
+            // update kernel
+            if (updateKernel == 1) begin
+                sigOut_1[2:2]  <= 1;
+                sigOut_1[3:3]  <= updateKernelNumber;
+            end
+            else if (updateKernel == 0) begin
+                sigOut_1[2:2]  <= 0;
+            end
 
     	end
     end     

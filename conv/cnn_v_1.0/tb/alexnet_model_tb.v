@@ -29,17 +29,6 @@ module alexnet_model_tb();
 	reg modelRst;
 
 	wire [9:0] runLayer;
-
-	wire writeInitDone;
-
-	wire writeFM;
-	wire [`DATA_WIDTH - 1:0] writeFMData;
-	wire [31:0] writeFMAddr;
-	wire writeFMDone;
-
-	wire updateKernel;
-	wire updateKernelNumber;
-	wire updateKernelDone;
 	
 	wire FMReadEn;
 	wire [`DATA_WIDTH - 1:0] FMReadData;
@@ -53,22 +42,16 @@ module alexnet_model_tb();
 	wire [`DATA_WIDTH - 1:0] biasReadData;
 	wire biasReadAddr;
 
+    wire [31:0] sig;
+	wire [31:0] sig_1;
+	wire [31:0] sig_2;
+	wire [31:0] sig_3;
+	
 	alexnet_model alexnet(
 		.clk(clk),
 	 	.modelRst(modelRst),
 
 		.runLayer(runLayer),
-
-		.writeInitDone(writeInitDone),
-
-		.writeFM(writeFM),
-		.writeFMData(writeFMData),
-		.writeFMAddr(writeFMAddr),
-		.writeFMDone(writeFMDone),
-	
-		.updateKernel(updateKernel),
-		.updateKernelNumber(updateKernelNumber),
-		.updateKernelDone(updateKernelDone),
 
 		.FMReadEn(FMReadEn),
 		.FMReadData(FMReadData),
@@ -80,40 +63,13 @@ module alexnet_model_tb();
 
 		.biasReadEn(biasReadEn),
 		.biasReadData(biasReadData),
-		.biasReadAddr(biasReadAddr)
-    );
-
-	reg pcieConRst;
-
-	wire [31:0] sig;
-	wire [31:0] sig_1;
-	wire [31:0] sig_2;
-	wire [31:0] sig_3;
-
-	pcie_controller pcie_con(
-		.pcieConClk(clk),
-		.pcieConRst(pcieConRst),
-
-	// pcie 
+		.biasReadAddr(biasReadAddr),
+		
 		.sigIn(sig),        
-
-		.sigOut_1(sig_1),
-		.sigOut_2(sig_2), 
-		.sigOut_3(sig_3), 
-
-	// cnn
-		.runlayer(runLayer),
-
-		.writeInitDone(writeInitDone),
-
-		.writeFM(writeFM),
-		.writeFMData(writeFMData),
-		.writeFMAddr(writeFMAddr),
-		.writeFMDone(writeFMDone),
-
-		.updateKernel(updateKernel),
-		.updateKernelNumber(updateKernelNumber),
-		.updateKernelDone(updateKernelDone)
+        
+        .sigOut_1(sig_1),
+        .sigOut_2(sig_2), 
+        .sigOut_3(sig_3)
     );
 
 	reg fileRst;
@@ -205,12 +161,12 @@ module alexnet_model_tb();
     initial begin
     	#0 // reset
     	modelRst   = 0;
-    	pcieConRst = 0;
+    	//pcieConRst = 0;
     	fileRst    = 0;
 
     	#`clk_period
     	modelRst   = 1;
-    	pcieConRst = 1;
+    	//pcieConRst = 1;
     	fileRst    = 1;
 
 
