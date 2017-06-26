@@ -1,5 +1,5 @@
 module test_status #(
-	parameter         PREFIX = "TEST_MODULE",
+	parameter          PREFIX = "TEST_MODULE",
 	parameter integer TIMEOUT = 100
 ) (
 	input wire     clk,
@@ -8,7 +8,7 @@ module test_status #(
 	input wire     pass
 );
 
-task watchdog;
+/*task watchdog;
 	input integer timeout;
 	begin
 		repeat(timeout) begin
@@ -18,7 +18,7 @@ task watchdog;
 		$display("ERROR: Timeout. Increase the parameter TIMEOUT of test_status module to prevent early termination of test bench");
 		test_fail;
 	end
-endtask
+endtask*/
 
 initial
 	check_status;
