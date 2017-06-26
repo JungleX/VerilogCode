@@ -47,23 +47,33 @@ module alexnet_model(
     output reg [31:0] sigOut_3 // write FM address(32 bits)
     );
 
-	parameter   IDLE  = 10'd0,
+    parameter   NONE = 4'd0;
 
-                CONV1 = 10'd1,  
-                CONV2 = 10'd2, 
-                CONV3 = 10'd3,  
-                CONV4 = 10'd4,  
-                CONV5 = 10'd5,
+	parameter   IDLE  = 10'd1,
 
-                POOL1 = 10'd6,
-                POOL2 = 10'd7,
-                POOL5 = 10'd8,
+                CONV1 = 10'd2,  
+                CONV2 = 10'd3, 
+                CONV3 = 10'd4,  
+                CONV4 = 10'd5,  
+                CONV5 = 10'd6,
 
-                FC6   = 10'd9,
-                FC7   = 10'd10,
-                FC8   = 10'd11; 
+                POOL1 = 10'd7,
+                POOL2 = 10'd8,
+                POOL5 = 10'd9,
 
+                FC6   = 10'd10,
+                FC7   = 10'd11,
+                FC8   = 10'd12; 
+
+    parameter   ReLU = 4'd1;
+
+    reg [3:0] activation;
+
+    reg writeInit;
     reg writeInitDone;
+
+    reg [3:0] write_init_trans_id;
+    reg [3:0] write_done_init_trans_id;
     
     reg writeFM;
     reg [`DATA_WIDTH - 1:0] writeFMData;
@@ -144,7 +154,7 @@ module alexnet_model(
 
     reg [`DATA_WIDTH - 1:0] conv_temp_result;
     reg [`DATA_WIDTH - 1:0] fc_temp_result;
-    
+
     reg [11:0] i;
     reg [11:0] j;
     reg [11:0] k;
@@ -229,6 +239,9 @@ module alexnet_model(
    always @(posedge clk or posedge modelRst) begin
         if(!modelRst) begin // reset
             runLayer <= IDLE;
+            currentLayer <= NONE;
+
+            activation <= NONE;
 
             FMReadEn     <= 0;
             weightReadEn <= 0;
@@ -274,6 +287,7 @@ module alexnet_model(
             sigOut_2 <= 32'b0;
             sigOut_3 <= 32'b0;
 
+            write_init_trans_id    <= 0;
             update_kernel_trans_id <= 0;
             write_fm_trans_id      <= 0;
         end
@@ -286,20 +300,37 @@ module alexnet_model(
             writeFMDone      = sigIn[1:1];
             updateKernelDone = sigIn[2:2];
 
+            write_done_init_trans_id    = sigIn[14:11];
             update_done_kernel_trans_id = sigIn[6:3];
             write_done_fm_trans_id      = sigIn[10:7];
 
     		if (runLayer == IDLE) begin
-    			currentLayer <= runLayer;
-    			updateKernel = 0;
+                if (currentLayer != runLayer) begin
+                    currentLayer <= runLayer;
+                    updateKernel = 0;
 
-    			if (writeInitDone == 0) begin      // fm of conv1 is not ready, wait to write or is writing
-    				
-    			end
-    			else if (writeInitDone == 1) begin // fm of conv1 is ready, change to conv1
-    				runLayer <= CONV1;
-                    //runLayer <= FC6; // for debug
-    			end
+                    writeInit = 1;
+
+                    if (write_init_trans_id == 10) begin
+                        write_init_trans_id = 1;
+                    end
+                    else begin
+                        write_init_trans_id = write_init_trans_id + 1;
+                    end
+                end
+    			
+                if (writeInit == 1) begin
+                    if ( writeInitDone == 0 ) begin      // fm of conv1 is not ready, wait to write or is writing
+                    
+                    end
+                    else if (   writeInitDone == 1
+                             && write_done_init_trans_id == write_init_trans_id) begin // fm of conv1 is ready, change to conv1
+                        writeInit = 0;
+
+                        runLayer <= CONV1;
+                        //runLayer <= FC6; // for debug
+                    end
+                end
     		end
     		else if ((runLayer >= CONV1) && (runLayer <= CONV5)) begin      // convolution
     			FMReadEn     <= 1;
@@ -345,8 +376,8 @@ module alexnet_model(
                     multEna <= 1;
                     multRst <= 0;
 
-                    writeFM <=0;
-
+                    writeFM <= 0;
+ 
     				// set parameters
 	    			case(runLayer)
 	                	CONV1: 
@@ -371,6 +402,8 @@ module alexnet_model(
     							fm_size               <= `CONV1_FM_SIZE;
     							weight_size           <= `CONV1_WEIGHT_MATRIX_SIZE;
     							stride                <= `CONV1_STRIDE;
+
+                                activation            <= `CONV1_ACTIVATION;
 	                		end
 	                	CONV2:
 	                		begin
@@ -394,6 +427,8 @@ module alexnet_model(
     							fm_size               <= `CONV2_FM_SIZE;
     							weight_size           <= `CONV2_WEIGHT_MATRIX_SIZE;
     							stride                <= `CONV2_STRIDE;
+
+                                activation            <= `CONV2_ACTIVATION;
 	                		end
 	                	CONV3:
 	                		begin
@@ -417,6 +452,8 @@ module alexnet_model(
     							fm_size               <= `CONV3_FM_SIZE;
     							weight_size           <= `CONV3_WEIGHT_MATRIX_SIZE;
     							stride                <= `CONV3_STRIDE;
+
+                                activation            <= `CONV3_ACTIVATION;
 	                		end
 	                	CONV4:
 	                		begin
@@ -440,6 +477,8 @@ module alexnet_model(
     							fm_size               <= `CONV4_FM_SIZE;
     							weight_size           <= `CONV4_WEIGHT_MATRIX_SIZE;
     							stride                <= `CONV4_STRIDE;
+
+                                activation            <= `CONV4_ACTIVATION;
 	                		end
 	                	CONV5:
 	                		begin
@@ -463,6 +502,8 @@ module alexnet_model(
     							fm_size               <= `CONV5_FM_SIZE;
     							weight_size           <= `CONV5_WEIGHT_MATRIX_SIZE;
     							stride                <= `CONV5_STRIDE;
+
+                                activation            <= `CONV5_ACTIVATION;
 	                		end
 	                endcase
     			end
@@ -752,7 +793,13 @@ module alexnet_model(
                                                 write_fm_trans_id = write_fm_trans_id + 1;
                                             end
 
-                                            writeFMData = addResult;
+                                            // ReLU
+                                            if (activation == ReLU) begin
+                                                writeFMData = addResult > 0 ? addResult : 0;
+                                            end
+                                            else if (activation == NONE) begin
+                                                writeFMData = addResult; 
+                                            end
 
                                             $display("%h", writeFMData); // for debug
 
@@ -1450,8 +1497,13 @@ module alexnet_model(
 
 
             // pcie output signal
-            if (runLayer == IDLE) begin
+            // write init data
+            if (writeInit == 1) begin
                 sigOut_1[0:0] <= 1;
+                sigOut_1[15:12] <= write_init_trans_id;
+            end
+            else if (writeInit == 0) begin
+                sigOut_1[0:0] <= 0;
             end
 
             // write fm

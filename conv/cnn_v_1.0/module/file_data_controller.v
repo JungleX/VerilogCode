@@ -50,6 +50,9 @@ module file_data_controller(
 	reg write_init_data;
 	reg write_init_done;
 
+    reg [3:0] write_init_trans_id;
+    reg [3:0] write_done_init_trans_id;
+
 	reg write_FM;
 	reg [15:0] write_FM_data;
 	reg [31:0] write_FM_addr;
@@ -113,6 +116,7 @@ module file_data_controller(
 			update_kernel        = sig_1[2:2];
 			update_kernel_number = sig_1[3:3];
 
+            write_init_trans_id    = sig_1[15:12];
             update_kernel_trans_id = sig_1[7:4];
             write_fm_trans_id      = sig_1[11:8];
 
@@ -122,6 +126,12 @@ module file_data_controller(
 			FMWea     <= 1;
 			weightWea <= 1;
 			biasWea   <= 1;
+
+            if (write_init_data == 1 && write_init_trans_id != sig[14:11]) begin
+                write_init_done = 0;
+
+                sig[0:0] = 0;
+            end
 
 			if (write_init_done == 0) begin
 				if (file_data_done == 0) begin
@@ -218,6 +228,8 @@ module file_data_controller(
                     	&& biasWriteEn   == 0) begin
                     	sig[0:0]        = 1; // write init data done
                     	write_init_done = 1;
+
+                        sig[14:11] = write_init_trans_id;
 
 						fm_write_count     = 0;
 						weight_write_count = 0;

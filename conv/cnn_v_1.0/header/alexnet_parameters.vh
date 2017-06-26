@@ -27,6 +27,7 @@
 `define CONV1_DEPTH_NUMBER          2
 `define CONV1_WEIGHT_MATRIX_SIZE    11
 `define CONV1_WEIGHT_MATRIX_NUMBER  121 // 11*11=121
+`define CONV1_ACTIVATION            1 // 1: use ReLU; 0: not use ReLU;
 
 // pool1 test
 `define POOL1_FM_SIZE               5
@@ -54,6 +55,7 @@
 //`define CONV1_DEPTH_NUMBER          3
 //`define CONV1_WEIGHT_MATRIX_SIZE    11
 //`define CONV1_WEIGHT_MATRIX_NUMBER  121 // 11*11=121
+//`define CONV1_ACTIVATION            1 // 1: use ReLU; 0: not use ReLU;
 
 // conv2
 `define CONV2_FM_SIZE               27
@@ -66,6 +68,7 @@
 `define CONV2_DEPTH_NUMBER          96
 `define CONV2_WEIGHT_MATRIX_SIZE    5
 `define CONV2_WEIGHT_MATRIX_NUMBER  25 // 5*5=25
+`define CONV2_ACTIVATION            1 // 1: use ReLU; 0: not use ReLU;
 
 // conv3
 `define CONV3_FM_SIZE               13
@@ -78,6 +81,7 @@
 `define CONV3_DEPTH_NUMBER          256
 `define CONV3_WEIGHT_MATRIX_SIZE    3
 `define CONV3_WEIGHT_MATRIX_NUMBER  9 // 3*3=9
+`define CONV3_ACTIVATION            1 // 1: use ReLU; 0: not use ReLU;
 
 // conv4
 `define CONV4_FM_SIZE               13
@@ -90,6 +94,7 @@
 `define CONV4_DEPTH_NUMBER          384
 `define CONV4_WEIGHT_MATRIX_SIZE    3
 `define CONV4_WEIGHT_MATRIX_NUMBER  9 // 3*3=9
+`define CONV4_ACTIVATION            1 // 1: use ReLU; 0: not use ReLU;
 
 // conv5
 `define CONV5_FM_SIZE               13
@@ -102,6 +107,7 @@
 `define CONV5_DEPTH_NUMBER          384
 `define CONV5_WEIGHT_MATRIX_SIZE    3
 `define CONV5_WEIGHT_MATRIX_NUMBER  9 // 3*3=9
+`define CONV5_ACTIVATION            1 // 1: use ReLU; 0: not use ReLU;
 
 // pool1
 //`define POOL1_FM_SIZE               55
