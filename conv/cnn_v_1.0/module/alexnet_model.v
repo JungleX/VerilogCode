@@ -74,6 +74,9 @@ module alexnet_model(
     reg updateKernelNumber;
     reg updateKernelDone;
 
+    reg [3:0] update_kernel_trans_id;
+    reg [3:0] update_done_kernel_trans_id;
+
     reg [9:0] currentLayer;
 
     reg [31:0] input_fm_start_index;
@@ -269,6 +272,8 @@ module alexnet_model(
             sigOut_1 <= 32'b0;
             sigOut_2 <= 32'b0;
             sigOut_3 <= 32'b0;
+
+            update_kernel_trans_id <= 0;
         end
     end    
 
@@ -278,6 +283,8 @@ module alexnet_model(
             writeInitDone    = sigIn[0:0];
             writeFMDone      = sigIn[1:1];
             updateKernelDone = sigIn[2:2];
+
+            update_done_kernel_trans_id = sigIn[6:3];
 
     		if (runLayer == IDLE) begin
     			currentLayer <= runLayer;
@@ -461,14 +468,22 @@ module alexnet_model(
     					multEna = 1;
                         multRst = 1;
 
+//                        if (updateKernel == 1) begin
+//                        	update_kernel_clk_count = update_kernel_clk_count + 1;
+//                        	if (update_kernel_clk_count >= 4) begin
+//                        		if(updateKernelDone == 1) begin
+//                                	updateKernel = 0;  
+//                                	update_kernel_clk_count = 0;
+//                            	end
+//                        	end
+//                        end
+
                         if (updateKernel == 1) begin
-                        	update_kernel_clk_count = update_kernel_clk_count + 1;
-                        	if (update_kernel_clk_count >= 4) begin
-                        		if(updateKernelDone == 1) begin
-                                	updateKernel = 0;  
-                                	update_kernel_clk_count = 0;
-                            	end
-                        	end
+                            if (   updateKernelDone == 1 
+                                && update_done_kernel_trans_id == update_kernel_trans_id) begin
+                                updateKernel = 0;  
+                                update_kernel_clk_count = 0;
+                            end
                         end
 
                         if (writeFM == 1) begin
@@ -829,6 +844,14 @@ module alexnet_model(
                                 if(updateKernel == 0) begin
                                     // update weight
                                     updateKernel = 1;
+
+                                    if (update_kernel_trans_id == 10) begin
+                                        update_kernel_trans_id = 1;
+                                    end
+                                    else begin
+                                        update_kernel_trans_id = update_kernel_trans_id + 1;
+                                    end
+
                                     if(current_weight == 0) 
                                     	updateKernelNumber = 1;
                                     else if(current_weight == 2)
@@ -1390,6 +1413,14 @@ module alexnet_model(
 	                                if(updateKernel == 0) begin
 	                                    // update weight
 	                                    updateKernel = 1;
+                                        
+                                        if (update_kernel_trans_id == 10) begin
+                                            update_kernel_trans_id = 1;
+                                        end
+                                        else begin
+                                            update_kernel_trans_id = update_kernel_trans_id + 1;
+                                        end
+
 	                                    if(current_weight == 0) 
 	                                    	updateKernelNumber = 1;
 	                                    else if(current_weight == 2)
@@ -1429,16 +1460,17 @@ module alexnet_model(
                 sigOut_3       <= writeFMAddr;
             end
             else if (writeFM == 0) begin
-                sigOut_1[1:1]  <= 0;
+                sigOut_1[1:1] <= 0;
             end
 
             // update kernel
             if (updateKernel == 1) begin
-                sigOut_1[2:2]  <= 1;
-                sigOut_1[3:3]  <= updateKernelNumber;
+                sigOut_1[2:2] <= 1;
+                sigOut_1[3:3] <= updateKernelNumber;
+                sigOut_1[7:4] <= update_kernel_trans_id;
             end
             else if (updateKernel == 0) begin
-                sigOut_1[2:2]  <= 0;
+                sigOut_1[2:2] <= 0;
             end
 
     	end
