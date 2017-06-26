@@ -54,11 +54,12 @@ module file_data_controller(
 	reg [15:0] write_FM_data;
 	reg [31:0] write_FM_addr;
 
+    reg [3:0] write_fm_trans_id;
+
 	reg update_kernel;
 	reg update_kernel_number;
 
     reg [3:0] update_kernel_trans_id;
-    reg [3:0] update_done_kernel_trans_id;
 
 	reg [17:0] fm_write_count;        // 18 bits, max value 262144 > 227*227*3=154587, count the init feature map data
     reg [12:0] weight_write_count;         
@@ -67,7 +68,6 @@ module file_data_controller(
     reg [8:0] weight_count;           // 9  bits, max value 512 > 384 > 256 > 96
     reg [8:0] bias_count;             // 9  bits, max value 512 > 384 > 256 > 96
     
-    reg [8:0] update_kernel_wait_clk; // 9  bits, max value 512 > 384
     reg [2:0] write_fm_wait_clk;
 
     reg file_data_done;
@@ -88,7 +88,6 @@ module file_data_controller(
 			weight_write_count <= 0;
 			bias_write_count   <= 0;
 
-			update_kernel_wait_clk <= 0;
             write_fm_wait_clk      <= 0;
 
 			FMWea     <= 0;
@@ -115,6 +114,7 @@ module file_data_controller(
 			update_kernel_number = sig_1[3:3];
 
             update_kernel_trans_id = sig_1[7:4];
+            write_fm_trans_id      = sig_1[11:8];
 
 			write_FM_data        = sig_2[15:0];
 			write_FM_addr        = sig_3;
@@ -228,7 +228,6 @@ module file_data_controller(
 			end
 			else if (write_init_done == 1) begin 
 				// update kernel data
-				// if (update_kernel == 1 && update_kernel_wait_clk == 0) begin
                 if (update_kernel == 1 && update_kernel_trans_id != sig[6:3]) begin
 					// write weight data
                     if(weight_write_count < (`CONV1_WEIGHT_MATRIX_NUMBER * `CONV1_DEPTH_NUMBER) ) begin
@@ -285,45 +284,34 @@ module file_data_controller(
 					if (weightWriteEn == 0 && biasWriteEn == 0) begin
                     	sig[2:2] = 1; // update kernel done
 
-                    	//update_kernel_wait_clk = update_kernel_wait_clk + 1;
-
-
                         sig[6:3] = update_kernel_trans_id;
                         weight_write_count = 0;
                         bias_write_count   = 0;
                     end
 				end
-				/*else if (update_kernel == 1 && update_kernel_wait_clk < 3) begin
-					update_kernel_wait_clk = update_kernel_wait_clk + 1;
-				end
-				else if (update_kernel == 1 && update_kernel_wait_clk >= 3)  begin
-					weight_write_count = 0;
-                    bias_write_count   = 0;
-                    update_kernel_wait_clk = 0;
-				end*/
 
 				// write fm data
-				if (write_FM == 1 && write_fm_wait_clk == 0) begin
+                if (write_FM == 1 && write_fm_trans_id != sig[10:7]) begin
                 
-                    sig[1:1]  = 0;
+                    if (write_fm_wait_clk == 0) begin
+                        sig[1:1]  = 0;
 
-                    FMWriteEn = 1;
-                    
-                    FMWriteData = write_FM_data;
+                        FMWriteEn = 1;
+                        
+                        FMWriteData = write_FM_data;
 
-                    FMWriteAddr = write_FM_addr;
+                        FMWriteAddr = write_FM_addr;
 
-                    write_fm_wait_clk = write_fm_wait_clk + 1;
+                        write_fm_wait_clk = 1;
+                    end
+                    else if (write_fm_wait_clk == 1) begin
+                        sig[1:1] = 1; // write fm done
+                        FMWriteEn = 0;
+
+                        write_fm_wait_clk = 0;
+                        sig[10:7] = write_fm_trans_id;
+                    end
                 end
-                else if (write_FM == 1 && write_fm_wait_clk == 1)begin
-                    sig[1:1] = 1; // write fm done
-                    FMWriteEn = 0;
-
-                    write_fm_wait_clk = write_fm_wait_clk + 1;
-                end  
-				else if (write_FM == 1 && write_fm_wait_clk >= 2) begin
-                    write_fm_wait_clk = 0;
-				end
 			end
 		end
 	end

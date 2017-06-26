@@ -70,6 +70,9 @@ module alexnet_model(
     reg [31:0] writeFMAddr;
     reg writeFMDone;
 
+    reg [3:0] write_fm_trans_id;
+    reg [3:0] write_done_fm_trans_id;
+
     reg updateKernel;
     reg updateKernelNumber;
     reg updateKernelDone;
@@ -146,7 +149,6 @@ module alexnet_model(
     reg [11:0] j;
     reg [11:0] k;
 
-    reg [3:0] update_kernel_clk_count;
     reg [2:0] write_fm_clk_count;
 
 	reg conv_status;
@@ -262,7 +264,6 @@ module alexnet_model(
             mult_clk_count     <= 0;
             bias_add_clk_count <= 0;
 
-            update_kernel_clk_count <= 0;
             write_fm_clk_count      <= 0;
 
             conv_status <= 0;
@@ -274,6 +275,7 @@ module alexnet_model(
             sigOut_3 <= 32'b0;
 
             update_kernel_trans_id <= 0;
+            write_fm_trans_id      <= 0;
         end
     end    
 
@@ -285,6 +287,7 @@ module alexnet_model(
             updateKernelDone = sigIn[2:2];
 
             update_done_kernel_trans_id = sigIn[6:3];
+            write_done_fm_trans_id      = sigIn[10:7];
 
     		if (runLayer == IDLE) begin
     			currentLayer <= runLayer;
@@ -468,33 +471,20 @@ module alexnet_model(
     					multEna = 1;
                         multRst = 1;
 
-//                        if (updateKernel == 1) begin
-//                        	update_kernel_clk_count = update_kernel_clk_count + 1;
-//                        	if (update_kernel_clk_count >= 4) begin
-//                        		if(updateKernelDone == 1) begin
-//                                	updateKernel = 0;  
-//                                	update_kernel_clk_count = 0;
-//                            	end
-//                        	end
-//                        end
-
                         if (updateKernel == 1) begin
                             if (   updateKernelDone == 1 
                                 && update_done_kernel_trans_id == update_kernel_trans_id) begin
                                 updateKernel = 0;  
-                                update_kernel_clk_count = 0;
                             end
                         end
 
                         if (writeFM == 1) begin
-                            write_fm_clk_count = write_fm_clk_count + 1;
-                            if (write_fm_clk_count >= 2) begin
-                                if (writeFMDone == 1) begin
+                            if (   writeFMDone == 1
+                                && write_done_fm_trans_id == write_fm_trans_id) begin
                                     writeFM = 0;
                                     write_fm_clk_count = 0;
-                                end
                             end
-                        end 
+                        end
 
     					if (kernel_count < kernel_number) begin           // loop 4
                             if(fm_y < fm_y_max) begin                    // loop 3, fm_y = fm_y + stride
@@ -755,6 +745,13 @@ module alexnet_model(
                                         else if(bias_add_clk_count == 1) begin // write data
                                         	writeFM = 1;
 
+                                            if (write_fm_trans_id == 10) begin
+                                                write_fm_trans_id = 1;
+                                            end
+                                            else begin
+                                                write_fm_trans_id = write_fm_trans_id + 1;
+                                            end
+
                                             writeFMData = addResult;
 
                                             $display("%h", writeFMData); // for debug
@@ -987,23 +984,18 @@ module alexnet_model(
     					maxpoolEna = 1;
                         maxpoolRst = 1;
 
-                        if(updateKernel == 1) begin
-                            update_kernel_clk_count = update_kernel_clk_count + 1;
-                            if (update_kernel_clk_count >= 4) begin
-                                if(updateKernelDone == 1) begin
-                                    updateKernel = 0;  
-                                    update_kernel_clk_count = 0;
-                                end
+                        if (updateKernel == 1) begin
+                            if (   updateKernelDone == 1 
+                                && update_done_kernel_trans_id == update_kernel_trans_id) begin
+                                updateKernel = 0;  
                             end
                         end
 
                         if (writeFM == 1) begin
-                            write_fm_clk_count = write_fm_clk_count + 1;
-                            if (write_fm_clk_count >= 2) begin
-                                if (writeFMDone == 1) begin
+                            if (   writeFMDone == 1
+                                && write_done_fm_trans_id == write_fm_trans_id) begin
                                     writeFM = 0;
                                     write_fm_clk_count = 0;
-                                end
                             end
                         end
 
@@ -1125,6 +1117,13 @@ module alexnet_model(
                                         end
                                         else begin // write max pool result to ram
                                             writeFM = 1;
+
+                                            if (write_fm_trans_id == 10) begin
+                                                write_fm_trans_id = 1;
+                                            end
+                                            else begin
+                                                write_fm_trans_id = write_fm_trans_id + 1;
+                                            end
 
                                         	writeFMData = maxpoolOut;
 
@@ -1252,23 +1251,18 @@ module alexnet_model(
     				if (fc_status == 0) begin      // fc is running
     					multAddRst = 1;
 
-                        if(updateKernel == 1) begin
-                            update_kernel_clk_count = update_kernel_clk_count + 1;
-                            if (update_kernel_clk_count >= 4) begin
-                                if(updateKernelDone == 1) begin
-                                    updateKernel = 0;  
-                                    update_kernel_clk_count = 0;
-                                end
+                        if (updateKernel == 1) begin
+                            if (   updateKernelDone == 1 
+                                && update_done_kernel_trans_id == update_kernel_trans_id) begin
+                                updateKernel = 0;  
                             end
                         end
 
                         if (writeFM == 1) begin
-                            write_fm_clk_count = write_fm_clk_count + 1;
-                            if (write_fm_clk_count >= 2) begin
-                                if (writeFMDone == 1) begin
+                            if (   writeFMDone == 1
+                                && write_done_fm_trans_id == write_fm_trans_id) begin
                                     writeFM = 0;
                                     write_fm_clk_count = 0;
-                                end
                             end
                         end
 
@@ -1379,6 +1373,13 @@ module alexnet_model(
                                 else if(bias_add_clk_count == 1) begin // write data
                                     writeFM = 1;
 
+                                    if (write_fm_trans_id == 10) begin
+                                        write_fm_trans_id = 1;
+                                    end
+                                    else begin
+                                        write_fm_trans_id = write_fm_trans_id + 1;
+                                    end
+
                                 	read_fm_start = 0; // the beginning
 
                                     bias_add_clk_count = 0;
@@ -1413,7 +1414,7 @@ module alexnet_model(
 	                                if(updateKernel == 0) begin
 	                                    // update weight
 	                                    updateKernel = 1;
-                                        
+
                                         if (update_kernel_trans_id == 10) begin
                                             update_kernel_trans_id = 1;
                                         end
@@ -1456,6 +1457,7 @@ module alexnet_model(
             // write fm
             if (writeFM == 1) begin
                 sigOut_1[1:1]  <= 1;
+                sigOut_1[11:8] <= write_fm_trans_id;
                 sigOut_2[15:0] <= writeFMData;
                 sigOut_3       <= writeFMAddr;
             end
