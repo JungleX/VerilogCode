@@ -65,6 +65,7 @@ module file_data_controller(
     reg [8:0] bias_count;             // 9  bits, max value 512 > 384 > 256 > 96
     
     reg [8:0] update_kernel_wait_clk; // 9  bits, max value 512 > 384
+    reg [2:0] write_fm_wait_clk;
 
     reg file_data_done;
     reg [15:0] fm_data    [0:(`CONV1_FM_SIZE * `CONV1_FM_SIZE * `CONV1_KERNEL_NUMBER - 1)]; // get layer data from conv1 file
@@ -85,6 +86,7 @@ module file_data_controller(
 			bias_write_count   <= 0;
 
 			update_kernel_wait_clk <= 0;
+            write_fm_wait_clk      <= 0;
 
 			FMWea     <= 0;
 			weightWea <= 0;
@@ -121,6 +123,11 @@ module file_data_controller(
 					$readmemb("fm.mem", fm_data); 
                     $readmemb("weight.mem", weight_data); 
                     $readmemb("bias.mem", bias_data); 
+                    
+                    //$readmemb("fm_fc.mem", fm_data); 
+                    //$readmemb("weight_fc.mem", weight_data); 
+                    //$readmemb("bias_fc.mem", bias_data); 
+
                     file_data_done = 1;
 
                     fm_write_count     = 0;
@@ -285,14 +292,26 @@ module file_data_controller(
 				end
 
 				// write fm data
-				if (write_FM == 1) begin
-					FMWriteEn = 1;
+				if (write_FM == 1 && write_fm_wait_clk == 0) begin
+                
+                    sig[1:1]  = 0;
+
+                    FMWriteEn = 1;
                     
                     FMWriteData = write_FM_data;
 
                     FMWriteAddr = write_FM_addr;
 
-                    sig[1:1]    = 1; // write fm done
+                    write_fm_wait_clk = write_fm_wait_clk + 1;
+                end
+                else if (write_FM == 1 && write_fm_wait_clk == 1)begin
+                    sig[1:1] = 1; // write fm done
+                    FMWriteEn = 0;
+
+                    write_fm_wait_clk = write_fm_wait_clk + 1;
+                end  
+				else if (write_FM == 1 && write_fm_wait_clk >= 2) begin
+                    write_fm_wait_clk = 0;
 				end
 			end
 		end

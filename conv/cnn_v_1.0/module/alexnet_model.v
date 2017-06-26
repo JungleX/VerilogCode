@@ -144,6 +144,7 @@ module alexnet_model(
     reg [11:0] k;
 
     reg [3:0] update_kernel_clk_count;
+    reg [2:0] write_fm_clk_count;
 
 	reg conv_status;
 	reg pool_status;
@@ -255,10 +256,11 @@ module alexnet_model(
 
             write_fm_start    <= 0;
 
-            mult_clk_count           <= 0;
+            mult_clk_count     <= 0;
             bias_add_clk_count <= 0;
 
             update_kernel_clk_count <= 0;
+            write_fm_clk_count      <= 0;
 
             conv_status <= 0;
             pool_status <= 0;
@@ -323,7 +325,7 @@ module alexnet_model(
 
 		            write_fm_start    <= 0;
 
-                    mult_clk_count           <= 0;
+                    mult_clk_count     <= 0;
             		bias_add_clk_count <= 0;
 
                     current_weight <= 0;
@@ -459,7 +461,7 @@ module alexnet_model(
     					multEna = 1;
                         multRst = 1;
 
-                        if(updateKernel == 1) begin
+                        if (updateKernel == 1) begin
                         	update_kernel_clk_count = update_kernel_clk_count + 1;
                         	if (update_kernel_clk_count >= 4) begin
                         		if(updateKernelDone == 1) begin
@@ -469,7 +471,17 @@ module alexnet_model(
                         	end
                         end
 
-    					if(kernel_count < kernel_number) begin           // loop 4
+                        if (writeFM == 1) begin
+                            write_fm_clk_count = write_fm_clk_count + 1;
+                            if (write_fm_clk_count >= 2) begin
+                                if (writeFMDone == 1) begin
+                                    writeFM = 0;
+                                    write_fm_clk_count = 0;
+                                end
+                            end
+                        end 
+
+    					if (kernel_count < kernel_number) begin           // loop 4
                             if(fm_y < fm_y_max) begin                    // loop 3, fm_y = fm_y + stride
                                 if(fm_x < fm_x_max) begin                // loop 3, fm_x = fm_x + stride
                                     if(depth_count < depth_number) begin // loop 2
@@ -962,6 +974,16 @@ module alexnet_model(
                             end
                         end
 
+                        if (writeFM == 1) begin
+                            write_fm_clk_count = write_fm_clk_count + 1;
+                            if (write_fm_clk_count >= 2) begin
+                                if (writeFMDone == 1) begin
+                                    writeFM = 0;
+                                    write_fm_clk_count = 0;
+                                end
+                            end
+                        end
+
                         if(depth_count < depth_number) begin 
                             if(fm_y < fm_y_max) begin
                                 if(fm_x < fm_x_max) begin
@@ -1079,6 +1101,8 @@ module alexnet_model(
                                             pool_clk_count = pool_clk_count + 1;
                                         end
                                         else begin // write max pool result to ram
+                                            writeFM = 1;
+
                                         	writeFMData = maxpoolOut;
 
                                             $display("%h", writeFMData); // for debug
@@ -1215,6 +1239,16 @@ module alexnet_model(
                             end
                         end
 
+                        if (writeFM == 1) begin
+                            write_fm_clk_count = write_fm_clk_count + 1;
+                            if (write_fm_clk_count >= 2) begin
+                                if (writeFMDone == 1) begin
+                                    writeFM = 0;
+                                    write_fm_clk_count = 0;
+                                end
+                            end
+                        end
+
     					if (kernel_count < kernel_number) begin
     						if (fm_matrix_count < fm_matrix_number) begin
     							// read bias data
@@ -1320,6 +1354,8 @@ module alexnet_model(
                                     bias_add_clk_count = 1;
                                 end
                                 else if(bias_add_clk_count == 1) begin // write data
+                                    writeFM = 1;
+
                                 	read_fm_start = 0; // the beginning
 
                                     bias_add_clk_count = 0;
