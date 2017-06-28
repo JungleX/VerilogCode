@@ -21,6 +21,8 @@ PU_tb_driver #(
     .fail                      ( fail                            )
 );
 
+integer ii;
+
 initial begin
 	driver.status.start;
 	start = 0;
@@ -31,7 +33,16 @@ initial begin
 	wait(u_controller.state != 0);          //pu_controller ready
 	start = 0;            //Cleared after triggering
 
-	max_layers = u_controller.max_layers+1;
+	max_layers = u_controller.max_layers+1;      //+1?
+	$display;
+	$display("****************************************");
+	$display("Number of layers = %d", max_layers);
+	$display("****************************************");
+	$display;
+	
+	for (ii=0; ii<max_layers; ii++)
+	begin
+	end
 
 end
 
