@@ -1,7 +1,8 @@
 `include "params.vh"
 
 module PU_controller #(
-    parameter integer LAYER_PARAM_WIDTH          = 10
+    parameter integer LAYER_PARAM_WIDTH          = 10,
+    parameter integer MAX_LAYERS                 = 64
 )(
     input wire                                 clk,
     input wire                                 reset,
@@ -30,6 +31,9 @@ begin: FSM
             if (start)
                 next_state = WAIT;
         end
+	WAIT: begin
+		
+	end
     endcase
 end
 

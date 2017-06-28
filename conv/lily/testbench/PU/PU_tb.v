@@ -5,6 +5,7 @@ module PU_tb;
 localparam integer NUM_PE              = `num_pe;
 localparam integer OP_WIDTH            = 16;
 
+reg                                              start;
 wire                                             read_req;
 wire                                             vecgen_rd_req;
 
@@ -20,6 +21,20 @@ PU_tb_driver #(
     .fail                      ( fail                            )
 );
 
+initial begin
+	driver.status.start;
+	start = 0;
+
+	@(negedge clk);
+
+	start = 1;
+	wait(u_controller.state != 0);          //pu_controller ready
+	start = 0;            //Cleared after triggering
+
+	max_layers = u_controller.max_layers+1;
+
+end
+
 assign read_req = vecgen_rd_req;
 
 vectorgen #(
@@ -27,6 +42,13 @@ vectorgen #(
     .clk                  ( clk                       ),
     .reset                ( reset                     ),  
     .read_req             ( vecgen_rd_req             )
+);
+
+PU_controller #(
+) u_controller (
+	.clk               ( clk                      ),
+	.reset             ( reset                    ),
+	.start             ( start                    )  
 );
 
 endmodule
