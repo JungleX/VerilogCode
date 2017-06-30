@@ -27,7 +27,7 @@ module max_pool(
     input clk,
     input ena,
     input reset,
-    input [`POOL_SIZE - 1:0] in_vector,
+    input [`POOL_MAX_MATRIX_SIZE - 1:0] in_vector,
     output reg [`DATA_WIDTH - 1:0] pool_out
     );
     //reg [`DATA_WIDTH - 1:0] pool_out;
@@ -35,7 +35,7 @@ module max_pool(
     reg com_a_valid;
     reg com_b_valid;
     
-    reg [`POOL_SIZE - 1:0] nh_vector;
+    reg [`POOL_MAX_MATRIX_SIZE - 1:0] nh_vector;
     
     reg [`DATA_WIDTH - 1:0] com_num_0;
     reg [`DATA_WIDTH - 1:0] com_num_1;
@@ -173,7 +173,7 @@ module max_pool(
                 com_b_valid <= 1;
                            
                 // clk 1
-                nh_vector <= in_vector[`POOL_SIZE - 1:0];
+                nh_vector <= in_vector[`POOL_MAX_MATRIX_SIZE - 1:0];
                 
                 // clk 2
                 com_num_0 <= adder_tree_wire0[0] == 1 ? nh_vector[`DATA_WIDTH - 1:0]             : nh_vector[`DATA_WIDTH*2-1:`DATA_WIDTH];
