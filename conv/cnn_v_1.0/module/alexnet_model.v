@@ -95,8 +95,8 @@ module alexnet_model(
     reg [31:0] input_fm_start_index;
     reg [31:0] output_fm_start_index;
         
-    reg [8:0] kernel_count;       // loop 4, max value 384 < 512=2^9, the kernel number
-    reg [8:0] depth_count;        // loop 2, max value 384 < 512=2^9, count the input feature map depth
+    reg [8:0] kernel_count;         // loop 4, max value 384 < 512=2^9, the kernel number
+    reg [8:0] depth_count;          // loop 2, max value 384 < 512=2^9, count the input feature map depth
     reg [3:0] weight_matrix_count;  // loop 1, max value 11 < 16=2^4, the kernel matrix line
     reg [13:0] fm_matrix_count;
 
@@ -108,7 +108,26 @@ module alexnet_model(
     reg [5:0] padding_up_count;
     reg [5:0] padding_down_count;
     reg [5:0] padding_left_count;
+    reg [5:0] padding_left_line_count;
     reg [5:0] padding_right_count;
+    reg [5:0] padding_right_line_count;
+
+    reg [5:0] get_padding_up;
+    reg [5:0] get_padding_down;
+    reg [5:0] get_padding_left;
+    reg [5:0] get_padding_left_line;
+    reg [5:0] get_padding_right;
+    reg [5:0] get_padding_right_line;
+
+    //reg [11:0] set_fm_up_count;
+    reg [11:0] set_fm_down_count;
+    reg [11:0] set_fm_left_count;
+    reg [11:0] set_fm_right_count;
+
+    reg padding_up_done;
+    reg padding_down_done;
+    reg padding_left_done;
+    reg padding_right_done;
 
     reg [12:0] kernel_number;
     reg [8:0] depth_number;
@@ -582,73 +601,202 @@ module alexnet_model(
                                         end
 
                                         // read feature map part data
+//                                        if (get_fm_number == 0) begin
+//                                        	// up
+//		                                    padding_up_count = 0;
+//		                                    if (fm_y < padding_up) begin
+//		                                        padding_up_count = padding_up - fm_y;
+//		                                        set_fm_count = 0;
+//		                                        i = 0;
+//		                                        while (i < (weight_size * padding_up_count)) begin
+//		                                        	fm[set_fm_count + i] = 0;
+//		                                        	i = i + 1;
+//		                                        end
+//		                                    end
+
+//		                                    // down
+//		                                    padding_down_count = 0;
+//		                                    if ((fm_y + weight_size) > (padding_up + fm_size)) begin
+//		                                        padding_down_count = (fm_y + weight_size) - (padding_up + fm_size);
+//		                                        set_fm_count = ((fm_size + padding_up) - fm_y) * weight_size;
+//		                                        i = 0;
+//		                                        while (i < (weight_size * padding_down_count)) begin
+//		                                        	fm[set_fm_count + i] = 0;
+//		                                        	i = i + 1;
+//		                                        end
+//		                                    end
+
+//		                                    // left
+//		                                    padding_left_count = 0;
+//		                                    if (fm_x < padding_left) begin
+//		                                        padding_left_count = padding_left - fm_x;
+//		                                        set_fm_count = padding_up_count * weight_size;
+//		                                        i = 0;
+//		                                        j = 0;
+//		                                        k = weight_size - padding_up_count - padding_down_count;
+//		                                        while (i < k) begin
+//		                                        	while (j < padding_left_count) begin
+//		                                        		fm[set_fm_count + j] = 0;
+//		                                        		j = j + 1;
+//		                                        	end
+//		                                        	j = 0;
+//		                                        	i = i + 1;
+//		                                        	set_fm_count = set_fm_count + weight_size;
+//		                                        end
+//		                                    end
+
+//		                                    // right
+//		                                    padding_right_count = 0;
+//		                                    if ((fm_x + weight_size) > (padding_left + fm_size)) begin
+//		                                        padding_right_count = (fm_x + weight_size) - (padding_left + fm_size);
+//		                                        set_fm_count = padding_up_count * weight_size + (weight_size - padding_right_count);
+//		                                        i = 0;
+//		                                        j = 0;
+//		                                        k = weight_size - padding_up_count - padding_down_count;
+//		                                        while (i < k) begin
+//		                                        	while (j < padding_right_count) begin
+//		                                        		fm[set_fm_count + j] = 0;
+//		                                        		j = j + 1;
+//		                                        	end
+//		                                        	j = 0;
+//		                                        	i = i + 1;
+//		                                        	set_fm_count = set_fm_count + weight_size;
+//		                                        end
+//		                                    end
+
+//		                                    // for others
+//		                                    set_fm_count = padding_up_count * weight_size + padding_left_count - 1;
+//		                                    j = weight_size - padding_left_count - padding_right_count; // a line of weight matrix others
+//		                                    k =  (weight_size - padding_up_count   - padding_down_count) * j;
+//                                        end
+                                        
+                                        // init padding count
                                         if (get_fm_number == 0) begin
-                                        	// up
-		                                    padding_up_count = 0;
-		                                    if (fm_y < padding_up) begin
-		                                        padding_up_count = padding_up - fm_y;
-		                                        set_fm_count = 0;
-		                                        i = 0;
-		                                        while (i < (weight_size * padding_up_count)) begin
-		                                        	fm[set_fm_count + i] = 0;
-		                                        	i = i + 1;
-		                                        end
-		                                    end
+                                            get_padding_up         = 0;
+                                            get_padding_down       = 0;
+                                            get_padding_left       = 0;
+                                            get_padding_left_line  = 0;
+                                            get_padding_right      = 0;
+                                            get_padding_right_line = 0;
 
-		                                    // down
-		                                    padding_down_count = 0;
-		                                    if ((fm_y + weight_size) > (padding_up + fm_size)) begin
-		                                        padding_down_count = (fm_y + weight_size) - (padding_up + fm_size);
-		                                        set_fm_count = ((fm_size + padding_up) - fm_y) * weight_size;
-		                                        i = 0;
-		                                        while (i < (weight_size * padding_down_count)) begin
-		                                        	fm[set_fm_count + i] = 0;
-		                                        	i = i + 1;
-		                                        end
-		                                    end
+                                            padding_up_done    = 0;
+                                            padding_down_done  = 0;
+                                            padding_left_done  = 0;
+                                            padding_right_done = 0;
 
-		                                    // left
-		                                    padding_left_count = 0;
-		                                    if (fm_x < padding_left) begin
-		                                        padding_left_count = padding_left - fm_x;
-		                                        set_fm_count = padding_up_count * weight_size;
-		                                        i = 0;
-		                                        j = 0;
-		                                        k = weight_size - padding_up_count - padding_down_count;
-		                                        while (i < k) begin
-		                                        	while (j < padding_left_count) begin
-		                                        		fm[set_fm_count + j] = 0;
-		                                        		j = j + 1;
-		                                        	end
-		                                        	j = 0;
-		                                        	i = i + 1;
-		                                        	set_fm_count = set_fm_count + weight_size;
-		                                        end
-		                                    end
+                                            // up
+                                            padding_up_count = 0;
+                                            if (fm_y < padding_up) begin
+                                                padding_up_count = padding_up - fm_y;
+                                            end
+                                            else begin
+                                                padding_up_done = 1;
+                                            end
 
-		                                    // right
-		                                    padding_right_count = 0;
-		                                    if ((fm_x + weight_size) > (padding_left + fm_size)) begin
-		                                        padding_right_count = (fm_x + weight_size) - (padding_left + fm_size);
-		                                        set_fm_count = padding_up_count * weight_size + (weight_size - padding_right_count);
-		                                        i = 0;
-		                                        j = 0;
-		                                        k = weight_size - padding_up_count - padding_down_count;
-		                                        while (i < k) begin
-		                                        	while (j < padding_right_count) begin
-		                                        		fm[set_fm_count + j] = 0;
-		                                        		j = j + 1;
-		                                        	end
-		                                        	j = 0;
-		                                        	i = i + 1;
-		                                        	set_fm_count = set_fm_count + weight_size;
-		                                        end
-		                                    end
+                                            // down
+                                            padding_down_count = 0;
+                                            if ((fm_y + weight_size) > (padding_up + fm_size)) begin
+                                                padding_down_count = (fm_y + weight_size) - (padding_up + fm_size);
+                                                set_fm_down_count = ((fm_size + padding_up) - fm_y) * weight_size;
+                                            end
+                                            else begin
+                                                padding_down_done = 1;
+                                            end
 
-		                                    // for others
-		                                    set_fm_count = padding_up_count * weight_size + padding_left_count - 1;
-		                                    j = weight_size - padding_left_count - padding_right_count; // a line of weight matrix others
-		                                    k =  (weight_size - padding_up_count   - padding_down_count) * j;
+                                            // left
+                                            padding_left_count = 0;
+                                            if (fm_x < padding_left) begin
+                                                padding_left_count      = padding_left - fm_x;
+                                                set_fm_left_count       = padding_up_count * weight_size;
+                                                padding_left_line_count = weight_size - padding_up_count - padding_down_count;
+                                            end
+                                            else begin
+                                                padding_left_done = 1;
+                                            end
+
+                                            // right
+                                            padding_right_count = 0;
+                                            if ((fm_x + weight_size) > (padding_left + fm_size)) begin
+                                                padding_right_count      = (fm_x + weight_size) - (padding_left + fm_size);
+                                                set_fm_right_count       = padding_up_count * weight_size + (weight_size - padding_right_count);
+                                                padding_right_line_count = weight_size - padding_up_count - padding_down_count;
+                                            end
+                                            else begin
+                                                padding_right_done = 1;
+                                            end
+
+                                            // for others
+                                            set_fm_count = padding_up_count * weight_size + padding_left_count - 1;
+                                            j = weight_size - padding_left_count - padding_right_count; // a line of weight matrix others
+                                            k =  (weight_size - padding_up_count   - padding_down_count) * j;
+                                        end
+
+                                        // up
+                                        if (padding_up_done == 0) begin
+                                            
+                                            if (get_padding_up < (weight_size * padding_up_count)) begin
+                                                //set_fm_count = 0;
+                                                //fm[set_fm_count + get_padding_up] = 0;
+                                                fm[get_padding_up] = 0;
+                                                get_padding_up = get_padding_up + 1;
+                                            end
+                                            else if (get_padding_up == (weight_size * padding_up_count)) begin
+                                                padding_up_done = 1;
+                                            end
+
+                                        end
+
+                                        // down
+                                        if (padding_down_done == 0) begin
+
+                                            if (get_padding_down < (weight_size * padding_down_count)) begin
+                                                fm[set_fm_down_count + get_padding_down] = 0;
+                                                get_padding_down = get_padding_down + 1;
+                                            end
+                                            else if (get_padding_down == (weight_size * padding_down_count)) begin
+                                                padding_down_done = 1;
+                                            end                                          
+
+                                        end
+
+                                        // left
+                                        if (padding_left_done == 0) begin
+
+                                            if (get_padding_left_line < padding_left_line_count) begin
+                                                if (get_padding_left < padding_left_count) begin
+                                                    fm[set_fm_left_count + get_padding_left] = 0;
+                                                    get_padding_left = get_padding_left + 1;
+                                                end
+                                                else begin
+                                                    get_padding_left = 0;
+                                                    get_padding_left_line = get_padding_left_line + 1;
+                                                    set_fm_left_count = set_fm_left_count + weight_size;
+                                                end
+                                            end
+                                            else if (get_padding_left_line == padding_left_line_count) begin
+                                                padding_left_done = 1;
+                                            end
+
+                                        end
+
+                                        // right
+                                        if (padding_right_done == 0) begin
+
+                                            if (get_padding_right_line < padding_right_line_count) begin
+                                                if (get_padding_right < padding_right_count) begin
+                                                    fm[set_fm_right_count + get_padding_right] = 0;
+                                                    get_padding_right = get_padding_right + 1;
+                                                end
+                                                else begin
+                                                    get_padding_right = 0;
+                                                    get_padding_right_line = get_padding_right_line + 1;
+                                                    set_fm_right_count = set_fm_right_count + weight_size;
+                                                end
+                                            end
+                                            else if (get_padding_right_line == padding_right_line_count) begin
+                                                padding_right_done = 1;
+                                            end
+                                                                                    
                                         end
 
                                         // others
@@ -691,9 +839,13 @@ module alexnet_model(
                                         end
 
                                         // kernel(weight and bias) is ready and do the conv
-                                        if(    get_bias_number   == 3 
-                                            && get_weight_number == (weight_matrix_number + 3)
-                                            && get_fm_number     == (k + 4)) begin
+                                        if(    get_bias_number    == 3 
+                                            && get_weight_number  == (weight_matrix_number + 3)
+                                            && get_fm_number      == (k + 4)
+                                            && padding_up_done    == 1
+                                            && padding_down_done  == 1
+                                            && padding_left_done  == 1
+                                            && padding_right_done == 1) begin
 
                                             if(weight_matrix_count < weight_size) begin // each line
                                                 // multX11
@@ -1049,74 +1201,202 @@ module alexnet_model(
                         if(depth_count < depth_number) begin 
                             if(fm_y < fm_y_max) begin
                                 if(fm_x < fm_x_max) begin
+                                
                                     // read feature map part data
+//                                    if (get_fm_number == 0) begin
+//                                    	// up
+//		                                padding_up_count = 0;
+//		                                if (fm_y < padding_up) begin
+//		                                    padding_up_count = padding_up - fm_y;
+//		                                    set_fm_count = 0;
+//		                                    i = 0;
+//		                                    while (i < (pool_size * padding_up_count)) begin
+//		                                        fm[set_fm_count + i] = 0;
+//		                                        i = i + 1;
+//		                                    end
+//		                                end
+
+//		                                // down
+//		                                padding_down_count = 0;
+//		                                if ((fm_y + pool_size) > (padding_up + fm_size)) begin
+//		                                    padding_down_count = (fm_y + pool_size) - (padding_up + fm_size);
+//		                                    set_fm_count = ((fm_size + padding_up) - fm_y) * pool_size;
+//		                                    i = 0;
+//		                                    while (i < (pool_size * padding_down_count)) begin
+//		                                        fm[set_fm_count + i] = 0;
+//		                                        i = i + 1;
+//		                                    end
+//		                                end
+
+//		                                // left
+//		                                padding_left_count = 0;
+//		                                if (fm_x < padding_left) begin
+//		                                    padding_left_count = padding_left - fm_x;
+//		                                    set_fm_count = padding_up_count * pool_size;
+//		                                    i = 0;
+//		                                    j = 0;
+//		                                    k = pool_size - padding_up_count - padding_down_count;
+//		                                    while (i < k) begin
+//		                                        while (j < padding_left_count) begin
+//		                                            fm[set_fm_count + j] = 0;
+//		                                        	j = j + 1;
+//		                                        end
+//		                                        j = 0;
+//		                                        i = i + 1;
+//		                                        set_fm_count = set_fm_count + pool_size;
+//		                                    end
+//		                                end
+
+//		                                // right
+//		                                padding_right_count = 0;
+//		                                if ((fm_x + pool_size) > (padding_left + fm_size)) begin
+//		                                    padding_right_count = (fm_x + pool_size) - (padding_left + fm_size);
+//		                                    set_fm_count = padding_up_count * pool_size + (pool_size - padding_right_count);
+//		                                    i = 0;
+//		                                    j = 0;
+//		                                    k = pool_size - padding_up_count - padding_down_count;
+//		                                    while (i < k) begin
+//		                                        while (j < padding_right_count) begin
+//		                                        	fm[set_fm_count + j] = 0;
+//		                                        	j = j + 1;
+//		                                        end
+//		                                        j = 0;
+//		                                        i = i + 1;
+//		                                        set_fm_count = set_fm_count + pool_size;
+//		                                    end
+//		                                end
+
+//		                                // for others
+//		                                set_fm_count = padding_up_count * pool_size + padding_left_count - 1;
+//		                                j = pool_size - padding_left_count - padding_right_count; // a line of weight matrix others
+//		                                k =  (pool_size - padding_up_count   - padding_down_count) * j;
+//                                    end
+
+                                    // init padding count
                                     if (get_fm_number == 0) begin
-                                    	// up
-		                                padding_up_count = 0;
-		                                if (fm_y < padding_up) begin
-		                                    padding_up_count = padding_up - fm_y;
-		                                    set_fm_count = 0;
-		                                    i = 0;
-		                                    while (i < (pool_size * padding_up_count)) begin
-		                                        fm[set_fm_count + i] = 0;
-		                                        i = i + 1;
-		                                    end
-		                                end
+                                        get_padding_up         = 0;
+                                        get_padding_down       = 0;
+                                        get_padding_left       = 0;
+                                        get_padding_left_line  = 0;
+                                        get_padding_right      = 0;
+                                        get_padding_right_line = 0;
 
-		                                // down
-		                                padding_down_count = 0;
-		                                if ((fm_y + pool_size) > (padding_up + fm_size)) begin
-		                                    padding_down_count = (fm_y + pool_size) - (padding_up + fm_size);
-		                                    set_fm_count = ((fm_size + padding_up) - fm_y) * pool_size;
-		                                    i = 0;
-		                                    while (i < (pool_size * padding_down_count)) begin
-		                                        fm[set_fm_count + i] = 0;
-		                                        i = i + 1;
-		                                    end
-		                                end
+                                        padding_up_done    = 0;
+                                        padding_down_done  = 0;
+                                        padding_left_done  = 0;
+                                        padding_right_done = 0;
 
-		                                // left
-		                                padding_left_count = 0;
-		                                if (fm_x < padding_left) begin
-		                                    padding_left_count = padding_left - fm_x;
-		                                    set_fm_count = padding_up_count * pool_size;
-		                                    i = 0;
-		                                    j = 0;
-		                                    k = pool_size - padding_up_count - padding_down_count;
-		                                    while (i < k) begin
-		                                        while (j < padding_left_count) begin
-		                                            fm[set_fm_count + j] = 0;
-		                                        	j = j + 1;
-		                                        end
-		                                        j = 0;
-		                                        i = i + 1;
-		                                        set_fm_count = set_fm_count + pool_size;
-		                                    end
-		                                end
+                                        // up
+                                        padding_up_count = 0;
+                                        if (fm_y < padding_up) begin
+                                            padding_up_count = padding_up - fm_y;
+                                        end
+                                        else begin
+                                            padding_up_done = 1;
+                                        end
 
-		                                // right
-		                                padding_right_count = 0;
-		                                if ((fm_x + pool_size) > (padding_left + fm_size)) begin
-		                                    padding_right_count = (fm_x + pool_size) - (padding_left + fm_size);
-		                                    set_fm_count = padding_up_count * pool_size + (pool_size - padding_right_count);
-		                                    i = 0;
-		                                    j = 0;
-		                                    k = pool_size - padding_up_count - padding_down_count;
-		                                    while (i < k) begin
-		                                        while (j < padding_right_count) begin
-		                                        	fm[set_fm_count + j] = 0;
-		                                        	j = j + 1;
-		                                        end
-		                                        j = 0;
-		                                        i = i + 1;
-		                                        set_fm_count = set_fm_count + pool_size;
-		                                    end
-		                                end
+                                        // down
+                                        padding_down_count = 0;
+                                        if ((fm_y + pool_size) > (padding_up + fm_size)) begin
+                                            padding_down_count = (fm_y + pool_size) - (padding_up + fm_size);
+                                            set_fm_down_count = ((fm_size + padding_up) - fm_y) * pool_size;
+                                        end
+                                        else begin
+                                            padding_down_done = 1;
+                                        end
 
-		                                // for others
-		                                set_fm_count = padding_up_count * pool_size + padding_left_count - 1;
-		                                j = pool_size - padding_left_count - padding_right_count; // a line of weight matrix others
-		                                k =  (pool_size - padding_up_count   - padding_down_count) * j;
+                                        // left
+                                        padding_left_count = 0;
+                                        if (fm_x < padding_left) begin
+                                            padding_left_count      = padding_left - fm_x;
+                                            set_fm_left_count       = padding_up_count * pool_size;
+                                            padding_left_line_count = pool_size - padding_up_count - padding_down_count;
+                                        end
+                                        else begin
+                                            padding_left_done = 1;
+                                        end
+
+                                        // right
+                                        padding_right_count = 0;
+                                        if ((fm_x + pool_size) > (padding_left + fm_size)) begin
+                                            padding_right_count      = (fm_x + pool_size) - (padding_left + fm_size);
+                                            set_fm_right_count       = padding_up_count * pool_size + (pool_size - padding_right_count);
+                                            padding_right_line_count = pool_size - padding_up_count - padding_down_count;
+                                        end
+                                        else begin
+                                            padding_right_done = 1;
+                                        end
+
+                                        // for others
+                                        set_fm_count = padding_up_count * pool_size + padding_left_count - 1;
+                                        j = pool_size - padding_left_count - padding_right_count; // a line of weight matrix others
+                                        k =  (pool_size - padding_up_count   - padding_down_count) * j;
+                                    end
+
+                                    // up
+                                    if (padding_up_done == 0) begin
+                                            
+                                        if (get_padding_up < (pool_size * padding_up_count)) begin
+                                            fm[get_padding_up] = 0;
+                                            get_padding_up = get_padding_up + 1;
+                                        end
+                                        else if (get_padding_up == (pool_size * padding_up_count)) begin
+                                            padding_up_done = 1;
+                                        end
+
+                                    end
+
+                                    // down
+                                    if (padding_down_done == 0) begin
+
+                                        if (get_padding_down < (pool_size * padding_down_count)) begin
+                                            fm[set_fm_down_count + get_padding_down] = 0;
+                                            get_padding_down = get_padding_down + 1;
+                                        end
+                                        else if (get_padding_down == (pool_size * padding_down_count)) begin
+                                            padding_down_done = 1;
+                                        end                                          
+
+                                    end
+
+                                    // left
+                                    if (padding_left_done == 0) begin
+
+                                        if (get_padding_left_line < padding_left_line_count) begin
+                                            if (get_padding_left < padding_left_count) begin
+                                                fm[set_fm_left_count + get_padding_left] = 0;
+                                                get_padding_left = get_padding_left + 1;
+                                            end
+                                            else begin
+                                                get_padding_left = 0;
+                                                get_padding_left_line = get_padding_left_line + 1;
+                                                set_fm_left_count = set_fm_left_count + pool_size;
+                                            end
+                                        end
+                                        else if (get_padding_left_line == padding_left_line_count) begin
+                                            padding_left_done = 1;
+                                        end
+
+                                    end
+
+                                    // right
+                                    if (padding_right_done == 0) begin
+
+                                        if (get_padding_right_line < padding_right_line_count) begin
+                                            if (get_padding_right < padding_right_count) begin
+                                                fm[set_fm_right_count + get_padding_right] = 0;
+                                                get_padding_right = get_padding_right + 1;
+                                            end
+                                            else begin
+                                                get_padding_right = 0;
+                                                get_padding_right_line = get_padding_right_line + 1;
+                                                set_fm_right_count = set_fm_right_count + pool_size;
+                                            end
+                                        end
+                                        else if (get_padding_right_line == padding_right_line_count) begin
+                                            padding_right_done = 1;
+                                        end
+                                                                                    
                                     end
 
                                     if(get_fm_number < k) begin
@@ -1155,7 +1435,12 @@ module alexnet_model(
                                     end
 
                                     // max pool
-                                    if(get_fm_number == (k + 4)) begin
+                                    if(    get_fm_number      == (k + 4)
+                                        && padding_up_done    == 1
+                                        && padding_down_done  == 1
+                                        && padding_left_done  == 1
+                                        && padding_right_done == 1) begin
+                                    
                                         maxpoolIn = {fm[8], fm[7], fm[6], fm[5], fm[4], fm[3], fm[2], fm[1], fm[0]};
 
                                         // get max pool result
