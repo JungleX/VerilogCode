@@ -42,7 +42,17 @@ module multX11(
 
     reg mul_a_valid;
     reg mul_b_valid;
-    wire mul_re_valid;
+    wire mul_re_valid_0;
+    wire mul_re_valid_1;
+    wire mul_re_valid_2;
+    wire mul_re_valid_3;
+    wire mul_re_valid_4;
+    wire mul_re_valid_5;
+    wire mul_re_valid_6;
+    wire mul_re_valid_7;
+    wire mul_re_valid_8;
+    wire mul_re_valid_9;
+    wire mul_re_valid_10;
 
     reg [`DATA_WIDTH - 1:0] addDataA1[0:4];
     reg [`DATA_WIDTH - 1:0] addDataB1[0:4];
@@ -69,7 +79,17 @@ module multX11(
 
     reg add_a_valid;
     reg add_b_valid;
-    wire add_re_valid;
+    wire add_re_valid_0;
+    wire add_re_valid_1;
+    wire add_re_valid_2;
+    wire add_re_valid_3;
+    wire add_re_valid_4;
+    wire add_re_valid_5;
+    wire add_re_valid_6;
+    wire add_re_valid_7;
+    wire add_re_valid_8;
+    wire add_re_valid_9;
+
 
     // multiply
     floating_point_multiply mult_0(
@@ -79,7 +99,7 @@ module multX11(
         .s_axis_b_tvalid(mul_b_valid),
         .s_axis_b_tdata(loadWeight[`DATA_WIDTH - 1 :0]),
 
-        .m_axis_result_tvalid(mul_re_valid),
+        .m_axis_result_tvalid(mul_re_valid_0),
         .m_axis_result_tdata(mult[0])
         );
 
@@ -90,7 +110,7 @@ module multX11(
         .s_axis_b_tvalid(mul_b_valid),
         .s_axis_b_tdata(loadWeight[`DATA_WIDTH*2 - 1 :`DATA_WIDTH]),
 
-        .m_axis_result_tvalid(mul_re_valid),
+        .m_axis_result_tvalid(mul_re_valid_1),
         .m_axis_result_tdata(mult[1])
         );
 
@@ -101,7 +121,7 @@ module multX11(
         .s_axis_b_tvalid(mul_b_valid),
         .s_axis_b_tdata(loadWeight[`DATA_WIDTH*3 - 1 :`DATA_WIDTH*2]),
 
-        .m_axis_result_tvalid(mul_re_valid),
+        .m_axis_result_tvalid(mul_re_valid_2),
         .m_axis_result_tdata(mult[2])
         );
 
@@ -112,7 +132,7 @@ module multX11(
         .s_axis_b_tvalid(mul_b_valid),
         .s_axis_b_tdata(loadWeight[`DATA_WIDTH*4 - 1 :`DATA_WIDTH*3]),
 
-        .m_axis_result_tvalid(mul_re_valid),
+        .m_axis_result_tvalid(mul_re_valid_3),
         .m_axis_result_tdata(mult[3])
         );
 
@@ -123,7 +143,7 @@ module multX11(
         .s_axis_b_tvalid(mul_b_valid),
         .s_axis_b_tdata(loadWeight[`DATA_WIDTH*5 - 1 :`DATA_WIDTH*4]),
 
-        .m_axis_result_tvalid(mul_re_valid),
+        .m_axis_result_tvalid(mul_re_valid_4),
         .m_axis_result_tdata(mult[4])
         );
 
@@ -134,7 +154,7 @@ module multX11(
         .s_axis_b_tvalid(mul_b_valid),
         .s_axis_b_tdata(loadWeight[`DATA_WIDTH*6 - 1 :`DATA_WIDTH*5]),
 
-        .m_axis_result_tvalid(mul_re_valid),
+        .m_axis_result_tvalid(mul_re_valid_5),
         .m_axis_result_tdata(mult[5])
         );
 
@@ -145,7 +165,7 @@ module multX11(
         .s_axis_b_tvalid(mul_b_valid),
         .s_axis_b_tdata(loadWeight[`DATA_WIDTH*7 - 1 :`DATA_WIDTH*6]),
 
-        .m_axis_result_tvalid(mul_re_valid),
+        .m_axis_result_tvalid(mul_re_valid_6),
         .m_axis_result_tdata(mult[6])
         );
 
@@ -156,7 +176,7 @@ module multX11(
         .s_axis_b_tvalid(mul_b_valid),
         .s_axis_b_tdata(loadWeight[`DATA_WIDTH*8 - 1 :`DATA_WIDTH*7]),
 
-        .m_axis_result_tvalid(mul_re_valid),
+        .m_axis_result_tvalid(mul_re_valid_7),
         .m_axis_result_tdata(mult[7])
         );
 
@@ -167,7 +187,7 @@ module multX11(
         .s_axis_b_tvalid(mul_b_valid),
         .s_axis_b_tdata(loadWeight[`DATA_WIDTH*9 - 1 :`DATA_WIDTH*8]),
 
-        .m_axis_result_tvalid(mul_re_valid),
+        .m_axis_result_tvalid(mul_re_valid_8),
         .m_axis_result_tdata(mult[8])
         );
 
@@ -178,7 +198,7 @@ module multX11(
         .s_axis_b_tvalid(mul_b_valid),
         .s_axis_b_tdata(loadWeight[`DATA_WIDTH*10 - 1 :`DATA_WIDTH*9]),
 
-        .m_axis_result_tvalid(mul_re_valid),
+        .m_axis_result_tvalid(mul_re_valid_9),
         .m_axis_result_tdata(mult[9])
         );
 
@@ -189,7 +209,7 @@ module multX11(
         .s_axis_b_tvalid(mul_b_valid),
         .s_axis_b_tdata(loadWeight[`DATA_WIDTH*11 - 1 :`DATA_WIDTH*10]),
 
-        .m_axis_result_tvalid(mul_re_valid),
+        .m_axis_result_tvalid(mul_re_valid_10),
         .m_axis_result_tdata(mult[10])
         );
 
@@ -201,7 +221,7 @@ module multX11(
         .s_axis_b_tvalid(add_b_valid),
         .s_axis_b_tdata(addDataB1[0]),
 
-        .m_axis_result_tvalid(add_re_valid),
+        .m_axis_result_tvalid(add_re_valid_0),
         .m_axis_result_tdata(addResult1[0])
         );
 
@@ -212,7 +232,7 @@ module multX11(
         .s_axis_b_tvalid(add_b_valid),
         .s_axis_b_tdata(addDataB1[1]),
 
-        .m_axis_result_tvalid(add_re_valid),
+        .m_axis_result_tvalid(add_re_valid_1),
         .m_axis_result_tdata(addResult1[1])
         );
 
@@ -223,7 +243,7 @@ module multX11(
         .s_axis_b_tvalid(add_b_valid),
         .s_axis_b_tdata(addDataB1[2]),
 
-        .m_axis_result_tvalid(add_re_valid),
+        .m_axis_result_tvalid(add_re_valid_2),
         .m_axis_result_tdata(addResult1[2])
         );
 
@@ -234,7 +254,7 @@ module multX11(
         .s_axis_b_tvalid(add_b_valid),
         .s_axis_b_tdata(addDataB1[3]),
 
-        .m_axis_result_tvalid(add_re_valid),
+        .m_axis_result_tvalid(add_re_valid_3),
         .m_axis_result_tdata(addResult1[3])
         );
 
@@ -245,7 +265,7 @@ module multX11(
         .s_axis_b_tvalid(add_b_valid),
         .s_axis_b_tdata(addDataB1[4]),
 
-        .m_axis_result_tvalid(add_re_valid),
+        .m_axis_result_tvalid(add_re_valid_4),
         .m_axis_result_tdata(addResult1[4])
         );
 
@@ -256,7 +276,7 @@ module multX11(
         .s_axis_b_tvalid(add_b_valid),
         .s_axis_b_tdata(addDataB2[0]),
 
-        .m_axis_result_tvalid(add_re_valid),
+        .m_axis_result_tvalid(add_re_valid_5),
         .m_axis_result_tdata(addResult2[0])
         );
 
@@ -267,7 +287,7 @@ module multX11(
         .s_axis_b_tvalid(add_b_valid),
         .s_axis_b_tdata(addDataB2[1]),
 
-        .m_axis_result_tvalid(add_re_valid),
+        .m_axis_result_tvalid(add_re_valid_6),
         .m_axis_result_tdata(addResult2[1])
         );
 
@@ -278,7 +298,7 @@ module multX11(
         .s_axis_b_tvalid(add_b_valid),
         .s_axis_b_tdata(addDataB2[2]),
 
-        .m_axis_result_tvalid(add_re_valid),
+        .m_axis_result_tvalid(add_re_valid_7),
         .m_axis_result_tdata(addResult2[2])
         );
 
@@ -289,7 +309,7 @@ module multX11(
         .s_axis_b_tvalid(add_b_valid),
         .s_axis_b_tdata(addDataB3),
 
-        .m_axis_result_tvalid(add_re_valid),
+        .m_axis_result_tvalid(add_re_valid_8),
         .m_axis_result_tdata(addResult3)
         );
 
@@ -300,7 +320,7 @@ module multX11(
         .s_axis_b_tvalid(add_b_valid),
         .s_axis_b_tdata(addDataB4),
 
-        .m_axis_result_tvalid(add_re_valid),
+        .m_axis_result_tvalid(add_re_valid_9),
         .m_axis_result_tdata(addResult4)
         );
 

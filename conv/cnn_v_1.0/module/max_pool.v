@@ -61,12 +61,21 @@ module max_pool(
     
     wire [`COMPARE_RESULT_WIDTH - 1:0] adder_tree_wire7;
     
+    wire com_re_valid0;
+    wire com_re_valid1;
+    wire com_re_valid2;
+    wire com_re_valid3;
+    wire com_re_valid4;
+    wire com_re_valid5;
+    wire com_re_valid6;
+    wire com_re_valid7;
+
     floating_point_compare fpc0(
      .s_axis_a_tvalid(com_a_valid),
      .s_axis_a_tdata(nh_vector[`DATA_WIDTH - 1:0]),
      .s_axis_b_tvalid(com_b_valid),
      .s_axis_b_tdata(nh_vector[`DATA_WIDTH*2-1:`DATA_WIDTH]),
-     .m_axis_result_tvalid(com_re_valid),
+     .m_axis_result_tvalid(com_re_valid0),
      .m_axis_result_tdata(adder_tree_wire0)
     );
   
@@ -75,7 +84,7 @@ module max_pool(
         .s_axis_a_tdata(nh_vector[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] ),
         .s_axis_b_tvalid(com_b_valid),
         .s_axis_b_tdata(nh_vector[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]),
-        .m_axis_result_tvalid(com_re_valid),
+        .m_axis_result_tvalid(com_re_valid1),
         .m_axis_result_tdata(adder_tree_wire1)
     );  
 
@@ -84,7 +93,7 @@ module max_pool(
         .s_axis_a_tdata(nh_vector[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]),
         .s_axis_b_tvalid(com_b_valid),
         .s_axis_b_tdata(nh_vector[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]),
-        .m_axis_result_tvalid(com_re_valid),
+        .m_axis_result_tvalid(com_re_valid2),
         .m_axis_result_tdata(adder_tree_wire2)
     ); 
  
@@ -93,7 +102,7 @@ module max_pool(
         .s_axis_a_tdata(nh_vector[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]),
         .s_axis_b_tvalid(com_b_valid),
         .s_axis_b_tdata(nh_vector[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]),
-        .m_axis_result_tvalid(com_re_valid),
+        .m_axis_result_tvalid(com_re_valid3),
         .m_axis_result_tdata(adder_tree_wire3)
     ); 
  
@@ -102,7 +111,7 @@ module max_pool(
        .s_axis_a_tdata(com_num_0),
        .s_axis_b_tvalid(com_b_valid),
        .s_axis_b_tdata(com_num_1),
-       .m_axis_result_tvalid(com_re_valid),
+       .m_axis_result_tvalid(com_re_valid4),
        .m_axis_result_tdata(adder_tree_wire4)
     );
 
@@ -111,7 +120,7 @@ module max_pool(
         .s_axis_a_tdata(com_num_2),
         .s_axis_b_tvalid(com_b_valid),
         .s_axis_b_tdata(com_num_3),
-        .m_axis_result_tvalid(com_re_valid),
+        .m_axis_result_tvalid(com_re_valid5),
         .m_axis_result_tdata(adder_tree_wire5)
     ); 
  
@@ -120,7 +129,7 @@ module max_pool(
        .s_axis_a_tdata(com_num_4),
        .s_axis_b_tvalid(com_b_valid),
        .s_axis_b_tdata(com_num_5),
-       .m_axis_result_tvalid(com_re_valid),
+       .m_axis_result_tvalid(com_re_valid6),
        .m_axis_result_tdata(adder_tree_wire6)
     );
     
@@ -129,10 +138,9 @@ module max_pool(
            .s_axis_a_tdata(com_num_6),
            .s_axis_b_tvalid(com_b_valid),
            .s_axis_b_tdata(nh_vector[`DATA_WIDTH*9-1:`DATA_WIDTH*8]),
-           .m_axis_result_tvalid(com_re_valid),
+           .m_axis_result_tvalid(com_re_valid7),
            .m_axis_result_tdata(adder_tree_wire7)
     );
-  
   
     //assign pool_out = com_num_7;
     
