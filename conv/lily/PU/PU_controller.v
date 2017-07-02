@@ -19,6 +19,7 @@ module PU_controller #(
 //FSM states
 localparam IDLE         = 0,
            WAIT         = 1,
+	   RD_CFG_1     = 2,
            BUSY         = 4;
 
 wire [ LAYER_PARAM_WIDTH  - 1 : 0 ]        l,l_max;
@@ -27,7 +28,8 @@ wire                                       l_inc, l_inc_d, l_clear;
 wire                                       next_fm;
 
 reg [ 3                   - 1 : 0 ]        next_state;
-reg [ CFG_WIDTH           - 1 : 0 ]        cfg_rom[0:CFG_DEPTH-1];         //control flow graph
+reg [ CFG_WIDTH           - 1 : 0 ]        cfg_rom[0:CFG_DEPTH-1];        //control flow graph
+reg [ CFG_WIDTH           - 1 : 0 ]        layer_params;
 
 reg [ LAYER_PARAM_WIDTH   - 1 : 0 ]        max_layers;
 
@@ -49,6 +51,17 @@ assign GND = 256'd0;
 
 initial begin
     max_layers = `max_layers;
+	`ifdef simulation
+		$readmemb("./hardware/include/pu_controller_bin.vh", cfg_rom);
+	`else
+		$readmemb("pu_controller_bin.vh", cfg_rom);
+	`endif
+end
+
+always @(posedge clk)
+begin
+	if (state != RD_CFG_1)
+		layer_params <= cfg_rom[1];
 end
 
 always @*

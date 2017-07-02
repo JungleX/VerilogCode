@@ -17,6 +17,7 @@ reg signed [OP_WIDTH-1:0] norm_lut [0:1<<6];
 initial
 $readmemb ("hardware/include/norm_lut.vh", norm_lut);
 
+integer input_fm_dimensions [3:0];
 integer input_fm_size;
 integer output_fm_dimensions [3:0];
 integer pool_fm_dimensions [3:0];
@@ -72,17 +73,62 @@ endtask*/
 /*task expected_output;
 endtask*/
 
+integer max_data_in_count;
+
 /*task initialize_weight_fc;
 endtask*/
 
 /*task initialize_input_fc;
 endtask*/
 
-/*task initialize_input;
-endtask*/
+task initialize_input;
+	input integer width;
+	input integer height;
+	input integer channels;
+	input integer output_channels;
+	integer i. j, c;
+	integer idx;
+	begin
+		rd_ready = 1'b1;
+		data_in_counter = 0;
+		input_fm_dimensions[0] = width;
+		input_fm_dimensions[1] = height;
+		input_fm_dimensions[2] = channels;
+		input_fm_dimensions[3] = output_channels;
+		input_fm_size = width * height * channels;
+		max_data_in_count = width * height;
+		$display ("# Input Neurons = %d", max_data_in_count);
+		$display ("Input Dimensions = %d x %d x %d x %d",
+			width, height, channels, output_channels);
+		for (c=0; c < channels; c=c+1)
+		begin
+			for (i=0; i < height; i=i+1)
+			begin
+				for (j=0; j < width; j=j+1)
+				begin
+					idx = j + width*(i + height*c);
+					data_in[idx] = idx;         //input feature map data
+				end
+			end
+		end
+		
+	end
+endtask
 
-/*task initialize_weight;
-endtask*/
+task initialize_weight;
+	input integer width;
+	input integer height;
+	input integer input_channels;
+	input integer output_channels;
+	integer i, j, k, l;
+	integer index;
+	begin
+		weight_dimensions[0] = width;
+		weight_dimensions[1] = height;
+		weight_dimensions[2] = input_channels;
+		weight_dimensions[3] = output_channels;
+	end
+endtask
 
 integer data_in_counter;
 task pu_read;
