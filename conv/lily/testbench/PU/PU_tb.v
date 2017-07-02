@@ -1,6 +1,10 @@
-`include "params.vh"
 
+
+
+`include "params.vh"
 module PU_tb;
+
+
 
 localparam integer NUM_PE              = `num_pe;
 localparam integer OP_WIDTH            = 16;
@@ -14,6 +18,62 @@ localparam integer L_TYPE_WIDTH        = 2;
 reg                                              start;
 wire                                             read_req;
 wire                                             vecgen_rd_req;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 PU_tb_driver #(
     .OP_WIDTH                  ( OP_WIDTH                        ),
@@ -45,7 +105,18 @@ reg [ LAYER_PARAM_WIDTH   - 1 : 0 ]         _pool_oh;
 reg [ LAYER_PARAM_WIDTH   - 1 : 0 ]         _pool_iw;
 reg [ LAYER_PARAM_WIDTH   - 1 : 0 ]         input_width;
 
+
+
+
+
+
+
+
+
+
 integer ii;
+
+
 
 initial begin
 	driver.status.start;
@@ -64,11 +135,10 @@ initial begin
 	$display("****************************************");
 	$display;
 	
-	for (ii=0; ii<max_layers; ii++)
+	for (ii=0; ii<max_layers; ii=ii+1)
 	begin
-		{_stride, _pool_iw, _pool_oh, _pool_kernel, _pool, l_type, _max_threads, 
-		_pad, _pad_row_start, _pad_row_end, _skip, _endrow_iw, _ic, _ih, _iw,
-		_oc, _kh, _kw} = u_controller.cfg_rom[ii];
+		{_stride, _pool_iw, _pool_oh, _pool_kernel, _pool, l_type, _max_threads, _pad, _pad_row_start, _pad_row_end, _skip, _endrow_iw, 
+		_ic, _ih, _iw, _oc, _kh, _kw} = u_controller.cfg_rom[ii];
 		$display("***************************************");
 		$display("Layer configuration: ");
 		$display("***************************************");
@@ -90,9 +160,11 @@ initial begin
 		$display("****************************************");
 		wait (u_controller.state == 1);        //wait
 		@(negedge clk)
-			if(l_type == 0) begin     //convol
+			if(l_type == 0) 
+			begin     //convol
 				driver.initialize_input(input_width, _ih+1, 1, 1);
 				driver.initialize_weight(_kh+1, _kh+1, _ic+1, _oc+1);
+				driver.expected_output(input_width, _ih+1, _ic+1, 1, _kw+1, _kh+1, _stride, _oc+1, _pad, _pad_row_start, _pad_row_end);  // , , ,batchsize
 			end
 	end
 
