@@ -6,7 +6,7 @@
 // ram
 // feature map data index
 `define LAYER_RAM_START_INDEX_0     0
-`define LAYER_RAM_START_INDEX_1     154587 // 227*227*3=154587
+`define LAYER_RAM_START_INDEX_1     154588 // 227*227*3=154587 -> 64 154588
 
 // weight data index
 `define WEIGHT_RAM_START_INDEX_0    0    
