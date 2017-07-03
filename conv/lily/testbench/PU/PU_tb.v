@@ -116,7 +116,7 @@ reg [ LAYER_PARAM_WIDTH   - 1 : 0 ]         input_width;
 
 integer ii;
 
-
+integer conv_ic, conv_oc;
 
 initial begin
 	driver.status.start;
@@ -165,6 +165,34 @@ initial begin
 				driver.initialize_input(input_width, _ih+1, 1, 1);
 				driver.initialize_weight(_kh+1, _kh+1, _ic+1, _oc+1);
 				driver.expected_output(input_width, _ih+1, _ic+1, 1, _kw+1, _kh+1, _stride, _oc+1, _pad, _pad_row_start, _pad_row_end);  // , , ,batchsize
+			end
+			else if (l_type == 2)        // normalization
+			begin
+			    driver.initialize_input(input_width, _ih+1, 1, 1);
+			    dirver.initialize_weight(0,0,0,0);
+			    driver.expected_output_norm(input_width,_ih+1, _ic+1, 1, _kw+1, _kh+1, _stride, _oc+1, _pad, _pad_row_start, _pad_row_end); 
+			end
+			else begin    //full-connect
+			    driver.initialize_input_fc(_ic+1);
+			    driver.initialize_weight_fc( _ic+1, (_oc+1)*NUM_PE );
+			    driver.expected_output_fc(_ic+1, (_oc+1)*NUM_PE, _max_threads);
+			end
+			
+			if(_pool)
+			begin
+			    driver.expected_pooling_output(_pool_kernel, _pool_kernel, 2);   //stride
+			 
+			end
+			else
+			    driver.pool_enabled = 1'b0;
+			if (l_type == 0)     
+			begin
+			    for (conv_oc = 0; conv_oc < _oc; conv_oc = conv_oc + 1)
+			    begin
+			        for (conv_ic = 0; conv_ic < _ic; conv_ic = conv_ic + 1)
+			        begin
+			        end
+			    end
 			end
 	end
 
