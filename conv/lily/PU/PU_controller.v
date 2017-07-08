@@ -19,7 +19,7 @@ module PU_controller #(
 //FSM states
 localparam IDLE         = 0,
            WAIT         = 1,
-	   RD_CFG_1     = 2,
+	       RD_CFG_1     = 2,
            BUSY         = 4;
 
 wire [ LAYER_PARAM_WIDTH  - 1 : 0 ]        l,l_max;

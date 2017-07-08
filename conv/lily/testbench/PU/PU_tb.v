@@ -39,7 +39,7 @@ wire                                             vecgen_rd_req;
 
 
 
-
+reg                                                pu_data_in_v;
 
 
 
@@ -191,14 +191,48 @@ initial begin
 			    begin
 			        for (conv_ic = 0; conv_ic < _ic; conv_ic = conv_ic + 1)
 			        begin
+			            $display("OC (%d/%d) : IC (%d/%d)", conv_oc, _oc, conv_ic, _ic);
+			            driver.initialize_input(input_width, _ih+1, 1, 1);
+			            driver.initilaize_weight(_kh+1, _kh+1, _ic+1, _oc+1);
+			            $display("Conv Started");
+			            wait (u_controller.state == 4);   //BUSY
+			            wait (u_controller.state != 4);
+			            repeat(1000) @(negedge clk);
+			            $display ("Conv finished");
 			        end
+			        
+			        repeat(100) @(negedge clk);
+			        driver.write_count = 0;
+			        
 			    end
 			end
+			else
+			    wait (driver.write_count/NUM_PE == driver.expected_writes);
+			repeat (100) begin
+			    @(negedge clk);
+			end
 	end
-
+	wait (u_controller.state != 4);
+	
+	repeat (1000) @(negedge clk);
+    driver.status.test_pass;
 end
 
+initial
+begin
+    $dumpfile("PU_tb.vcd");
+    $dumpvars(0,PU_tb);
+end
+
+// ****************************************************
+// PU
+// ****************************************************
+always @(posedge clk)
+    pu_data_in_v <= pu_rd_req;
 assign read_req = vecgen_rd_req;
+PU #(
+) u_PU (
+);
 
 vectorgen #(
 ) vecgen (
