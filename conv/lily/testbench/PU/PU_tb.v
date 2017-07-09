@@ -15,9 +15,6 @@ localparam integer STRIDE_SIZE_W       = 3;
 localparam integer LAYER_PARAM_WIDTH   = 10;
 localparam integer L_TYPE_WIDTH        = 2;
 
-reg                                              start;
-wire                                             read_req;
-wire                                             vecgen_rd_req;
 
 
 
@@ -39,18 +36,18 @@ wire                                             vecgen_rd_req;
 
 
 
-reg                                                pu_data_in_v;
+
+wire [ DATA_WIDTH          - 1 : 0 ]            pu_data_out;
+wire [ DATA_WIDTH          - 1 : 0 ]            pu_data_in;
+reg                                             pu_data_in_v;
+reg                                             start;
 
 
 
+wire                                            read_req;
 
 
-
-
-
-
-
-
+wire                                            vecgen_rd_req;
 
 
 
@@ -74,18 +71,30 @@ reg                                                pu_data_in_v;
 
 
 
+wire buffer_read_empty;
+
+wire [63:0] buffer_read_data_out;
 
 PU_tb_driver #(
     .OP_WIDTH                  ( OP_WIDTH                        ),
     .NUM_PE                    ( NUM_PE                          )
 ) driver (
-    .clk                       ( clk                             ),
-    .reset                     ( reset                           ),
-    .pu_rd_req                 ( read_req                        ),
-    .pu_rd_ready               ( pu_rd_ready                     ),
+    .clk                       ( clk                             ),   //output
+    .reset                     ( reset                           ),   //output
+    .buffer_read_data_valid    ( buffer_read_data_valid          ),   //output
+    .buffer_read_data_out      ( buffer_read_data_out            ),   //output 
+    .buffer_read_empty         ( buffer_read_empty               ),   //output
+    .pu_rd_req                 ( read_req                        ),   //input
+    .pu_rd_ready               ( pu_rd_ready                     ),   //output
+    .pu_wr_req                 ( outBuf_push                     ),   //input
+    .pu_data_out               ( pu_data_out                     ),   //input
+    .pu_data_in                ( pu_data_in                      ),   //output
     .pass                      ( pass                            ),
     .fail                      ( fail                            )
 );
+
+
+
 
 reg [ LAYER_PARAM_WITDH   - 1 : 0 ]         _kw, _kh;
 reg [ LAYER_PARAM_WITDH   - 1 : 0 ]         _iw, _ih, _ic, _oc;
@@ -104,15 +113,6 @@ reg [ 1                       : 0 ]         _pool_kernel;
 reg [ LAYER_PARAM_WIDTH   - 1 : 0 ]         _pool_oh;
 reg [ LAYER_PARAM_WIDTH   - 1 : 0 ]         _pool_iw;
 reg [ LAYER_PARAM_WIDTH   - 1 : 0 ]         input_width;
-
-
-
-
-
-
-
-
-
 
 integer ii;
 
@@ -231,21 +231,99 @@ always @(posedge clk)
     pu_data_in_v <= pu_rd_req;
 assign read_req = vecgen_rd_req;
 PU #(
+
+
+
 ) u_PU (
+
+
+
+    .buffer_read_data_valid     ( buffer_read_data_valid  ),
+    .read_data                  ( buffer_read_data_out    ),
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .write_data                   ( pu_data_out               ),         //output
+    .write_req                    ( outBuf_push               )
 );
 
+
+
+
+
+
+
+assign vecgen_rd_data = pu_data_in;
+
+
+assign vecgen_rd_ready = pu_rd_ready;
+
+
 vectorgen #(
+
+
+
 ) vecgen (
     .clk                  ( clk                       ),
     .reset                ( reset                     ),  
+    
+    
+    
+    
+    .read_ready          ( vecgen_rd_ready           ),
     .read_req             ( vecgen_rd_req             )
 );
 
-PU_controller #(
+
+
+
+
+
+
+
+
+
+
+
+PU_controller 
+#(
+
+
+
+
+
+
+
 ) u_controller (
-	.clk               ( clk                      ),
-	.reset             ( reset                    ),
-	.start             ( start                    )  
+	.clk                   ( clk                      ),
+	.reset                 ( reset                    ),
+	.start                 ( start                    ),
+	
+	
+	
+	
+	
+	
+	
+	.buffer_read_empty     ( buffer_read_empty        )
 );
 
 endmodule

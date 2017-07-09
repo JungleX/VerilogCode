@@ -15,7 +15,7 @@ begin : PE_GENBLK
 
 wire [ OP_WIDTH  - 1 : 0 ] pe_read_data_0;
 
-	assign pe_read_data_0 = vecgen_wr_data_d [i*OP_WIDTH+:OP_WIDTH]
+	//assign pe_read_data_0 = vecgen_wr_data_d [i*OP_WIDTH+:OP_WIDTH];
 end
 endgenerate
 

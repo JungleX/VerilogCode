@@ -4,31 +4,31 @@ module PU_tb_driver #(
 	parameter integer OP_WIDTH    = 16,
 	parameter integer NUM_PE      = 1,
 	parameter integer VERBOSE     = 2            //ศ฿ำเ
-)(
+)
+(
     output wire                           clk,
     output wire                           reset,
-    
+    output reg [4*OP_WIDTH-1:0]           buffer_read_data_out,
     output reg                            buffer_read_empty,
     output reg                            buffer_read_data_valid,
-    
+    input wire                            buffer_read_req,
     output reg                            buffer_read_last,
     input  wire                           pu_rd_req,
     output wire                           pu_rd_ready,
-    
-    
-    
-    
+    input wire                            pu_wr_req,
+    input wire signed [DATA_WIDTH-1:0]    pu_data_out,           //data_width = num_pe * op_width
+    output reg [DATA_WIDTH-1:0]           pu_data_in, 
     output reg                            pass,
     output reg                            fail
 );
 
 
 
+localparam integer DATA_WIDTH  = OP_WIDTH * NUM_PE;
 
 
 
-
-
+reg signed [OP_WIDTH-1:0] data_in [0:1<<20];
 
 reg signed [OP_WIDTH-1:0] buffer [0:1<<20];
 reg signed [OP_WIDTH-1:0] expected_out [0:1<<20];
@@ -133,33 +133,33 @@ task expected_pooling_output;
 	end
 endtask
 
-/*task print_pooled_output;
-endtask*/
+task print_pooled_output;
+    integer w,h;
+    begin
+        for (h=0; h<pool_fm_dimensions[1]; h=h+1)
+        begin
+            for (w=0; w<pool_fm_dimensions[0]; w=w+1)
+            begin
+                $write ("%8d", expected_pool_out[h*pool_fm_dimensions[0]+w]);
+            end
+            $display;
+        end
+    end
+endtask
 
-/*task print_pe_output;
-endtask*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+task print_pe_output;
+    integer w,h;
+    begin
+        for (h=0; h<output_fm_dimensions[1]; h=h+1)
+        begin
+            for (w=0; w<output_fm_dimensions[0]; w=w+1)
+            begin
+                $write ("%6d", expected_out[h*output_fm_dimensions[0]+w]);
+            end
+            $display
+        end
+    end
+endtask
 
 task expected_output_fc;
     input integer input_channels;
