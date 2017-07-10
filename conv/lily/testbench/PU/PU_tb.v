@@ -84,6 +84,8 @@ PU_tb_driver #(
     .buffer_read_data_valid    ( buffer_read_data_valid          ),   //output
     .buffer_read_data_out      ( buffer_read_data_out            ),   //output 
     .buffer_read_empty         ( buffer_read_empty               ),   //output
+    .buffer_read_req           ( buffer_read_req                 ),   //input
+    .buffer_read_last          ( buffer_read_last                ),   //output
     .pu_rd_req                 ( read_req                        ),   //input
     .pu_rd_ready               ( pu_rd_ready                     ),   //output
     .pu_wr_req                 ( outBuf_push                     ),   //input
@@ -94,9 +96,7 @@ PU_tb_driver #(
 );
 
 
-
-
-reg [ LAYER_PARAM_WITDH   - 1 : 0 ]         _kw, _kh;
+reg [ LAYER_PARAM_WITDH   - 1 : 0 ]         _kw, _kh, _ks;
 reg [ LAYER_PARAM_WITDH   - 1 : 0 ]         _iw, _ih, _ic, _oc;
 reg [ LAYER_PARAM_WIDTH   - 1 : 0 ]         _endrow_iw;
 reg                                         _skip;
@@ -239,7 +239,7 @@ PU #(
 
 
     .buffer_read_data_valid     ( buffer_read_data_valid  ),
-    .read_data                  ( buffer_read_data_out    ),
+    .read_data                  ( buffer_read_data_out    ),     //input, 4 data
     
     
     
@@ -323,7 +323,9 @@ PU_controller
 	
 	
 	
-	.buffer_read_empty     ( buffer_read_empty        )
+	.buffer_read_empty     ( buffer_read_empty        ),
+	.buffer_read_req       ( buffer_read_req          ),            //output
+	.buffer_read_last      ( buffer_read_last         )             //input
 );
 
 endmodule

@@ -29,12 +29,12 @@ localparam integer DATA_WIDTH  = OP_WIDTH * NUM_PE;
 
 
 reg signed [OP_WIDTH-1:0] data_in [0:1<<20];
-
+reg signed [OP_WIDTH-1:0] weight [0:1<<20];
 reg signed [OP_WIDTH-1:0] buffer [0:1<<20];
 reg signed [OP_WIDTH-1:0] expected_out [0:1<<20];
-
-
-
+reg signed [OP_WIDTH-1:0] expected_pool_out [0:1<<20];
+integer expected_writes;
+integer output_fm_size;
 reg signed [OP_WIDTH-1:0] norm_lut [0:1<<6];
 
 initial
@@ -550,32 +550,85 @@ task pu_read;
     integer tmp;
     begin
         input_idx = data_in_counter % input_fm_size;
+        
+        for (i=0; i<NUM_PE; i=i+1)
+        begin
+            tmp = (input_idx+i)%input_fm_dimensions[0];
+            if ((input_idx)%input_fm_dimensions[0] + i >= input_fm_dimensions[0] && input_fm_dimensions[0] > 1)
+                pu_data_in[i*OP_WIDTH+:OP_WIDTH] = 0;
+            else begin
+                pu_data_in[i*OP_WIDTH+:OP_WIDTH] = data_in[input_idx+i];
+                data_in_counter = data_in_counter + 1;
+            end
+            if (data_in_counter >= max_data_in_count)
+                rd_ready = 1'b0;
+        end
+        
     end
 endtask
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 integer write_count;
 initial write_count = 0;
-/*task pu_write
-endtask*/
+task pu_write
+    integer i;
+    reg signed [OP_WIDTH-1:0] tmp;
+    reg signed [OP_WIDTH-1:0] exp_data;
+    integer idx;
+    begin
+        
+        if (VERBOSE > 0) $write("PU write DATA : ");
+        for (i=0; i<NUM_PE; i=i+1)
+        begin
+            tmp = pu_data_out[i*OP_WIDTH+:OP_WIDTH];
+            if (VERBOSE > 0) $write("%d ", tmp);
+        end
+        if (VERBOSE > 0) $display;
+        
+        if (VERBOSE > 0) $write("Expected   : ");
+        for (i=0; i<NUM_PE; i=i+1)
+        begin
+            idx = (write_count + i) % (output_fm_size*NUM_PE);
+            if (pool_enabled)
+                exp_data = expected_pool_out[idx];
+            else
+                exp_data = expected_out[idx];
+            if (VERBOSE > 0) $write("%d ", exp_data);
+        end
+        if (VERBOSE > 0) $display;
+        
+        for (i=0; i<NUM_PE; i=i+1)
+        begin
+            idx = (write_count + i) % (output_fm_size*NUM_PE);
+            tmp = pu_data_out[i*OP_WIDTH+:OP_WIDTH];
+            if (pool_enabled)
+                exp_data = expected_pool_out[idx];
+            else
+                exp_data = expected_out[idx];
+            if (tmp !== exp_data)
+            begin
+                $error ("PU write data does not match expected");
+                $display ("Expected %d, got %d", exp_data, tmp);
+                $display ("Write Count = %d", write_count);
+                status.test_fail;
+            end
+        end
+        write_count += NUM_PE;
+        if (VERBOSE > 0) $display ("Write Count = %d", write_count);
+        if (VERBOSE > 0) $display;
+        
+    end
+endtask
 
 always @(posedge clk)
 begin
     if(pu_rd_req && pu_rd_ready)
         pu_read;
+end
+
+always @(posedge clk)
+begin
+    if (pu_wr_req)
+        pu_write;
 end
 
 initial begin
@@ -595,11 +648,57 @@ end
 
 assign pu_rd_ready = (delay_count == 0) && rd_ready;
 //assign pu_rd_ready = rd_ready;
+//fill buffer_read_data_out[4*OP_WIDTH]
+task send_buffer_data;
+    integer num_buffer_reads;
+    integer num_data;
+    integer idx;
+    integer ii;
+    begin
+        wait(!buffer_read_empty);
+        repeat(20) @(negedge clk);
+        $display ("Buffer Data dimensions are: %d x %d x %d x %d",
+            buffer_dimensions[3], buffer_dimensions[2],
+            buffer_dimensions[1], buffer_dimensions[0]);
+        @(negedge clk);
+        @(negedge clk);
+        buffer_read_empty = 1'b0;
+        num_data = buffer_dimensions[0] * buffer_dimensions[1];   //k_width * k_height
+        num_buffer_reads = ceil_a_by_b(num_data, NUM_PE) *        //number of buffer reads,4 data once   
+            ceil_a_by_b(NUM_PE,4);
+        buffer_read_data_valid = 1;
+        
+        
+        idx = 0;
+        $display ("Number of Buffer reads = %d",
+            num_buffer_reads);
+        repeat(num_buffer_reads+0) begin
+            for (ii=0; ii<4; ii=ii+1) begin
+                buffer_read_data_out[ ii*OP_WIDTH +: OP_WIDTH] = buffer[idx];
+                idx = idx+1;
+            end
+        @(negedge clk);
+        
+        end
+        buffer_read_data_valid = 0;
+        @(negedge clk);
+        buffer_read_last = 1'b1;
+        @(negedge clk);
+        buffer_read_last = 1'b0;
+        buffer_read_empty = 1'b1;
+    end
+endtask
 
 initial begin
     buffer_read_data_valid = 0;
     buffer_read_last = 1'b0;
     buffer_read_empty = 1'b1;
+end
+
+always @(posedge clk)
+begin
+    if (buffer_read_req)
+        send_buffer_data; 
 end
 
 endmodule

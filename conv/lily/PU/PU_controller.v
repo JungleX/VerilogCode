@@ -1,39 +1,285 @@
 `include "params.vh"
 
-module PU_controller #(
+
+module PU_controller 
+#(
+    
+    
+    
+    
+    
+    
+    
     parameter integer LAYER_PARAM_WIDTH          = 10,
     parameter integer PARAM_C_WIDTH              = 16,
+    parameter integer MAX_LAYERS                 = 64,
+    
     parameter integer TID_WIDTH                  = 8,
     parameter integer PAD_WIDTH                  = 3,
     parameter integer STRIDE_SIZE_W              = 3,
-    parameter integer MAX_LAYERS                 = 64,
+    
+    
+    
+    
     parameter integer SERDES_COUNT_W             = 6
-)(
+
+)
+(
+
     input wire                                 clk,
     input wire                                 reset,
     input wire                                 start,
     
+    
+    
+    
+    
+    
+    
+    
+    output wire                               buffer_read_req,
+    input wire                                buffer_read_last,
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     output reg [ 3               - 1 : 0 ]     state
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 );
+
+
 
 //FSM states
 localparam IDLE         = 0,
            WAIT         = 1,
 	       RD_CFG_1     = 2,
+	       
            BUSY         = 4;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 wire [ LAYER_PARAM_WIDTH  - 1 : 0 ]        l,l_max;
 wire                                       l_inc, l_inc_d, l_clear;
 
 wire                                       next_fm;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 reg [ 3                   - 1 : 0 ]        next_state;
 reg [ CFG_WIDTH           - 1 : 0 ]        cfg_rom[0:CFG_DEPTH-1];        //control flow graph
 reg [ CFG_WIDTH           - 1 : 0 ]        layer_params;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 reg [ LAYER_PARAM_WIDTH   - 1 : 0 ]        max_layers;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 wire [ 256                - 1 : 0 ]        GND;
+
+
+
 
 localparam CFG_DEPTH = MAX_LAYERS;
 localparam L_TYPE_WIDTH = 2;
@@ -46,6 +292,10 @@ localparam CFG_WIDTH =
     L_TYPE_WIDTH +
     2 + 2 +
     STRIDE_SIZE_W;
+
+
+
+
 
 assign GND = 256'd0;
 
@@ -64,6 +314,113 @@ begin
 		layer_params <= cfg_rom[1];
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+reg [6:0] wait_timer;
+wire [6:0] max_wait_time = 8;
+wire wait_complete = wait_timer == max_wait_time;
+
+
+always @(posedge clk)
+    if (reset || state != WAIT)
+        wait_timer <= 0;
+    else if (!wait_complete)
+        wait_timer <= wait_timer + 1'b1;
+
+assign buffer_read_req = wait_complete && state == WAIT && !(buffer_read_last_sticky);
+
+reg buffer_read_last_sticky;
+
+always @(posedge clk)
+begin
+    if (reset)
+        buffer_read_last_sticky <= 1'b0;
+    else begin
+        if (buffer_read_last)
+            buffer_read_last_sticky <= 1'b1;
+        else if (state == RD_CFG_1)
+            buffer_read_last_sticky <= 1'b0;
+    end
+end
+
+
+
+
+
+
+
 always @*
 begin: FSM
     next_state = state;
@@ -78,6 +435,19 @@ begin: FSM
     endcase
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 always @(posedge clk)
 begin
     if(reset)
@@ -85,6 +455,268 @@ begin
     else
         state <= next_state;
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // =============================================================
 // Output FM channels
@@ -94,6 +726,21 @@ counter #(
     .INC                 ( oc_inc                 ),
     .OVERFLOW            ( next_l                 )
 );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // =============================================================
 // layer count
@@ -106,7 +753,8 @@ assign l_default = GND[LAYER_PARAM_WIDTH-1:0];
 assign l_min = GND[LAYER_PARAM_WIDTH-1:0];
 counter #(
     .COUNT_WIDTH           ( LAYER_PARAM_WIDTH       )
-) l_counter(
+) 
+l_counter(
     .CLK                   ( clk                     ),
     .RESET                 ( reset                   ),
     .CLEAR                 ( l_clear                 ),
