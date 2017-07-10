@@ -232,15 +232,16 @@ always @(posedge clk)
 assign read_req = vecgen_rd_req;
 PU #(
 
-
-
+    .OP_WIDTH        ( OP_WIDTH          ),
+    .NUM_PE          ( NUM_PE            )
 ) u_PU (
 
-
-
-    .buffer_read_data_valid     ( buffer_read_data_valid  ),
+    .clk                        ( clk                     ),
+    .reset                      ( reset                   ),
+    .buffer_read_data_valid     ( buffer_read_data_valid  ),     //input
     .read_data                  ( buffer_read_data_out    ),     //input, 4 data
-    
+    .pe_ctrl                    ( pe_ctrl                 ),     //input
+    .lrn_enable                 ( lrn_enable              ),     //input
     
     
     
