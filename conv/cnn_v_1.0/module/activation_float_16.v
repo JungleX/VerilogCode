@@ -4,9 +4,12 @@ module activation_float_16(
     input clk,
     
     input [3:0] type,
-    input [15:0] inputData,
     
-    output reg [15:0] outputData
+    input [15:0] inputData,
+    input inputReady,
+    
+    output reg [15:0] outputData,
+    output reg outputReady
     );
 
     parameter   NONE    = 4'd0,
@@ -116,11 +119,13 @@ module activation_float_16(
     always @(posedge clk) begin
     	
     	// when get new input data, start new computation and abandon the former
-    	if (input_data != inputData) begin
+    	if (inputReady == 1 && input_data != inputData) begin
     		count_clk = 0;
 
     		input_data = inputData;
     		ena = 1;
+
+    		outputReady = 0;
     	end
 
     	if (ena == 1) begin
@@ -130,8 +135,10 @@ module activation_float_16(
 	    				outputData = input_data;
 
 	    				count_clk = 0;
-	    				
+
 	    				ena = 0;
+
+	    				outputReady = 1;
 	    			end
 
 	    		ReLU:
@@ -153,6 +160,8 @@ module activation_float_16(
 	    					count_clk = 0;
 
 	    					ena = 0;
+
+	    					outputReady = 1;
 	    				end
 	    			end
 
@@ -202,6 +211,8 @@ module activation_float_16(
 	    					count_clk = 0;
 
 	    					ena = 0;
+
+	    					outputReady = 1;
 	    				end
 	    			end
 
@@ -267,6 +278,8 @@ module activation_float_16(
 	    					count_clk = 0;
 
 	    					ena = 0;
+
+	    					outputReady = 1;
 	    				end
 	    			end
 	    	endcase

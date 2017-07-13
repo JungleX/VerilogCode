@@ -14,16 +14,20 @@ module activation_float_16_tb();
 	reg [3:0] type;
 
 	reg [15:0] inputData;
+	reg inputReady;
 
 	wire [15:0] outputData;
+	wire outputReady;
 
 	activation_float_16 activation(
-    .clk(clk),
-    
-    .type(type),
-    .inputData(inputData),
-    
-    .outputData(outputData)
+	    .clk(clk),
+	    
+	    .type(type),
+	    .inputData(inputData),
+	    .inputReady(inputReady),
+	    
+	    .outputData(outputData),
+	    .outputReady(outputReady)
     );
 
     initial 
@@ -34,44 +38,61 @@ module activation_float_16_tb();
     	#(`clk_period / 2)
     	type = NONE;
     	inputData = 16'h4000; // 2
+    	inputReady = 1;
 
     	#`clk_period
     	type = NONE;
     	inputData = 16'h4700; // 7
+    	inputReady = 1;
 
 
     	#`clk_period
     	type = ReLU;
     	inputData = 16'h4880; // 9
+    	inputReady = 1;
 
     	#(`clk_period * 2)
     	type = ReLU;
     	inputData = 16'hc200; // -3 
+    	inputReady = 1;
     	// no result
 
     	#`clk_period
     	type = ReLU;
     	inputData = 16'h4000; // 2
+    	inputReady = 1;
 
 
     	#(`clk_period * 2)
     	type = sigmoid;
     	inputData = 16'h3c00; // 1
+    	inputReady = 1;
     	// no result
 
     	#(`clk_period * 2)
     	type = sigmoid;
     	inputData = 16'h4000; // 2
+    	inputReady = 1;
 
 
     	# (`clk_period * 6)
     	type = tanh;
     	inputData = 16'h3c00; // 3
+    	inputReady = 1;
     	// no result
 
     	# (`clk_period * 3)
     	type = tanh;
     	inputData = 16'h4200; // 3
+    	inputReady = 1;
+    end
+
+    reg [15:0] output_data;
+
+    always @(posedge clk) begin
+    	if (outputReady == 1) begin
+    		output_data = outputData;
+    	end
     end
 
 endmodule
