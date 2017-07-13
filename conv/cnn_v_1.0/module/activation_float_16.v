@@ -25,7 +25,7 @@ module activation_float_16(
     reg com_b_valid;
     reg [15:0] com_b_tdata;
 
-    wire com_re_valid;
+    wire com_re_tvalid;
     wire [7:0] com_re_tdata;
 
     floating_point_compare compare(
@@ -35,7 +35,7 @@ module activation_float_16(
         .s_axis_b_tvalid(com_b_valid),
         .s_axis_b_tdata(com_b_tdata),
 
-        .m_axis_result_tvalid(com_re_valid),
+        .m_axis_result_tvalid(com_re_tvalid),
         .m_axis_result_tdata(com_re_tdata)
     );
 
@@ -119,7 +119,7 @@ module activation_float_16(
     always @(posedge clk) begin
     	
     	// when get new input data, start new computation and abandon the former
-    	if (inputReady == 1 && input_data != inputData) begin
+    	if ((inputReady == 1) && (input_data != inputData)) begin
     		count_clk = 0;
 
     		input_data = inputData;
@@ -155,13 +155,15 @@ module activation_float_16(
 	    				end
 	    				// clk 2
 	    				else begin
-	    					outputData =  com_re_tdata[0] == 1 ? input_data : 0;
+							if (com_re_tvalid == 1) begin
+								outputData = com_re_tdata[0] == 1 ? input_data : 0;
 
-	    					count_clk = 0;
+								count_clk = 0;
 
-	    					ena = 0;
+								ena = 0;
 
-	    					outputReady = 1;
+								outputReady = 1;
+							end
 	    				end
 	    			end
 
@@ -179,40 +181,48 @@ module activation_float_16(
 	    				end
 	    				// clk 2
 	    				else if (count_clk == 1) begin
-	    					exp_a_tvalid = 1;
-	    					exp_a_tdata = sub_re_tdata;
+	    					if (sub_re_tvalid == 1) begin
+	    						exp_a_tvalid = 1;
+	    						exp_a_tdata = sub_re_tdata;
 
-	    					count_clk = 2;
+	    						count_clk = 2;
+	    					end
 	    				end
 	    				// clk 3
 	    				else if (count_clk == 2) begin
-	    					add_a_tvalid = 1;
-	    					add_a_tdata = 16'h3c00; // 1
+							if (exp_re_tvalid == 1) begin
+								add_a_tvalid = 1;
+		    					add_a_tdata = 16'h3c00; // 1
 
-	    					add_b_tvalid = 1;
-	    					add_b_tdata = exp_re_tdata;
-	    			
-	    					count_clk = 3;
+		    					add_b_tvalid = 1;
+		    					add_b_tdata = exp_re_tdata;
+		    			
+		    					count_clk = 3;
+							end
 	    				end
 	    				// clk 4
 	    				else if (count_clk == 3) begin
-	    					div_a_tvalid = 1;
-	    					div_a_tdata = 16'h3c00; // 1
+							if (add_re_tvalid == 1) begin
+								div_a_tvalid = 1;
+		    					div_a_tdata = 16'h3c00; // 1
 
-	    					div_b_tvalid = 1;
-	    					div_b_tdata = add_re_tdata;
+		    					div_b_tvalid = 1;
+		    					div_b_tdata = add_re_tdata;
 
-	    					count_clk = 4;
+		    					count_clk = 4;
+							end
 	    				end
 	    				// clk 5
 	    				else begin
-	    					outputData = div_re_tdata;
+							if (div_re_tvalid == 1) begin
+								outputData = div_re_tdata;
 
-	    					count_clk = 0;
+		    					count_clk = 0;
 
-	    					ena = 0;
+		    					ena = 0;
 
-	    					outputReady = 1;
+		    					outputReady = 1;
+							end
 	    				end
 	    			end
 
@@ -230,56 +240,66 @@ module activation_float_16(
 	    				end
 	    				// clk 2
 	    				else if (count_clk == 1) begin
-	    					sub_a_tvalid = 1;
-	    					sub_a_tdata = 16'h0000;
+							if (add_re_tvalid == 1) begin
+								sub_a_tvalid = 1;
+		    					sub_a_tdata = 16'h0000;
 
-	    					sub_b_tvalid = 1;
-	    					sub_b_tdata = add_re_tdata;
+		    					sub_b_tvalid = 1;
+		    					sub_b_tdata = add_re_tdata;
 
-	    					count_clk = 2;
+		    					count_clk = 2;
+							end
 	    				end
 	    				// clk 3
 	    				else if (count_clk == 2) begin
-	    					exp_a_tvalid = 1;
-	    					exp_a_tdata = sub_re_tdata;
+							if (sub_re_tvalid == 1) begin
+								exp_a_tvalid = 1;
+		    					exp_a_tdata = sub_re_tdata;
 
-	    					count_clk = 3;
+		    					count_clk = 3;
+							end
 	    				end
 	    				// clk 4
 	    				else if (count_clk == 3) begin
-	    					add_a_tvalid = 1;
-	    					add_a_tdata = 16'h3c00;
+							if (exp_re_tvalid == 1) begin
+								add_a_tvalid = 1;
+		    					add_a_tdata = 16'h3c00;
 
-	    					add_b_tvalid = 1;
-	    					add_b_tdata = exp_re_tdata;
+		    					add_b_tvalid = 1;
+		    					add_b_tdata = exp_re_tdata;
 
-	    					sub_a_tvalid = 1;
-	    					sub_a_tdata = 16'h3c00;
+		    					sub_a_tvalid = 1;
+		    					sub_a_tdata = 16'h3c00;
 
-	    					sub_b_tvalid = 1;
-	    					sub_b_tdata = exp_re_tdata;
+		    					sub_b_tvalid = 1;
+		    					sub_b_tdata = exp_re_tdata;
 
-	    					count_clk = 4;
+		    					count_clk = 4;
+							end
 	    				end
 	    				// clk 5
 	    				else if (count_clk == 4) begin
-	    					div_a_tvalid = 1;
-	    					div_a_tdata = sub_re_tdata;
+							if ((add_re_tvalid == 1) && (sub_re_tvalid == 1)) begin
+								div_a_tvalid = 1;
+		    					div_a_tdata = sub_re_tdata;
 
-	    					div_b_tvalid = 1;
-	    					div_b_tdata = add_re_tdata;
+		    					div_b_tvalid = 1;
+		    					div_b_tdata = add_re_tdata;
 
-	    					count_clk = 5;
+		    					count_clk = 5;
+							end
 	    				end
 	    				// clk 6
 	    				else if (count_clk == 5) begin
-	    					outputData = div_re_tdata;
+							if (div_re_tvalid == 1) begin
+								outputData = div_re_tdata;
 
-	    					count_clk = 0;
+		    					count_clk = 0;
 
-	    					ena = 0;
+		    					ena = 0;
 
-	    					outputReady = 1;
+		    					outputReady = 1;
+							end
 	    				end
 	    			end
 	    	endcase
