@@ -1,6 +1,6 @@
 
 
-
+`include "common.vh"
 `include "params.vh"
 module PU_tb;
 
@@ -15,35 +15,35 @@ localparam integer STRIDE_SIZE_W       = 3;
 localparam integer LAYER_PARAM_WIDTH   = 10;
 localparam integer L_TYPE_WIDTH        = 2;
 
+localparam integer PE_CTRL_WIDTH       = 10 + 2*PE_BUF_ADDR_WIDTH;
+
+
+localparam integer WR_ADDR_WIDTH       = 7;
+localparam integer RD_ADDR_WIDTH       = WR_ADDR_WIDTH + `C_LOG_2(NUM_PE);
 
 
 
 
+localparam integer POOL_CTRL_WIDTH     = 7;
+localparam integer POOL_CFG_WIDTH      = 3;
+localparam integer SERDES_COUNT_W      = 6;
+
+localparam integer PE_SEL_W            = `C_LOG_2(NUM_PE);
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+wire                                            pe_neuron_bias;
+wire [ PE_SEL_W            - 1 : 0 ]            pe_neuron_sel;
+wire                                            pe_neuron_read_req;
 
 wire [ DATA_WIDTH          - 1 : 0 ]            pu_data_out;
 wire [ DATA_WIDTH          - 1 : 0 ]            pu_data_in;
 reg                                             pu_data_in_v;
 reg                                             start;
-
-
-
+wire [ SERDES_COUNT_W      - 1 : 0 ]            pu_serdes_count;
+wire [ PE_CTRL_WIDTH       - 1 : 0 ]            pe_ctrl;
+wire [ RD_ADDR_WIDTH       - 1 : 0 ]            wb_read_addr;
 wire                                            read_req;
 
 
@@ -52,20 +52,20 @@ wire                                            vecgen_rd_req;
 
 
 
+wire [ DATA_IN_WIDTH       - 1 : 0 ]            vecgen_wr_data;
+
+wire [ NUM_PE              - 1 : 0 ]            vecgen_mask;
+
+// PU Source and Destination Select
+wire [ `SRC_0_SEL_WIDTH    - 1 : 0 ]            src_0_sel;
+wire [ `SRC_1_SEL_WIDTH    - 1 : 0 ]            src_1_sel;
+wire [ `SRC_2_SEL_WIDTH    - 1 : 0 ]            src_2_sel;
+wire [ `OUT_SEL_WIDTH      - 1 : 0 ]            out_sel;
+wire [ `DST_SEL_WIDTH      - 1 : 0 ]            dst_sel;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+wire [ POOL_CTRL_WIDTH     - 1 : 0 ]            pool_ctrl;
+wire [ POOL_CFG_WIDTH      - 1 : 0 ]            pool_cfg;
 
 
 
@@ -242,28 +242,28 @@ PU #(
     .read_data                  ( buffer_read_data_out    ),     //input, 4 data
     .pe_ctrl                    ( pe_ctrl                 ),     //input
     .lrn_enable                 ( lrn_enable              ),     //input
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    .write_data                   ( pu_data_out               ),         //output
-    .write_req                    ( outBuf_push               )
+    .pu_serdes_count            ( pu_serdes_count         ),     //input
+    .pe_neuron_sel              ( pe_neuron_sel           ),     //input
+    .pe_neuron_bias             ( pe_neuron_bias          ),     //input
+    .pe_neuron_read_req         ( pe_neuron_read_req      ),     //input
+    .vecgen_mask                ( vecgen_mask             ),     //input
+    .vecgen_wr_data             ( vecgen_wr_data          ),     //input
+    .wb_read_addr               ( wb_read_addr            ),     //input
+    .wb_read_req                ( wb_read_req             ),     //input
+    .bias_read_req              ( bias_read_req           ),     //input
+    .src_0_sel                  ( src_0_sel               ),     //input
+    .src_1_sel                  ( src_1_sel               ),     //input
+    .src_2_sel                  ( src_2_sel               ),     //input
+    .out_sel                    ( out_sel                 ),     //input
+    .dst_sel                    ( dst_sel                 ),     //input
+    .pool_cfg                   ( pool_cfg                ),     //input
+    .pool_ctrl                  ( pool_ctrl               ),    //input
+    .read_id                    ( 10'b0                   ),    //input
+    .read_d_type                ( 2'b0                    ),    //input
+    .read_req                   ( pu_rd_req               ),    //output
+    .write_data                 ( pu_data_out             ),    //output
+    .write_req                  ( outBuf_push             ),    //output
+    .write_ready                ( 1'b1                    )     //input 
 );
 
 
@@ -271,10 +271,9 @@ PU #(
 
 
 
-
 assign vecgen_rd_data = pu_data_in;
-
-
+wire vecgen_rd_data_v;
+assign vecgen_rd_data_v = pu_data_in_v;
 assign vecgen_rd_ready = pu_rd_ready;
 
 
@@ -289,11 +288,11 @@ vectorgen #(
     
     
     
-    .read_ready          ( vecgen_rd_ready           ),
-    .read_req             ( vecgen_rd_req             )
+    .read_ready           ( vecgen_rd_ready           ),
+    .read_req             ( vecgen_rd_req             ),
+    .write_data           ( vecgen_wr_data            )
+    
 );
-
-
 
 
 
@@ -307,7 +306,7 @@ vectorgen #(
 PU_controller 
 #(
 
-
+    .PE_CTRL_W            ( PE_CTRL_WIDTH            )
 
 
 
@@ -317,16 +316,32 @@ PU_controller
 	.clk                   ( clk                      ),
 	.reset                 ( reset                    ),
 	.start                 ( start                    ),
-	
-	
-	
-	
-	
-	
-	
+	.lrn_enable            ( lrn_enable               ),          //output
+	.pu_serdes_count       ( pu_serdes_count          ),          //output
+	.pe_neuron_sel         ( pe_neuron_sel            ),          //output
+	.pe_neuron_bias        ( pe_neuron_bias           ),          //output
+	.pe_neuron_read_req    ( pe_neuron_read_req       ),          //output
+	.pe_ctrl               ( pe_ctrl                  ),            //output
 	.buffer_read_empty     ( buffer_read_empty        ),
 	.buffer_read_req       ( buffer_read_req          ),            //output
-	.buffer_read_last      ( buffer_read_last         )             //input
+	.buffer_read_last      ( buffer_read_last         ),             //input
+	
+	
+	
+	
+	
+	
+	.wb_read_req           ( wb_read_req              ),     //output
+	.wb_read_addr          ( wb_read_addr             ),     //output
+	.pe_write_mask         ( vecgen_mask              ),     //output
+	.pool_cfg              ( pool_cfg                 ),     //output
+	.pool_ctrl             ( pool_ctrl                ),    //output
+	.src_0_sel             ( src_0_sel                ),    //output
+	.src_1_sel             ( src_1_sel                ),    //output
+	.src_2_sel             ( src_2_sel                ),    //output
+	.bias_read_req         ( bias_read_req            ),     //output
+	.out_sel               ( out_sel                  ),      //output
+	.dst_sel               ( dst_sel                  )       //output
 );
 
 endmodule
