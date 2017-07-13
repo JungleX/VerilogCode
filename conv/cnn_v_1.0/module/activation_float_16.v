@@ -115,6 +115,7 @@ module activation_float_16(
 
     always @(posedge clk) begin
     	
+    	// when get new input data, start new computation and abandon the former
     	if (input_data != inputData) begin
     		count_clk = 0;
 
@@ -127,6 +128,10 @@ module activation_float_16(
 	    		NONE:
 	    			begin
 	    				outputData = input_data;
+
+	    				count_clk = 0;
+	    				
+	    				ena = 0;
 	    			end
 
 	    		ReLU:
