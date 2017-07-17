@@ -5,7 +5,7 @@ module PU_controller
 #(
     
     
-    
+    parameter integer NUM_PE                    = 4,
     
     
     
@@ -30,16 +30,16 @@ module PU_controller
     input wire                                 reset,
     input wire                                 start,
     
+    output wire [ L_TYPE_WIDTH    -1 : 0 ]     l_type,
     
     
     
     
     
     
-    
-    output wire                               buffer_read_req,
-    input wire                                buffer_read_last,
-    
+    output wire                                buffer_read_req,
+    input wire                                 buffer_read_last,
+    input wire                                 vectorgen_ready,
     
     
     
@@ -169,7 +169,7 @@ localparam IDLE         = 0,
 
 
 
-
+wire                                      ic_inc, ic_inc_d;
 
 
 
@@ -194,16 +194,16 @@ wire                                       next_fm;
 
 
 
+wire                                      skip;
+
+
+wire                                      vecgen_ready;
+
+wire [ TID_WIDTH         - 1 : 0 ]        max_threads;
 
 
 
-
-
-
-
-
-
-
+wire [ LAYER_PARAM_WIDTH - 1 : 0 ]        endrow_iw;
 
 
 
@@ -213,7 +213,7 @@ reg [ 3                   - 1 : 0 ]        next_state;
 reg [ CFG_WIDTH           - 1 : 0 ]        cfg_rom[0:CFG_DEPTH-1];        //control flow graph
 reg [ CFG_WIDTH           - 1 : 0 ]        layer_params;
 
-
+wire [ SERDES_COUNT_W     - 1 : 0 ]        serdes_count;
 
 
 
@@ -253,8 +253,8 @@ reg [ LAYER_PARAM_WIDTH   - 1 : 0 ]        max_layers;
 
 
 
-
-
+reg [ TID_WIDTH               -1 : 0 ]         tid [0:NUM_PE-1];
+reg [ NUM_PE                  -1 : 0 ]         mask;
 
 
 
@@ -294,7 +294,7 @@ localparam CFG_WIDTH =
     STRIDE_SIZE_W;
 
 
-
+localparam L_IP = 1;
 
 
 assign GND = 256'd0;
@@ -322,26 +322,26 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+assign {
+    serdes_count,
+    param_conv_stride,
+    param_pool_iw,
+    param_oh,
+    pool_kernel,
+    param_pool_enable,
+    l_type,
+    max_threads,
+    pad_w,
+    pad_r_s,
+    pad_r_e,
+    skip,
+    endrow_iw,
+    param_ic,
+    param_ih,
+    param_iw,
+    param_oc,
+    param_kh,
+    param_kw} = layer_params;
 
 
 
@@ -415,14 +415,14 @@ begin
     end
 end
 
+wire buffer_read_done = buffer_read_last || buffer_read_last_sticky || l_type == 2;
 
 
 
-
-
+assign vecgen_ready = vectorgen_ready;
 
 always @*
-begin: FSM
+begin: FSM        //finit state machine
     next_state = state;
     case (state)
         IDLE: begin
@@ -430,11 +430,11 @@ begin: FSM
                 next_state = WAIT;
         end
 	WAIT: begin
-		
+		if (vecgen_ready && wait_complete && buffer_read_done)
+		  next_state = RD_CFG_1;
 	end
     endcase
 end
-
 
 
 
@@ -868,13 +868,14 @@ reg ic_is_zero;
 
 
 
-always @(posedge clk)
+/*always @(posedge clk)
 	if (reset)
 		ic_is_zero <= 0;
 	else if (state == RD_CFG_2)
 		ic_is_zero <= (param_ic == 0);
 	else if (ic_inc || state_d == RD_CFG_2)
 		ic_is_zero <= (ic_is_max) || (param_ic == 0);
+*/
 
 
 
@@ -897,8 +898,7 @@ always @(posedge clk)
 
 
 
-
-
+assign vectorgen_start       = start || ((l_inc_d || ic_inc_d && l_type != L_IP) && state != IDLE);
 
 
 
@@ -1534,5 +1534,69 @@ always @(posedge clk)
 
 
 assign bias_read_req = (ic_is_zero && state == RD_CFG_2);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+genvar gen;
+generate
+for (gen = 0; gen < NUM_PE; gen = gen+1)
+begin: THREAD_LOGIC
+
+
+
+
+
+
+
+
+
+    always @(posedge clk)
+    begin
+
+        mask[gen] <= tid[gen] < max_threads;
+    end
+
+end
+endgenerate
 
 endmodule

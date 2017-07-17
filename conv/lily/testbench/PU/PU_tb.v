@@ -51,7 +51,7 @@ wire                                            vecgen_rd_req;
 
 
 
-
+wire                                            vecgen_ready;
 wire [ DATA_IN_WIDTH       - 1 : 0 ]            vecgen_wr_data;
 
 wire [ NUM_PE              - 1 : 0 ]            vecgen_mask;
@@ -125,17 +125,17 @@ initial begin
 	@(negedge clk);
 
 	start = 1;
-	wait(u_controller.state != 0);          //pu_controller ready
+	wait(u_controller.state != 0);          //!=IDLE
 	start = 0;            //Cleared after triggering
 
-	max_layers = u_controller.max_layers+1;      //+1?
+	max_layers = u_controller.max_layers;//+1;      
 	$display;
 	$display("****************************************");
 	$display("Number of layers = %d", max_layers);
 	$display("****************************************");
 	$display;
 	
-	for (ii=0; ii<max_layers; ii=ii+1)
+	for (ii=0; ii<max_layers; ii=ii+1)   //11
 	begin
 		{_stride, _pool_iw, _pool_oh, _pool_kernel, _pool, l_type, _max_threads, _pad, _pad_row_start, _pad_row_end, _skip, _endrow_iw, 
 		_ic, _ih, _iw, _oc, _kh, _kw} = u_controller.cfg_rom[ii];
@@ -284,11 +284,11 @@ vectorgen #(
 ) vecgen (
     .clk                  ( clk                       ),
     .reset                ( reset                     ),  
+    .ready                ( vecgen_ready              ),
     
     
     
-    
-    .read_ready           ( vecgen_rd_ready           ),
+    .read_ready           ( vecgen_rd_ready           ), //input
     .read_req             ( vecgen_rd_req             ),
     .write_data           ( vecgen_wr_data            )
     
@@ -306,28 +306,28 @@ vectorgen #(
 PU_controller 
 #(
 
-    .PE_CTRL_W            ( PE_CTRL_WIDTH            )
+    .PE_CTRL_W             ( PE_CTRL_WIDTH            ),
 
 
-
-
-
+    .TID_WIDTH             ( TID_WIDTH                ),
+    .PAD_WIDTH             ( PAD_WIDTH                ),
+    .LAYER_PARAM_WIDTH     ( LAYER_PARAM_WIDTH        )
 ) u_controller (
 	.clk                   ( clk                      ),
 	.reset                 ( reset                    ),
-	.start                 ( start                    ),
-	.lrn_enable            ( lrn_enable               ),          //output
-	.pu_serdes_count       ( pu_serdes_count          ),          //output
-	.pe_neuron_sel         ( pe_neuron_sel            ),          //output
-	.pe_neuron_bias        ( pe_neuron_bias           ),          //output
-	.pe_neuron_read_req    ( pe_neuron_read_req       ),          //output
-	.pe_ctrl               ( pe_ctrl                  ),            //output
+	.start                 ( start                    ), //input
+	.lrn_enable            ( lrn_enable               ), //output
+	.pu_serdes_count       ( pu_serdes_count          ), //output
+	.pe_neuron_sel         ( pe_neuron_sel            ), //output
+	.pe_neuron_bias        ( pe_neuron_bias           ), //output
+	.pe_neuron_read_req    ( pe_neuron_read_req       ), //output
+	.pe_ctrl               ( pe_ctrl                  ), //output
 	.buffer_read_empty     ( buffer_read_empty        ),
-	.buffer_read_req       ( buffer_read_req          ),            //output
-	.buffer_read_last      ( buffer_read_last         ),             //input
+	.buffer_read_req       ( buffer_read_req          ), //output
+	.buffer_read_last      ( buffer_read_last         ), //input
 	
 	
-	
+	.vectorgen_ready       ( vecgen_ready             ), //input
 	
 	
 	

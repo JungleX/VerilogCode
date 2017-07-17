@@ -467,12 +467,12 @@ endtask
 task initialize_input;
 	input integer width;
 	input integer height;
-	input integer channels;
-	input integer output_channels;
+	input integer channels;         //1
+	input integer output_channels;     //1
 	integer i, j, c;
 	integer idx;
 	begin
-		rd_ready = 1'b1;
+		rd_ready = 1'b1;          //pu_rd_ready
 		data_in_counter = 0;
 		input_fm_dimensions[0] = width;
 		input_fm_dimensions[1] = height;
