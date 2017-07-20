@@ -30,10 +30,10 @@ vectorgen_tb_driver #(
 ) driver(
 
 
+    .ready         ( ready        ),
 
 
-
-
+    .read_ready    ( read_ready   )  //output
 
 
 
@@ -93,22 +93,22 @@ end
 
 
 
+vectorgen #(
+
+
+) u_vecgen (
+
+
+    .ready         ( ready        ),  //output
+
+
+    .read_ready    ( read_ready   )   //input
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+);
 
 
 
@@ -125,9 +125,9 @@ PU_controller #(
 ) controller_dut (
     .clk              ( clk               ),
     .reset            ( reset             ),
-    .start            ( start             )
+    .start            ( start             ),  //input
     
-    
+    .vectorgen_ready  ( ready             )   //input
     
     
 );

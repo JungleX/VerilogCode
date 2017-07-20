@@ -75,8 +75,8 @@ module PU_controller
 //FSM states
 localparam IDLE         = 0,
            WAIT         = 1,
-	   RD_CFG_1     = 2,
-	   RD_CFG_2     = 3,   
+	   RD_CFG_1         = 2,
+	   RD_CFG_2         = 3,   
            BUSY         = 4;
 
 
@@ -95,10 +95,24 @@ localparam IDLE         = 0,
 
 
 
+wire [ LAYER_PARAM_WIDTH     - 1 : 0 ]         pool_ih_count;  
+wire                                           pool_ih_inc;
+wire                                           pool_ih_stall;
+wire [ LAYER_PARAM_WIDTH     - 1 : 0 ]         pool_ih_default;
+wire [ LAYER_PARAM_WIDTH     - 1 : 0 ]         pool_ih_min;
+reg  [ LAYER_PARAM_WIDTH     - 1 : 0 ]         pool_ih_max;
 
+wire [ LAYER_PARAM_WIDTH     - 1 : 0 ]         pool_iw_count;
+wire                                           pool_iw_inc;
+wire                                           next_pool_ih;
+wire [ LAYER_PARAM_WIDTH     - 1 : 0 ]         pool_iw_default;
 
+reg  [ LAYER_PARAM_WIDTH     - 1 : 0 ]         pool_iw_max;
 
 
+wire                                           stride_inc;
+wire                                           next_pool_iw;
+wire [ LAYER_PARAM_WIDTH     - 1 : 0 ]         stride_default;
 
 
 
@@ -109,6 +123,8 @@ localparam IDLE         = 0,
 
 
 
+wire                                            pool_in_pop;
+wire                                            _pool_in_pop;
 
 
 
@@ -128,6 +144,7 @@ localparam IDLE         = 0,
 
 
 
+wire                                            kh_max_dec;
 
 
 
@@ -148,24 +165,7 @@ localparam IDLE         = 0,
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+wire [ LAYER_PARAM_WIDTH  - 1 : 0 ]       ih, ih_max, ih_max_pad;
 
 
 
@@ -225,8 +225,8 @@ wire [ SERDES_COUNT_W     - 1 : 0 ]        serdes_count;
 
 
 
-
-
+wire                                       param_pool_enable;
+reg                                        pool_enable;
 
 
 reg [ LAYER_PARAM_WIDTH   - 1 : 0 ]        max_layers;
@@ -259,7 +259,7 @@ reg [ NUM_PE                  -1 : 0 ]         mask;
 
 
 
-
+wire                                           pool_ready;
 
 
 
@@ -284,7 +284,7 @@ wire [ 256                - 1 : 0 ]        GND;
 localparam CFG_DEPTH = MAX_LAYERS;
 localparam L_TYPE_WIDTH = 2;
 localparam CFG_WIDTH = 
-    SERDES_COUNT_W +
+    //SERDES_COUNT_W +
     2*PARAM_C_WIDTH +
     7*LAYER_PARAM_WIDTH +
     TID_WIDTH +
@@ -304,26 +304,26 @@ initial begin
 	`ifdef simulation
 		$readmemb("./hardware/include/pu_controller_bin.vh", cfg_rom);
 	`else
-		$readmemb("pu_controller_bin.vh", cfg_rom);
+		$readmemb("pu_controller_bin.vh", cfg_rom);           //cnn 数据流图文件,124
 	`endif
 end
 
 always @(posedge clk)
 begin
 	if (state != RD_CFG_1)
-		layer_params <= cfg_rom[1];
+		layer_params <= cfg_rom[0];//cfg_rom[1];
 end
 
-
-
-
-
-
-
-
+wire [STRIDE_SIZE_W-1:0]      param_conv_stirde;
+reg [STRIDE_SIZE_W-1:0]       param_conv_stride_d;
+always @(posedge clk)
+    if (reset)
+        param_conv_stride_d <= 1;
+    else
+        param_conv_stride_d <= param_conv_stride;
 
 assign {
-    serdes_count,
+    //serdes_count,
     param_conv_stride,
     param_pool_iw,
     param_oh,
@@ -343,16 +343,17 @@ assign {
     param_kh,
     param_kw} = layer_params;
 
+always @(posedge clk)
+    if (reset)
+        pool_enable <= 1'b0;
+    else if (pool_ih_count == 0)
+        pool_enable <= param_pool_enable;
+
+assign kh_default = param_kh;
 
 
-
-
-
-
-
-
-
-
+assign kh_max_dec = (ih > (ih_max - param_kh + pad_r_e - param_conv_stride ) &&
+    iw_inc_d && (iw == iw_min) && kh_max != (param_conv_stride-1)) && (conv_stride_count == conv_stride_max);
 
 
 
@@ -674,23 +675,22 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+counter #(
+    .COUNT_WIDTH           ( LAYER_PARAM_WIDTH       )
+) 
+ih_counter(
+    .CLK                   ( clk                     ),
+    .RESET                 ( reset                   ),
+    .CLEAR                 ( 1'b0                    ),
+    .DEFAULT               ( ih_max                  ),
+    .INC                   ( ih_inc                  ),
+    .DEC                   ( 1'b0                    ),
+    .MIN_COUNT             ( ih_min                  ),
+    .MAX_COUNT             ( ih_max_pad              ),
+    .OVERFLOW              ( next_ic                 ),       //output
+    .UNDERFLOW             (                         ),
+    .COUNT                 ( ih                      )        //output
+);
 
 
 
@@ -1598,5 +1598,153 @@ begin: THREAD_LOGIC
 
 end
 endgenerate
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+reg stride_state, next_stride_state;
+always @(posedge clk)
+    if (reset)
+        stride_state <= 1'b0;
+    else 
+        stride_state <= next_stride_state;
+always @(*)
+begin
+    next_stride_state = stride_state;
+    case (stride_state)
+        0: if (pool_in_pop)
+            next_stride_state = 1;
+        1: if (pool_iw_inc)
+            next_stride_state = 0;
+    endcase
+end
+
+assign stride_inc = pool_enable && (stride_state ? (pool_ready || pool_iw_count == pool_iw_max ) : pool_in_pop);
+
+
+assign stride_default = GND[LAYER_PARAM_WIDTH-1:0];
+
+counter #(
+    .COUNT_WIDTH            ( LAYER_PARAM_WIDTH      )
+)
+stride_counter (
+    .CLK                    ( clk                    ),
+    .RESET                  ( reset                  ),
+    .CLEAR                  ( 1'b0                   ),
+    .DEFAULT                ( stride_default         ),
+    .INC                    ( stride_inc             ),
+    
+
+
+    .OVERFLOW               ( next_pool_iw           )  //output
+
+
+);
+
+
+
+
+assign pool_iw_inc = next_pool_iw && stride_inc;
+
+
+always @(posedge clk)
+    if (reset)
+        pool_iw_max <= 0;
+    else if (pool_ih_count == 0)
+        pool_iw_max <= param_pool_iw;
+
+
+
+
+
+
+assign pool_iw_default = GND[LAYER_PARAM_WIDTH-1:0];
+
+counter #(
+    .COUNT_WIDTH            ( LAYER_PARAM_WIDTH      )
+)
+pool_iw_counter (
+    .CLK                    ( clk                    ),
+    .RESET                  ( reset                  ),
+    .CLEAR                  ( 1'b0                   ),
+    .DEFAULT                ( pool_iw_default        ),
+    .INC                    ( pool_iw_inc            ),
+    
+
+
+    .OVERFLOW               ( next_pool_ih           ),  //output
+
+    .COUNT                  ( pool_iw_count          )   //output
+);
+
+assign pool_ih_inc = next_pool_ih && pool_iw_inc;
+assign pool_ih_min = 0;
+assign pool_ih_default = 0;
+
+always @(posedge clk)
+begin
+    if (reset) pool_ih_max <= 0;
+    else if (pool_ih_count == 0) pool_ih_max <= param_oh;   //???
+end
+
+counter #(
+    .COUNT_WIDTH            ( LAYER_PARAM_WIDTH      )
+)
+pool_ih_counter (
+    .CLK                    ( clk                    ),
+    .RESET                  ( reset                  ),
+    .CLEAR                  ( 1'b0                   ),
+    .DEFAULT                ( pool_ih_default        ),
+    .INC                    ( pool_ih_inc            ),
+    .DEC                    ( 1'b0                   ),
+    .MIN_COUNT              ( pool_ih_min            ),
+    .MAX_COUNT              ( pool_ih_max            ),
+    .OVERFLOW               ( pool_ih_stall          ),  //output
+    .UNDERFLOW              (                        ),
+    .COUNT                  ( pool_ih_count          )   //output
+);
 
 endmodule

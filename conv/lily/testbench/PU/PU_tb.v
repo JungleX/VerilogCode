@@ -311,7 +311,7 @@ PU_controller
 
     .TID_WIDTH             ( TID_WIDTH                ),
     .PAD_WIDTH             ( PAD_WIDTH                ),
-    .LAYER_PARAM_WIDTH     ( LAYER_PARAM_WIDTH        )
+    .LAYER_PARAM_WIDTH     ( LAYER_PARAM_WIDTH        ), .PARAM_C_WIDTH (LAYER_PARAM_WIDTH)
 ) u_controller (
 	.clk                   ( clk                      ),
 	.reset                 ( reset                    ),
