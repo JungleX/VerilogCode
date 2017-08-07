@@ -1,0 +1,77 @@
+CNN 参数化
+
+用户设置第一层的 feature map size
+	参考的伪代码：
+	input_fm_1 = init_feature_map(width, height, depth)
+
+用户设置每一层的相关参数，feature map size 由 input_feature 提供，第一层的为用户设置数值，之后各层为创建层函数的返回值
+	参考的伪代码：
+	input_fm_2 = conv_layer(input_fm_1, padding_group, kernel_numbel, kernel_size, stride, activation)
+	input_fm_3 = pool_layer(input_fm_2, padding_group, pool_size, stride)
+	input_fm_4 = fc_layer(input_fm_13, kernel_numbel, activation)
+
+feature map size 计算公式：
+	O=(W−F+2P)/S+1
+	O: output feature map size
+	W: input vfeature map size
+	F: kernel size
+	P: padding
+	S: stride
+
+global:
+	layer_number: the number of layers
+
+convolution layer:
+	fm_size_width:		the feature map size, width
+	fm_size_height: 	the feature map size, height
+	fm_size_depth:		the feature map sise, depth
+						input feature map = fm_size_width * fm_size_width * fm_size_depth
+						default: fm_size_width = fm_size_height
+
+	fm_padding_up:		the number of paddding up
+	fm_padding_down:	the number of paddding down
+	fm_padding_left:	the number of paddding left
+	fm_padding_right:	the number of paddding right
+	fm_padding_value:	default: 0
+
+	kernel_number:		the number of kernel
+
+	kernel_size_width:	the kernel size, width
+	kernel_size_height:	the kernel size, height
+						default: kernel_size_width = kernel_size_height
+
+	stride:				the move step of filter
+
+	activation:			ReLU, sigmoid, tanh
+
+pool layer:
+	fm_size_width:		the feature map size, width
+	fm_size_height: 	the feature map size, height
+	fm_size_depth:		the feature map sise, depth
+						input feature map = fm_size_width * fm_size_width * fm_size_depth
+						default: fm_size_width = fm_size_height
+
+	fm_padding_up:		the number of paddding up
+	fm_padding_down:	the number of paddding down
+	fm_padding_left:	the number of paddding left
+	fm_padding_right:	the number of paddding right
+	fm_padding_value:	default: 0
+
+	pool_size_width:	the pool size, width
+	pool_size_height:	the pool size, height
+						default: pool_size_width = pool_size_height
+
+	stride:				the move step of filter
+
+full connection layer:
+	fm_size_width:		the feature map size, width
+	fm_size_height: 	the feature map size, height
+	fm_size_depth:		the feature map sise, depth
+						input feature map = fm_size_width * fm_size_width * fm_size_depth
+						default: fm_size_width = fm_size_height
+
+	kernel_number:		the number of kernel
+
+	activation:			ReLU, sigmoid, tanh
+
+
