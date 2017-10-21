@@ -197,25 +197,25 @@ module ConvParaScaleFloat(
 				clk_num = kernel_size * kernel_size - 1;
 
 				if (clk_count == 0) begin
-					for (l1=0; l1<`PARA_Y; l1=l1+1)
+					for (l1=0; l1<`PARA_X; l1=l1+1)
 					begin
                         register[l1] <= register_temp_3[l1];
 					end
 				end
 				else if (clk_count%kernel_size == 0) begin // kernel size:3, clk: 3, 6
-					for (l1=0; l1<`PARA_Y; l1=l1+1)
+					for (l1=0; l1<`PARA_X; l1=l1+1)
 					begin
                         register[l1] <= register_temp_1[l1];
 					end
 				end
 				else if(clk_count > 0 && clk_count < kernel_size) begin
-					for (l1=0; l1<`PARA_Y; l1=l1+1)
+					for (l1=0; l1<`PARA_X; l1=l1+1)
 					begin
                         register[l1] <= register_temp_0[l1];
 					end
 				end
 				else begin
-					for (l1=0; l1<`PARA_Y; l1=l1+1)
+					for (l1=0; l1<`PARA_X; l1=l1+1)
 					begin
                         register[l1] <= register_temp_2[l1];
 					end
