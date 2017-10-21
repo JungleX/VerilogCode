@@ -62,7 +62,7 @@ module ConvPara9Float16_tb();
         clk = 1'b0;
     always #(`clk_period/2)clk = ~clk;
 
-        initial begin
+    initial begin
     	#0
     	rst = 1;
 
@@ -74,7 +74,7 @@ module ConvPara9Float16_tb();
 		#`clk_period
     	rst = 1;
     	clk_num = 8;
-    	fm_1 = {16'h0000, 16'h0000, 16'h0000;
+    	fm_1 = {16'h0000, 16'h0000, 16'h0000};
     	fm_2 = {16'h4000, 16'h3c00, 16'h0000};
     	fm_3 = {16'h4200, 16'h4000, 16'h0000};
 
@@ -85,9 +85,6 @@ module ConvPara9Float16_tb();
         fm_1[`DATA_WIDTH - 1:0] = 16'h0000;
         fm_2[`DATA_WIDTH - 1:0] = 16'h4200;
         fm_3[`DATA_WIDTH - 1:0] = 16'h4400;
-    	/*fm_1 = {16'h4700, 16'h4700, 16'h3c00};
-    	fm_2 = {16'h4500, 16'h4800, 16'h3c00};
-    	fm_3 = {16'h4400, 16'h4880, 16'h3c00};*/
 
     	weight = 16'h4000;
 

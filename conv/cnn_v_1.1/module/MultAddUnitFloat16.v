@@ -102,6 +102,7 @@ module MultAddUnitFloat16(
 
 				add_a_tvalid	<= 0;
 				add_b_tvalid	<= 0;
+				add_b_tvalid	<= 0;
 			end
 			else begin
 				cur_clk_num		<= clk_num;
