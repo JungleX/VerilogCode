@@ -41,13 +41,13 @@ def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList):
 		for index in insert_index_crm:
 			cur_index = index[0] + insert_count
 			for i in KernelSizeList:
-				file_rmw = open('Template_KernelSizeCase.v','r+')#
+				file_rmw = open('Template_KernelSizeCase.v','r+')
 				for line in file_rmw:
 					line = line.replace('SET_KERNEL_SIZE_CASE', str(i))
 					line = line.replace('SET_CLK_TYPE', str(index[1]))
 					line = line[:-1]
 					a_crm.insert(cur_index, line) 
-					cur_index = cur_index+1#
+					cur_index = cur_index+1
 			insert_count = insert_count + 4 * len(KernelSizeList)
 
 		for line in a_crm:
