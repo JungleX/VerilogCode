@@ -48,7 +48,7 @@ module ConvParaScaleFloat16(
 	wire [`PARA_X*`PARA_Y - 1:0] mau_out_ready;
 	wire [`DATA_WIDTH - 1:0] ma_result[`PARA_X*`PARA_Y - 1:0];
 
-	wire [`DATA_WIDTH - 1:0] mult_a_temp[`PARA_X*`PARA_Y - 1:0];
+	reg [`DATA_WIDTH - 1:0] mult_a[`PARA_X*`PARA_Y - 1:0];
 
 	generate
 		genvar i;
@@ -59,7 +59,7 @@ module ConvParaScaleFloat16(
 				.rst(mau_rst), // 0: reset; 1: none;
 				//.rst(rst),
 
-				.mult_a(mult_a_temp[i]),
+				.mult_a(mult_a[i]),
 				.mult_b(weight),
 
 				.clk_num(clk_num), // set the clk number, after clk_count clks, the output is ready
@@ -85,19 +85,6 @@ module ConvParaScaleFloat16(
 	
 	// ======== Begin: register move wire ========
 	// ======== End: register move wire ========
-
-	// input to MAC
-	generate
-		genvar ii1;
-		genvar ii2;
-		for (ii1 = 0; ii1 < `PARA_X; ii1 = ii1 + 1)
-		begin:identifier_ii1
-			for (ii2 = 0; ii2 < `PARA_Y; ii2 = ii2 + 1)
-			begin:identifier_ii2
-				assign mult_a_temp[(ii1*`PARA_Y)+ii2] = register[ii1][`DATA_WIDTH*(ii2+3) - 1:`DATA_WIDTH*(ii2+2)];
-			end	
-		end
-	endgenerate
 
 	integer l1;
 
@@ -128,6 +115,9 @@ module ConvParaScaleFloat16(
 				clk_num = kernel_size * kernel_size - 1;
 
 				// ======== Begin: register operation ========
+				case(kernel_size)
+                endcase
+                
 				// ======== End: register operation ========
 
 				clk_count <= clk_count + 1;
