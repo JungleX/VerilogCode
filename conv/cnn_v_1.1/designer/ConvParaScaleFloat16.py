@@ -6,11 +6,11 @@ def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList):
 	if not os.path.isdir(destDir):
 		os.mkdir(destDir)
 
-	sourceFile_1 = './Template_ConvParaScaleFloat16.v'
+	sourceFile_1 = './Template/Template_ConvParaScaleFloat16.v'
 	destFile_1 = destDir + 'ConvParaScaleFloat16.v'
 	shutil.copy (sourceFile_1, destFile_1)
 
-	sourceFile_2 = './Template_MultAddUnitFloat16.v'
+	sourceFile_2 = './Template/Template_MultAddUnitFloat16.v'
 	destFile_2= destDir + 'MultAddUnitFloat16.v'
 	shutil.copy (sourceFile_2, destFile_2)
 
@@ -31,7 +31,7 @@ def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList):
 		inser_index_cpsf = 68
 
 		for i in KernelSizeList:
-			file_rmv = file('Template_RegisterMoveWire.v')
+			file_rmv = file('./Template/Template_RegisterMoveWire.v')
 
 			for line in file_rmv:
 				line = line.replace('SET_KERNEL_SIZE_NUMBER', str(i))
@@ -43,7 +43,7 @@ def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList):
 
 		inser_index_cpsf = inser_index_cpsf + 48
 
-		file_crm = file('Template_ClkRegisterMove.v')
+		file_crm = file('./Template/Template_ClkRegisterMove.v')
 		s_crm = file_crm.read()
 		file_crm.close()
 		a_crm = s_crm.split('\n')
@@ -52,7 +52,7 @@ def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList):
 		for index in insert_index_crm:
 			cur_index = index[0] + insert_count
 			for i in KernelSizeList:
-				file_rmw = open('Template_KernelSizeCase.v','r+')
+				file_rmw = open('./Template/Template_KernelSizeCase.v','r+')
 				for line in file_rmw:
 					line = line.replace('SET_KERNEL_SIZE_CASE', str(i))
 					line = line.replace('SET_CLK_TYPE', str(index[1]))
