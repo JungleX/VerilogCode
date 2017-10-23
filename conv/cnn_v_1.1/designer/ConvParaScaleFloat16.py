@@ -31,7 +31,7 @@ def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList):
 				inser_index_cpsf = inser_index_cpsf+1
 		file_rmv.close()
 
-		inser_index_cpsf = inser_index_cpsf + 46
+		inser_index_cpsf = inser_index_cpsf + 48
 
 		file_crm = file('Template_ClkRegisterMove.v')
 		s_crm = file_crm.read()
@@ -73,4 +73,4 @@ def replace(file_path, old_str, new_str):
 	except Exception,e:  
 		print e 
 
-ConvParaScaleFloat16(3, 4, [3, 5])
+ConvParaScaleFloat16(3, 3, [3, 5])

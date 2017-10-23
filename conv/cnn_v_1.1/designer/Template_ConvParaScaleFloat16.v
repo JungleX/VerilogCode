@@ -107,6 +107,8 @@ module ConvParaScaleFloat16(
 				end
 			end
 			else begin
+				result_ready		<= 0;
+				
 				mau_rst				<= 1;
 
 				clk_num = kernel_size * kernel_size - 1;
