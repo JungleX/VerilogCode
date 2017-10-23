@@ -23,7 +23,7 @@
 
 `define DATA_WIDTH		16 // 16 bits float
 `define PARA_X			3	// MAC group number
-`define PARA_Y			3	// MAC number of each MAC group
+`define PARA_Y			4	// MAC number of each MAC group
 `define KERNEL_SIZE_MAX	11
 `define KERNEL_SIZE_WIDTH	6
 
@@ -41,7 +41,8 @@ module ConvParaScaleFloat_tb();
 	wire result_ready;
 	wire [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] result_buffer;
 
-    ConvParaScaleFloat conv(
+	ConvParaScaleFloat16 conv(
+    //ConvParaScaleFloat conv(
 		.clk(clk),
 		.rst(rst), // 0: reset; 1: none;
 
@@ -66,29 +67,29 @@ module ConvParaScaleFloat_tb();
     	#(`clk_period/2)
     	// reset
     	rst = 0;
-
-    	// PARA_X = 3, PARA_Y = 3=============================================
+/*
+    	// PARA_X = 3, PARA_Y = 3, kernel size = 3 =============================================
     	// 0
 		#`clk_period
     	rst = 1;
     	kernel_size = 3;
-    	input_data[`DATA_WIDTH*`PARA_X*`PARA_Y - 1:0] = {16'h4200, 16'h4000, 16'h0000, 16'h4000, 16'h3c00, 16'h0000, 16'h0000, 16'h0000, 16'h0000}; // X 3; Y 3
+    	input_data[`DATA_WIDTH*`PARA_X*`PARA_Y - 1:0] = {16'h0000, 16'h4000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h0000, 16'h0000, 16'h0000};
     	
     	weight = 16'h3c00;
 
     	// 1
     	#`clk_period
-        input_data[`DATA_WIDTH*`PARA_X - 1:0] = {16'h4400, 16'h4200, 16'h0000}; // X 3; Y 3
+        input_data[`DATA_WIDTH*`PARA_X - 1:0] = {16'h4400, 16'h4200, 16'h0000}; 
         weight = 16'h4000;
 
     	// 2
     	#`clk_period
-        input_data[`DATA_WIDTH*`PARA_X - 1:0] = {16'h4000, 16'h3c00, 16'h0000}; // X 3; Y 3
+        input_data[`DATA_WIDTH*`PARA_X - 1:0] = {16'h4000, 16'h3c00, 16'h0000};
         weight = 16'h4200;
 
     	// 3
     	#`clk_period
-    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h4000, 16'h3c00, 16'h0000}; // Y 3
+    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h0000, 16'h3c00, 16'h4000}; 
     	weight = 16'h3c00;
 
     	// 4
@@ -103,7 +104,7 @@ module ConvParaScaleFloat_tb();
 
     	// 6
     	#`clk_period
-    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h4000, 16'h4200, 16'h0000};
+    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h0000, 16'h4200, 16'h4000};
     	weight = 16'h0000;
 
     	// 7
@@ -115,31 +116,31 @@ module ConvParaScaleFloat_tb();
     	#`clk_period
         input_data[`DATA_WIDTH - 1:0] = 16'h4400;
         weight = 16'h3c00;
-        // PARA_X = 3, PARA_Y = 3=============================================
-
+        // PARA_X = 3, PARA_Y = 3, kernel size = 3 =============================================
+*/
 /*
-        // PARA_X = 4, PARA_Y = 3=============================================
+        // PARA_X = 4, PARA_Y = 3, kernel size = 3 =============================================
         // 0
 		#`clk_period
     	rst = 1;
     	kernel_size = 3;
-    	input_data[`DATA_WIDTH*`PARA_X*`PARA_Y - 1:0] = {16'h4000, 16'h3c00, 16'h0000, 16'h4200, 16'h4000, 16'h0000, 16'h4000, 16'h3c00, 16'h0000, 16'h0000, 16'h0000, 16'h0000}; // X 4; Y 3
+    	input_data[`DATA_WIDTH*`PARA_X*`PARA_Y - 1:0] = {16'h0000, 16'h3c00, 16'h4000, 16'h0000, 16'h4000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h0000, 16'h0000, 16'h0000};
 
     	weight = 16'h3c00;
 
     	// 1
     	#`clk_period
-        input_data[`DATA_WIDTH*`PARA_X - 1:0] = {16'h4200, 16'h4400, 16'h4200, 16'h0000}; // X 4; Y 3
+        input_data[`DATA_WIDTH*`PARA_X - 1:0] = {16'h4200, 16'h4400, 16'h4200, 16'h0000}; 
         weight = 16'h4000;
 
     	// 2
     	#`clk_period
-        input_data[`DATA_WIDTH*`PARA_X - 1:0] = {16'h3c00, 16'h4000, 16'h3c00, 16'h0000}; // X 4; Y 3
+        input_data[`DATA_WIDTH*`PARA_X - 1:0] = {16'h3c00, 16'h4000, 16'h3c00, 16'h0000}; 
         weight = 16'h4200;
 
     	// 3
     	#`clk_period
-    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h4000, 16'h3c00, 16'h0000}; // Y 3
+    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h0000, 16'h3c00, 16'h4000}; 
     	weight = 16'h3c00;
 
     	// 4
@@ -154,7 +155,7 @@ module ConvParaScaleFloat_tb();
 
     	// 6
     	#`clk_period
-    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h4000, 16'h4200, 16'h0000};
+    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h0000, 16'h4200, 16'h4000};
     	weight = 16'h0000;
 
     	// 7
@@ -167,15 +168,15 @@ module ConvParaScaleFloat_tb();
         input_data[`DATA_WIDTH - 1:0] = 16'h4400;
         weight = 16'h3c00;
 
-        // PARA_X = 4, PARA_Y = 3=============================================
+        // PARA_X = 4, PARA_Y = 3, kernel size = 3 =============================================
 */
-/*
-    	// PARA_X = 3, PARA_Y = 4=============================================
+
+    	// PARA_X = 3, PARA_Y = 4, kernel size = 3 =============================================
     	// 0
 		#`clk_period
     	rst = 1;
     	kernel_size = 3;
-    	input_data[`DATA_WIDTH*`PARA_X*`PARA_Y - 1:0] = {16'h3c00, 16'h4200, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000}; 
+    	input_data[`DATA_WIDTH*`PARA_X*`PARA_Y - 1:0] = {16'h0000, 16'h4000, 16'h4200, 16'h3c00, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h0000, 16'h0000, 16'h0000, 16'h0000}; 
     	
     	weight = 16'h3c00;
 
@@ -191,7 +192,7 @@ module ConvParaScaleFloat_tb();
 
     	// 3
     	#`clk_period
-    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h3c00, 16'h4000, 16'h3c00, 16'h0000}; 
+    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h0000, 16'h3c00, 16'h4000, 16'h3c00}; 
     	weight = 16'h3c00;
 
     	// 4
@@ -206,7 +207,7 @@ module ConvParaScaleFloat_tb();
 
     	// 6
     	#`clk_period
-    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h3c00, 16'h4000, 16'h4200, 16'h0000};
+    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h0000, 16'h4200, 16'h4000, 16'h3c00};
     	weight = 16'h0000;
 
     	// 7
@@ -218,9 +219,139 @@ module ConvParaScaleFloat_tb();
     	#`clk_period
         input_data[`DATA_WIDTH - 1:0] = 16'h4400;
         weight = 16'h3c00;
-        // PARA_X = 3, PARA_Y = 4=============================================
-*/
+        // PARA_X = 3, PARA_Y = 4, kernel size = 3 =============================================
 
+	    // PARA_X = 3, PARA_Y = 3, kernel size = 5 =============================================
+    	// 0
+/*		#`clk_period
+    	rst = 1;
+    	kernel_size = 5;
+    	input_data[`DATA_WIDTH*`PARA_X*`PARA_Y - 1:0] = {16'h0000, 16'h4000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h0000, 16'h0000, 16'h0000};
+    	
+    	weight = 16'h3c00;
+
+    	// 1
+    	#`clk_period
+        input_data[`DATA_WIDTH*`PARA_X - 1:0] = {16'h4400, 16'h4200, 16'h0000};
+        weight = 16'h4000;
+
+    	// 2
+    	#`clk_period
+        input_data[`DATA_WIDTH*`PARA_X - 1:0] = {16'h4000, 16'h3c00, 16'h0000}; 
+        weight = 16'h3c00;
+
+    	// 3
+    	#`clk_period
+    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h3c00, 16'h4000, 16'h0000}; 
+    	weight = 16'h0000;
+
+    	// 4
+    	#`clk_period
+    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h0000, 16'h0000, 16'h0000}; 
+    	weight = 16'h4000;
+
+    	// 5
+    	#`clk_period
+    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h0000, 16'h4400,16'h3c00};
+    	weight = 16'h4200;
+
+    	// 6
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h4000; 
+    	weight = 16'h3c00;
+
+    	// 7
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h4200; 
+    	weight = 16'h0000;
+
+    	// 8
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h3c00; 
+    	weight = 16'h4200;
+
+    	// 9
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h0000; 
+    	weight = 16'h0000;
+
+    	// 10
+    	#`clk_period 
+    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = { 16'h0000, 16'h4200, 16'h4000};
+    	weight = 16'h3c00;
+
+    	// 11
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h3c00; 
+    	weight = 16'h3c00;
+
+    	// 12
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h4400; 
+    	weight = 16'h4400;
+
+    	// 13
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h4000; 
+    	weight = 16'h4000;
+
+    	// 14
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h0000; 
+    	weight = 16'h3c00;
+
+    	// 15
+    	#`clk_period 
+    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h0000, 16'h3c00, 16'h3c00};  
+    	weight = 16'h0000;
+
+    	// 16
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h4000; 
+    	weight = 16'h4000;
+
+    	// 17
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h3c00; 
+    	weight = 16'h4400;
+
+    	// 18
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h4000; 
+    	weight = 16'h3c00;
+
+    	// 19
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h0000; 
+    	weight = 16'h4200;
+
+    	// 20
+    	#`clk_period 
+    	input_data[`DATA_WIDTH*`PARA_Y - 1:0] = {16'h0000, 16'h4000, 16'h3c00}; 
+    	weight = 16'h4000;
+
+    	// 21
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h3c00; 
+    	weight = 16'h3c00;
+
+    	// 22
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h4000; 
+    	weight = 16'h3c00;
+
+    	// 23
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h3c00; 
+    	weight = 16'h0000;
+
+    	// 24
+    	#`clk_period
+    	input_data[`DATA_WIDTH - 1:0] = 16'h0000; 
+    	weight = 16'h4000;
+
+        // PARA_X = 3, PARA_Y = 3, kernel size = 5 =============================================
+*/
     	#`clk_period
         if (result_ready == 1) begin
             rst = 0;

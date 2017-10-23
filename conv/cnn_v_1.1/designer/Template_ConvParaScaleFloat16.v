@@ -1,23 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2017/10/19 21:02:04
-// Design Name: 
-// Module Name: ConvParaScaleFloat
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 `define DATA_WIDTH		16  // 16 bits float
 `define PARA_X			SET_PARA_X	// MAC group number
@@ -48,8 +29,6 @@ module ConvParaScaleFloat16(
 	wire [`PARA_X*`PARA_Y - 1:0] mau_out_ready;
 	wire [`DATA_WIDTH - 1:0] ma_result[`PARA_X*`PARA_Y - 1:0];
 
-	reg [`DATA_WIDTH - 1:0] mult_a[`PARA_X*`PARA_Y - 1:0];
-
 	generate
 		genvar i;
 		for (i = 0; i < (`PARA_X*`PARA_Y); i = i + 1)
@@ -57,7 +36,6 @@ module ConvParaScaleFloat16(
 			MultAddUnitFloat16 mau(
 				.clk(clk),
 				.rst(mau_rst), // 0: reset; 1: none;
-				//.rst(rst),
 
 				.mult_a(mult_a[i]),
 				.mult_b(weight),
@@ -75,16 +53,35 @@ module ConvParaScaleFloat16(
 
     wire [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] result_temp;    
 
-    generate
-		genvar j;
-		for (j = 0; j < (`PARA_X*`PARA_Y); j = j + 1)
-		begin:identifier_result
-		   assign result_temp[`DATA_WIDTH*(j+1) - 1:`DATA_WIDTH*j] = ma_result[j];	
+	generate
+		genvar j1;
+		genvar j2;
+		for (j1 = 0; j1 < `PARA_X; j1 = j1 + 1)
+		begin:identifier_result_1
+			for (j2 = 0; j2 < `PARA_Y; j2 = j2 + 1)
+			begin:identifier_result_2
+				assign result_temp[`DATA_WIDTH*(j1*`PARA_Y+j2+1) - 1:`DATA_WIDTH*(j1*`PARA_Y+j2)] = ma_result[(j1+1)*`PARA_Y-1-j2];
+			end 
 		end
 	endgenerate
 	
 	// ======== Begin: register move wire ========
 	// ======== End: register move wire ========
+
+	// input to MAC
+    wire [`DATA_WIDTH - 1:0] mult_a[`PARA_X*`PARA_Y - 1:0];
+    generate
+        genvar ii1;
+        genvar ii2;
+        for (ii1 = 0; ii1 < `PARA_X; ii1 = ii1 + 1)
+        begin:identifier_ii1
+            //for (ii2 = 0; ii2 < `PARA_Y; ii2 = ii2 + 1)
+            for (ii2 = `PARA_Y; ii2 > 0 ; ii2 = ii2 - 1)
+            begin:identifier_ii2
+                assign mult_a[(ii1*`PARA_Y)+(`PARA_Y-ii2)] = register[ii1][`DATA_WIDTH*ii2 - 1:`DATA_WIDTH*(ii2-1)];
+            end    
+        end
+    endgenerate
 
 	integer l1;
 
@@ -115,9 +112,6 @@ module ConvParaScaleFloat16(
 				clk_num = kernel_size * kernel_size - 1;
 
 				// ======== Begin: register operation ========
-				case(kernel_size)
-                endcase
-                
 				// ======== End: register operation ========
 
 				clk_count <= clk_count + 1;

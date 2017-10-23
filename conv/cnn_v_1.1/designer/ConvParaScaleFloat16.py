@@ -18,7 +18,7 @@ def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList):
 		file_cpsf.close()
 		a_cpsf = s_cpsf.split('\n')
 
-		inser_index_cpsf = 86
+		inser_index_cpsf = 68
 
 		for i in KernelSizeList:
 			file_rmv = file('Template_RegisterMoveWire.v')
@@ -31,19 +31,7 @@ def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList):
 				inser_index_cpsf = inser_index_cpsf+1
 		file_rmv.close()
 
-		inser_index_cpsf = inser_index_cpsf + 32
-
-		for i in KernelSizeList:
-			file_ksic = file('Template_KernelSizeInputCase.v')
-
-			for line in file_ksic:
-				line = line.replace('SET_KERNEL_SIZE_CASE', str(i))
-				line = line[:-1]
-				a_cpsf.insert(inser_index_cpsf, line) 
-				inser_index_cpsf = inser_index_cpsf+1
-		file_ksic.close()
-
-		inser_index_cpsf = inser_index_cpsf+2
+		inser_index_cpsf = inser_index_cpsf + 46
 
 		file_crm = file('Template_ClkRegisterMove.v')
 		s_crm = file_crm.read()
@@ -85,4 +73,4 @@ def replace(file_path, old_str, new_str):
 	except Exception,e:  
 		print e 
 
-ConvParaScaleFloat16(3, 3, [3, 5])
+ConvParaScaleFloat16(3, 4, [3, 5])
