@@ -2,18 +2,28 @@ import os
 import shutil
 
 def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList):
-	sourceFile = './Template_ConvParaScaleFloat16.v'
-	destFile = './ConvParaScaleFloat16.v'
-	shutil.copy (sourceFile, destFile)
-	if os.path.isfile (destFile): 
+	destDir = './VerilogCode/'
+	if not os.path.isdir(destDir):
+		os.mkdir(destDir)
+
+	sourceFile_1 = './Template_ConvParaScaleFloat16.v'
+	destFile_1 = destDir + 'ConvParaScaleFloat16.v'
+	shutil.copy (sourceFile_1, destFile_1)
+
+	sourceFile_2 = './Template_MultAddUnitFloat16.v'
+	destFile_2= destDir + 'MultAddUnitFloat16.v'
+	shutil.copy (sourceFile_2, destFile_2)
+
+	if os.path.isfile (destFile_1) and os.path.isfile (destFile_2): 
+		print "Create MultAddUnitFloat16.v Success."
 		print "Copy Template_ConvParaScaleFloat16.v Success."
 
 		# set PARA_X and PARA_Y
-		replace(destFile, 'SET_PARA_X', str(Para_X))
-		replace(destFile, 'SET_PARA_Y', str(Para_Y))
+		replace(destFile_1, 'SET_PARA_X', str(Para_X))
+		replace(destFile_1, 'SET_PARA_Y', str(Para_Y))
 
 		# kernel size
-		file_cpsf = file(destFile)
+		file_cpsf = file(destFile_1)
 		s_cpsf = file_cpsf.read()
 		file_cpsf.close()
 		a_cpsf = s_cpsf.split('\n')
@@ -56,9 +66,11 @@ def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList):
 			inser_index_cpsf = inser_index_cpsf + 1
 
 		s_cpsf = '\n'.join(a_cpsf)
-		file_cpsf = file(destFile, 'w')
+		file_cpsf = file(destFile_1, 'w')
 		file_cpsf.write(s_cpsf)
 		file_cpsf.close()
+
+		print "Create ConvParaScaleFloat16.v Success."
 
 def replace(file_path, old_str, new_str):  
 	try:  
