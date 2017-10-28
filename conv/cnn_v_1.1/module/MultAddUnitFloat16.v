@@ -31,7 +31,7 @@ module MultAddUnitFloat16(
 
 	input [`CLK_NUM_WIDTH - 1:0] clk_num, // set the clk number, after clk_count clks, the output is ready
 
-	output reg result_ready, // 1: rady; 0: not ready;
+	output reg result_ready, // 1: ready; 0: not ready;
 	output reg [`DATA_WIDTH - 1:0] mult_add_result
     );
 

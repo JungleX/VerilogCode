@@ -47,7 +47,7 @@ module MultAddUnitFloat16_tb(
 
 		.clk_num(clk_num), // set the clk number, after clk_count clks, the output is ready
 
-		.result_ready(result_ready), // 1: rady; 0: not ready;
+		.result_ready(result_ready), // 1: ready; 0: not ready;
 		.mult_add_result(mult_add_result)
     );
 

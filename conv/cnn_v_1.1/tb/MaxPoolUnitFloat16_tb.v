@@ -24,7 +24,7 @@ module MaxPoolUnitFloat16_tb();
 
 		.data_num(data_num), // set the clk number, after clk_count clks, the output is ready
 
-		.result_ready(result_ready), // 1: rady; 0: not ready;
+		.result_ready(result_ready), // 1: ready; 0: not ready;
 		.max_pool_result(max_pool_result)
 	);
 

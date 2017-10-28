@@ -37,7 +37,7 @@ module ConvPara9Float16(
 
 	input [`CLK_NUM_WIDTH - 1:0] clk_num,
 
-	output reg result_ready, // 1: rady; 0: not ready;
+	output reg result_ready, // 1: ready; 0: not ready;
 	output reg [`RET_SIZE - 1:0] result_buffer
     );
 
@@ -64,7 +64,7 @@ module ConvPara9Float16(
 
 				.clk_num(cur_clk_num), // set the clk number, after clk_count clks, the output is ready
 
-				.result_ready(mau_out_ready[i:i]), // 1: rady; 0: not ready;
+				.result_ready(mau_out_ready[i:i]), // 1: ready; 0: not ready;
 				.mult_add_result(ma_result[i])
 		    );
 		end 

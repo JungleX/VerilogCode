@@ -14,7 +14,7 @@ module MaxPoolUnitFloat16(
 
 	input [`CLK_NUM_WIDTH - 1:0] data_num,
 
-	output reg result_ready, // 1: rady; 0: not ready;
+	output reg result_ready, // 1: ready; 0: not ready;
 	output reg [`DATA_WIDTH - 1:0] max_pool_result
 );
 	reg [`CLK_NUM_WIDTH - 1:0] clk_count;

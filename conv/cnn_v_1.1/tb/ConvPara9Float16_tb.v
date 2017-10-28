@@ -54,7 +54,7 @@ module ConvPara9Float16_tb();
 
 		.clk_num(clk_num),
 
-		.result_ready(result_ready), // 1: rady; 0: not ready;
+		.result_ready(result_ready), // 1: ready; 0: not ready;
 		.result_buffer(result_buffer)
     );
     

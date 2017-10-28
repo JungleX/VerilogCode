@@ -52,7 +52,7 @@ module ConvParaScaleFloat_tb();
 
 		.kernel_size(kernel_size),
 
-		.result_ready(result_ready), // 1: rady; 0: not ready;
+		.result_ready(result_ready), // 1: ready; 0: not ready;
 		.result_buffer(result_buffer)
     );
     
