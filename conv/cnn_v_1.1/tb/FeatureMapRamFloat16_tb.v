@@ -12,7 +12,7 @@
 `define READ_ADDR_WIDTH		4 // 22 / 3(PARA_Y) <= 8 width:4 // MAX VALUE = RAM_MAX / PARA_Y
 `define WRITE_ADDR_WIDTH	2 // 22 / (3*3) (PARA_Y*PARA_X) <= 3 width:2
 
-module FeatureMapRam_tb();
+module FeatureMapRamFloat16_tb();
 
 	reg clk;
 	reg ena_wr; // 0: read; 1: write
@@ -25,7 +25,7 @@ module FeatureMapRam_tb();
 	wire write_ready;
 	wire [`PARA_Y*`DATA_WIDTH - 1:0] dout;
 
-	FeatureMapRam ram_fm(
+	FeatureMapRamFloat16 ram_fm(
 		.clk(clk),
 		.ena_wr(ena_wr), // 0: read; 1: write
 
@@ -80,7 +80,7 @@ module FeatureMapRam_tb();
 
     	// write, add, wait
     	#`clk_period
-    	
+
     	// read
     	#`clk_period
     	ena_wr = 0;

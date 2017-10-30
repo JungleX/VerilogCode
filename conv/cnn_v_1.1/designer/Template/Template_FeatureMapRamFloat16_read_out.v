@@ -1,0 +1,1 @@
+						ram_array[addr_read*`PARA_Y+SET_INDEX], 
