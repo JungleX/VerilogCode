@@ -2,7 +2,6 @@
 
 `define DATA_WIDTH		16  // 16 bits float
 
-`define PARA_X			SET_PARA_X	// MAC group number
 `define PARA_Y			SET_PARA_Y	// MAC number of each MAC group
 
 `define RAM_MAX			SET_RAM_MAX 
@@ -16,7 +15,7 @@ module FeatureMapRamFloat16(
 
 	input ena_add_write, // 0: not add; 1: add
 	input [`WRITE_ADDR_WIDTH - 1:0] addr_write,
-	input [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] din,
+	input [`PARA_Y*`DATA_WIDTH - 1:0] din,
 
 	input [`READ_ADDR_WIDTH - 1:0] addr_read,
 
@@ -30,15 +29,15 @@ module FeatureMapRamFloat16(
 
 	// addition
 	reg add_a_tvalid;
-	reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] add_a_tdata;
+	reg [`PARA_Y*`DATA_WIDTH - 1:0] add_a_tdata;
 	reg add_b_tvalid;
-	reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] add_b_tdata;
+	reg [`PARA_Y*`DATA_WIDTH - 1:0] add_b_tdata;
 
-	wire [`PARA_X*`PARA_Y - 1:0] add_re_tvalid;
-	wire [`DATA_WIDTH - 1:0] add_re_tdata[0:`PARA_X*`PARA_X - 1] ;
+	wire [`PARA_Y - 1:0] add_re_tvalid;
+	wire [`DATA_WIDTH - 1:0] add_re_tdata[0:`PARA_Y - 1] ;
 	generate
 		genvar add_i;
-		for (add_i = 0; add_i < `PARA_X*`PARA_Y; add_i = add_i + 1)
+		for (add_i = 0; add_i < `PARA_Y; add_i = add_i + 1)
 		begin
 			floating_point_add add(
 		        .s_axis_a_tvalid(add_a_tvalid),
@@ -75,7 +74,7 @@ module FeatureMapRamFloat16(
 
 					// ======== Begin: add operation ========
 					add_a_tdata <= {
-									ram_array[addr_write*`PARA_X*`PARA_Y]
+									ram_array[addr_write*`PARA_Y]
 								};
 					// ======== End: add operation ========
 

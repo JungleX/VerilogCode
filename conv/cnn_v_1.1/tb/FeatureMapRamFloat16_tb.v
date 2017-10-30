@@ -4,8 +4,7 @@
 
 `define DATA_WIDTH		16  // 16 bits float
 
-`define PARA_X			3	// MAC group number
-`define PARA_Y			3	// MAC number of each MAC group
+`define PARA_Y			2	// MAC number of each MAC group
 
 `define RAM_MAX			22 // 22*3(PARA_Y)>=64 // Alexnet layer 1 output 55*55*96=290400
 
@@ -19,7 +18,7 @@ module FeatureMapRamFloat16_tb();
 
 	reg ena_add_write; // 0: not add; 1: add
 	reg [`WRITE_ADDR_WIDTH - 1:0] addr_write;
-	reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] din;
+	reg [`PARA_Y*`DATA_WIDTH - 1:0] din;
 
 	reg [`READ_ADDR_WIDTH - 1:0] addr_read;
 	wire write_ready;
@@ -46,27 +45,28 @@ module FeatureMapRamFloat16_tb();
     	#0
 
     	#(`clk_period/2)
-
+/*
+    	// PARA_Y = 3 =============================================
     	// write, not add
     	#`clk_period
     	ena_wr = 1;
     	ena_add_write = 0;
     	addr_write = 0;
-    	din = {16'h3c00, 16'h4000, 16'h4200, 16'h4400, 16'h4500, 16'h4600, 16'h4700, 16'h4800, 16'h4880};
+    	din = {16'h3c00, 16'h4000, 16'h4200};
 
     	// write, not add
     	#`clk_period
     	ena_wr = 1;
     	ena_add_write = 0;
     	addr_write = 1;
-    	din = {16'h4200, 16'h4000, 16'h4200, 16'h4400, 16'h4500, 16'h4600, 16'h4700, 16'h4800, 16'h4880};
+    	din = {16'h4200, 16'h4000, 16'h3c00};
 
     	// write, add
     	#`clk_period
     	ena_wr = 1;
     	ena_add_write = 1;
     	addr_write = 1;
-    	din = {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00};
+    	din = {16'h3c00, 16'h4000, 16'h3c00};
 
     	// write, add, wait
     	#`clk_period
@@ -76,7 +76,7 @@ module FeatureMapRamFloat16_tb();
     	ena_wr = 1;
     	ena_add_write = 1;
     	addr_write = 1;
-    	din = {16'h3c00, 16'h3c00, 16'h3c00, 16'h3c00, 16'h3c00, 16'h3c00, 16'h3c00, 16'h3c00, 16'h3c00};
+    	din = {16'h3c00, 16'h3c00, 16'h3c00};
 
     	// write, add, wait
     	#`clk_period
@@ -90,5 +90,54 @@ module FeatureMapRamFloat16_tb();
     	#`clk_period
     	ena_wr = 0;
     	addr_read = 1;
+    	// PARA_Y = 3 ============================================= 
+*/
+
+    	// PARA_Y = 2 =============================================
+    	// write, not add
+    	#`clk_period
+    	ena_wr = 1;
+    	ena_add_write = 0;
+    	addr_write = 0;
+    	din = {16'h3c00, 16'h4000};
+
+    	// write, not add
+    	#`clk_period
+    	ena_wr = 1;
+    	ena_add_write = 0;
+    	addr_write = 1;
+    	din = {16'h4200, 16'h4000};
+
+    	// write, add
+    	#`clk_period
+    	ena_wr = 1;
+    	ena_add_write = 1;
+    	addr_write = 1;
+    	din = {16'h3c00, 16'h4000};
+
+    	// write, add, wait
+    	#`clk_period
+
+    	// write, add
+    	#`clk_period
+    	ena_wr = 1;
+    	ena_add_write = 1;
+    	addr_write = 1;
+    	din = {16'h3c00, 16'h3c00};
+
+    	// write, add, wait
+    	#`clk_period
+
+    	// read
+    	#`clk_period
+    	ena_wr = 0;
+    	addr_read = 0;
+
+    	// read
+    	#`clk_period
+    	ena_wr = 0;
+    	addr_read = 1;
+    	// PARA_Y = 2 ============================================= 
+
     end
 endmodule

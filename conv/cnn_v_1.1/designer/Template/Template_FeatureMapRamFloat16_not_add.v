@@ -1,1 +1,1 @@
-				ram_array[addr_write*`PARA_X*`PARA_Y + SET_INDEX] <= din[`DATA_WIDTH*SET_INDEX_ADD_ONE - 1:`DATA_WIDTH*SET_INDEX];
+				ram_array[addr_write*`PARA_Y + SET_INDEX] <= din[`DATA_WIDTH*SET_INDEX_ADD_ONE - 1:`DATA_WIDTH*SET_INDEX];

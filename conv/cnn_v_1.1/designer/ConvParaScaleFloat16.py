@@ -74,7 +74,7 @@ def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList, KernelSizeMax, KernelSi
 
 		print "Create ConvParaScaleFloat16.v Success."
 
-def FeatureMapRam(Para_X, Para_Y, RamMax, ReadWidth, WriteWidth):
+def FeatureMapRam(Para_Y, RamMax, ReadWidth, WriteWidth):
 	destDir = './VerilogCode/'
 	if not os.path.isdir(destDir):
 		os.mkdir(destDir)
@@ -85,7 +85,6 @@ def FeatureMapRam(Para_X, Para_Y, RamMax, ReadWidth, WriteWidth):
 
 	if os.path.isfile (destRam): 
 		# set PARA_X and PARA_Y
-		replace(destRam, 'SET_PARA_X', str(Para_X))
 		replace(destRam, 'SET_PARA_Y', str(Para_Y))
 		replace(destRam, 'SET_RAM_MAX', str(RamMax))
 		replace(destRam, 'SET_READ_WIDTH', str(ReadWidth))
@@ -96,9 +95,9 @@ def FeatureMapRam(Para_X, Para_Y, RamMax, ReadWidth, WriteWidth):
 		file_ram.close()
 		a_ram = s_ram.split('\n')
 
-		inser_index_ram = 69
+		inser_index_ram = 68
 
-		for i in range(Para_X*Para_Y):
+		for i in range(Para_Y):
 			file_ram_na = file('./Template/Template_FeatureMapRamFloat16_not_add.v')
 
 			for line in file_ram_na:
@@ -110,18 +109,18 @@ def FeatureMapRam(Para_X, Para_Y, RamMax, ReadWidth, WriteWidth):
 
 		inser_index_ram = inser_index_ram + 8
 
-		for i in range(Para_X*Para_Y-1):
+		for i in range(Para_Y-1):
 			file_ram_a0 = file('./Template/Template_FeatureMapRamFloat16_add_0.v')
 
 			for line in file_ram_a0:
-				line = line.replace('SET_INDEX', str(Para_X*Para_Y-i-1))
+				line = line.replace('SET_INDEX', str(Para_Y-i-1))
 				a_ram.insert(inser_index_ram, line) 
 				inser_index_ram = inser_index_ram+1
 		file_ram_a0.close()
 
 		inser_index_ram = inser_index_ram + 12
 
-		for i in range(Para_X*Para_Y):
+		for i in range(Para_Y):
 			file_ram_a1 = file('./Template/Template_FeatureMapRamFloat16_add_1.v')
 
 			for line in file_ram_a1:
@@ -159,4 +158,4 @@ def replace(file_path, old_str, new_str):
 		print e 
 
 #ConvParaScaleFloat16(3, 3, [3, 5], 5, 6)
-FeatureMapRam(3, 3, 22, 4, 2)
+FeatureMapRam(2, 22, 4, 2)
