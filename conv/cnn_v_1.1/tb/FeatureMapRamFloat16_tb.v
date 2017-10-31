@@ -21,6 +21,7 @@ module FeatureMapRamFloat16_tb();
 	reg [`PARA_Y*`DATA_WIDTH - 1:0] din;
 
 	reg [`READ_ADDR_WIDTH - 1:0] addr_read;
+	reg [`READ_ADDR_WIDTH - 1:0] sub_addr_read;
 	wire write_ready;
 	wire [`PARA_Y*`DATA_WIDTH - 1:0] dout;
 
@@ -33,6 +34,7 @@ module FeatureMapRamFloat16_tb();
 		.din(din),
 
 		.addr_read(addr_read),
+		.sub_addr_read(sub_addr_read),
 		.write_ready(write_ready),
 		.dout(dout)
     );
@@ -85,11 +87,19 @@ module FeatureMapRamFloat16_tb();
     	#`clk_period
     	ena_wr = 0;
     	addr_read = 0;
+    	sub_addr_read = 0;
 
     	// read
     	#`clk_period
     	ena_wr = 0;
     	addr_read = 1;
+    	sub_addr_read = 0;
+
+    	// read
+    	#`clk_period
+    	ena_wr = 0;
+    	addr_read = 1;
+    	sub_addr_read = 1;
     	// PARA_Y = 3 ============================================= 
 */
 
@@ -132,11 +142,19 @@ module FeatureMapRamFloat16_tb();
     	#`clk_period
     	ena_wr = 0;
     	addr_read = 0;
+    	sub_addr_read = 0;
 
     	// read
     	#`clk_period
     	ena_wr = 0;
     	addr_read = 1;
+    	sub_addr_read = 0;
+
+    	// read
+    	#`clk_period
+    	ena_wr = 0;
+    	addr_read = 1;
+    	sub_addr_read = 1;
     	// PARA_Y = 2 ============================================= 
 
     end

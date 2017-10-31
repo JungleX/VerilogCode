@@ -95,7 +95,7 @@ def FeatureMapRam(Para_Y, RamMax, ReadWidth, WriteWidth):
 		file_ram.close()
 		a_ram = s_ram.split('\n')
 
-		inser_index_ram = 68
+		inser_index_ram = 69
 
 		for i in range(Para_Y):
 			file_ram_na = file('./Template/Template_FeatureMapRamFloat16_not_add.v')

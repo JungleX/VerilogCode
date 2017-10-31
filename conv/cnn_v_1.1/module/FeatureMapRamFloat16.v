@@ -2,8 +2,7 @@
 
 `define DATA_WIDTH		16  // 16 bits float
 
-`define PARA_X			3	// MAC group number
-`define PARA_Y			3	// MAC number of each MAC group
+`define PARA_Y			2	// MAC number of each MAC group
 
 `define RAM_MAX			22 
 
@@ -16,9 +15,10 @@ module FeatureMapRamFloat16(
 
 	input ena_add_write, // 0: not add; 1: add
 	input [`WRITE_ADDR_WIDTH - 1:0] addr_write,
-	input [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] din,
+	input [`PARA_Y*`DATA_WIDTH - 1:0] din,
 
 	input [`READ_ADDR_WIDTH - 1:0] addr_read,
+	input [`READ_ADDR_WIDTH - 1:0] sub_addr_read,
 
 	output reg write_ready,
 	output reg [`PARA_Y*`DATA_WIDTH - 1:0] dout
@@ -30,15 +30,15 @@ module FeatureMapRamFloat16(
 
 	// addition
 	reg add_a_tvalid;
-	reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] add_a_tdata;
+	reg [`PARA_Y*`DATA_WIDTH - 1:0] add_a_tdata;
 	reg add_b_tvalid;
-	reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] add_b_tdata;
+	reg [`PARA_Y*`DATA_WIDTH - 1:0] add_b_tdata;
 
-	wire [`PARA_X*`PARA_Y - 1:0] add_re_tvalid;
-	wire [`DATA_WIDTH - 1:0] add_re_tdata[0:`PARA_X*`PARA_X - 1] ;
+	wire [`PARA_Y - 1:0] add_re_tvalid;
+	wire [`DATA_WIDTH - 1:0] add_re_tdata[0:`PARA_Y - 1] ;
 	generate
 		genvar add_i;
-		for (add_i = 0; add_i < `PARA_X*`PARA_Y; add_i = add_i + 1)
+		for (add_i = 0; add_i < `PARA_Y; add_i = add_i + 1)
 		begin
 			floating_point_add add(
 		        .s_axis_a_tvalid(add_a_tvalid),
@@ -67,15 +67,8 @@ module FeatureMapRamFloat16(
 		if (ena_wr == 1) begin // write
 			if (ena_add_write == 0) begin // not add
 				// ======== Begin: update data not add ========
-				ram_array[addr_write*`PARA_X*`PARA_Y + 0] <= din[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
-				ram_array[addr_write*`PARA_X*`PARA_Y + 1] <= din[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
-				ram_array[addr_write*`PARA_X*`PARA_Y + 2] <= din[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
-				ram_array[addr_write*`PARA_X*`PARA_Y + 3] <= din[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3];
-				ram_array[addr_write*`PARA_X*`PARA_Y + 4] <= din[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4];
-				ram_array[addr_write*`PARA_X*`PARA_Y + 5] <= din[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5];
-				ram_array[addr_write*`PARA_X*`PARA_Y + 6] <= din[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6];
-				ram_array[addr_write*`PARA_X*`PARA_Y + 7] <= din[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7];
-				ram_array[addr_write*`PARA_X*`PARA_Y + 8] <= din[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8];
+				ram_array[addr_write*`PARA_Y + 0] <= din[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
+				ram_array[addr_write*`PARA_Y + 1] <= din[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
 				// ======== End: update data not add ========
 			end
 			else if (ena_add_write == 1) begin // add
@@ -84,15 +77,8 @@ module FeatureMapRamFloat16(
 
 					// ======== Begin: add operation ========
 					add_a_tdata <= {
-									ram_array[addr_write*`PARA_X*`PARA_Y + 8],
-									ram_array[addr_write*`PARA_X*`PARA_Y + 7],
-									ram_array[addr_write*`PARA_X*`PARA_Y + 6],
-									ram_array[addr_write*`PARA_X*`PARA_Y + 5],
-									ram_array[addr_write*`PARA_X*`PARA_Y + 4],
-									ram_array[addr_write*`PARA_X*`PARA_Y + 3],
-									ram_array[addr_write*`PARA_X*`PARA_Y + 2],
-									ram_array[addr_write*`PARA_X*`PARA_Y + 1],
-									ram_array[addr_write*`PARA_X*`PARA_Y]
+									ram_array[addr_write*`PARA_Y + 1],
+									ram_array[addr_write*`PARA_Y]
 								};
 					// ======== End: add operation ========
 
@@ -104,15 +90,8 @@ module FeatureMapRamFloat16(
 					write_ready	<= 1;
 
 					// ======== Begin: update data add ========
-					ram_array[addr_write*`PARA_X*`PARA_Y + 0] <= add_re_tdata[0];
-					ram_array[addr_write*`PARA_X*`PARA_Y + 1] <= add_re_tdata[1];
-					ram_array[addr_write*`PARA_X*`PARA_Y + 2] <= add_re_tdata[2];
-					ram_array[addr_write*`PARA_X*`PARA_Y + 3] <= add_re_tdata[3];
-					ram_array[addr_write*`PARA_X*`PARA_Y + 4] <= add_re_tdata[4];
-					ram_array[addr_write*`PARA_X*`PARA_Y + 5] <= add_re_tdata[5];
-					ram_array[addr_write*`PARA_X*`PARA_Y + 6] <= add_re_tdata[6];
-					ram_array[addr_write*`PARA_X*`PARA_Y + 7] <= add_re_tdata[7];
-					ram_array[addr_write*`PARA_X*`PARA_Y + 8] <= add_re_tdata[8];
+					ram_array[addr_write*`PARA_Y + 0] <= add_re_tdata[0];
+					ram_array[addr_write*`PARA_Y + 1] <= add_re_tdata[1];
 					// ======== End: update data add ========
 
 					clk_count	<= 0;
@@ -123,9 +102,8 @@ module FeatureMapRamFloat16(
 		else if (ena_wr == 0) begin // read
 			// ======== Begin: read out ========
 			dout <= {
-						ram_array[addr_read*`PARA_Y+2], 
-						ram_array[addr_read*`PARA_Y+1], 
-						ram_array[addr_read*`PARA_Y]
+						ram_array[addr_read*`PARA_Y+sub_addr_read+1], 
+						ram_array[addr_read*`PARA_Y+sub_addr_read]
 					};
 			// ======== End: read out ========
 		end
