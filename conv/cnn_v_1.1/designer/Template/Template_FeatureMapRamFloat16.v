@@ -92,9 +92,11 @@ module FeatureMapRamFloat16(
 					clk_count	<= 0;
 				end
 			end
-			
 		end
-		else if (ena_wr == 0) begin // read
+	end
+
+	always @(clk) begin
+		if (ena_wr == 0) begin // read
 			// ======== Begin: read out ========
 			dout <= {
 						ram_array[addr_read*`PARA_Y+sub_addr_read]

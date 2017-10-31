@@ -2,12 +2,12 @@
 
 `define DATA_WIDTH		16  // 16 bits float
 
-`define PARA_Y			2	// MAC number of each MAC group
+`define PARA_Y			3	// MAC number of each MAC group
 
 `define RAM_MAX			22 
 
-`define READ_ADDR_WIDTH		4 
-`define WRITE_ADDR_WIDTH	2 
+`define READ_ADDR_WIDTH		3 
+`define WRITE_ADDR_WIDTH	3 
 
 module FeatureMapRamFloat16(
 	input clk,
@@ -69,6 +69,7 @@ module FeatureMapRamFloat16(
 				// ======== Begin: update data not add ========
 				ram_array[addr_write*`PARA_Y + 0] <= din[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
 				ram_array[addr_write*`PARA_Y + 1] <= din[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
+				ram_array[addr_write*`PARA_Y + 2] <= din[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
 				// ======== End: update data not add ========
 			end
 			else if (ena_add_write == 1) begin // add
@@ -77,6 +78,7 @@ module FeatureMapRamFloat16(
 
 					// ======== Begin: add operation ========
 					add_a_tdata <= {
+									ram_array[addr_write*`PARA_Y + 2],
 									ram_array[addr_write*`PARA_Y + 1],
 									ram_array[addr_write*`PARA_Y]
 								};
@@ -92,16 +94,20 @@ module FeatureMapRamFloat16(
 					// ======== Begin: update data add ========
 					ram_array[addr_write*`PARA_Y + 0] <= add_re_tdata[0];
 					ram_array[addr_write*`PARA_Y + 1] <= add_re_tdata[1];
+					ram_array[addr_write*`PARA_Y + 2] <= add_re_tdata[2];
 					// ======== End: update data add ========
 
 					clk_count	<= 0;
 				end
 			end
-			
 		end
-		else if (ena_wr == 0) begin // read
+	end
+
+	always @(clk) begin
+		if (ena_wr == 0) begin // read
 			// ======== Begin: read out ========
 			dout <= {
+						ram_array[addr_read*`PARA_Y+sub_addr_read+2], 
 						ram_array[addr_read*`PARA_Y+sub_addr_read+1], 
 						ram_array[addr_read*`PARA_Y+sub_addr_read]
 					};
