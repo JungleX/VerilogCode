@@ -10,6 +10,7 @@
 `define PARA_X			3	// MAC group number
 `define PARA_Y			3	// MAC number of each MAC group
 `define KERNEL_SIZE_WIDTH	6
+`define FM_SIZE_WIDTH	10
 
 // pool
 `define PARA_POOL_Y		3	
@@ -34,6 +35,7 @@ module LayerParaScaleFloat16_tb();
 	reg rst;
 
 	reg [1:0] layer_type;
+	reg [`FM_SIZE_WIDTH - 1:0] fm_size;
 	reg [`KERNEL_SIZE_WIDTH - 1:0] kernel_size;
 	reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] init_fm_data;
 	reg [`WRITE_ADDR_WIDTH - 1:0] write_fm_data_addr;
@@ -56,6 +58,7 @@ module LayerParaScaleFloat16_tb();
 		.rst(rst),
 
 		.layer_type(layer_type), // 0: prepare init feature map data; 1:conv; 2:pool; 3:fc;
+		.fm_size(fm_size),
 		.kernel_size(kernel_size),
 
 		.init_fm_data(init_fm_data),
@@ -84,7 +87,7 @@ module LayerParaScaleFloat16_tb();
     	#(`clk_period/2)
     	// reset
     	rst = 0;
-/*
+
     	// PARA_X = 3, PARA_Y = 3, kernel size = 3, feature map size = 6 =============================================
     	#`clk_period
     	rst = 1;
@@ -140,10 +143,11 @@ module LayerParaScaleFloat16_tb();
     	#`clk_period
     	if (init_fm_ram_ready ==1 && init_weight_ram_ready == 1) begin
     		layer_type = 1;
+    		fm_size = 6;
     		kernel_size = 3;
     	end
     	// PARA_X = 3, PARA_Y = 3, kernel size = 3, feature map size = 6 =============================================
-*/
+/*
     	// PARA_X = 3, PARA_Y = 3, kernel size = 3, feature map size = 8 =============================================
     	#`clk_period
     	rst = 1;
@@ -215,8 +219,10 @@ module LayerParaScaleFloat16_tb();
     	#`clk_period
     	if (init_fm_ram_ready ==1 && init_weight_ram_ready == 1) begin
     		layer_type = 1;
+    		fm_size = 8;
     		kernel_size = 3;
     	end
     	// PARA_X = 3, PARA_Y = 3, kernel size = 3, feature map size = 8 =============================================
+*/
     end
 endmodule
