@@ -18,7 +18,6 @@ def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList, KernelSizeMax, KernelSi
 		print "Create MultAddUnitFloat16.v Success."
 		print "Copy Template_ConvParaScaleFloat16.v Success."
 
-		# set PARA_X and PARA_Y
 		replace(destFile_1, 'SET_PARA_X', str(Para_X))
 		replace(destFile_1, 'SET_PARA_Y', str(Para_Y))
 		replace(destFile_1, 'SET_KERNEL_SIZE_MAX', str(KernelSizeMax))
@@ -84,7 +83,6 @@ def FeatureMapRam(Para_Y, RamMax, ReadWidth, WriteWidth):
 	shutil.copy (sourceRam, destRam)
 
 	if os.path.isfile (destRam): 
-		# set PARA_X and PARA_Y
 		replace(destRam, 'SET_PARA_Y', str(Para_Y))
 		replace(destRam, 'SET_RAM_MAX', str(RamMax))
 		replace(destRam, 'SET_READ_WIDTH', str(ReadWidth))
@@ -144,6 +142,47 @@ def FeatureMapRam(Para_Y, RamMax, ReadWidth, WriteWidth):
 		file_ram.write(s_ram)
 		file_ram.close()
 
+		print "Create FeatureMapRamFloat16.v Success."
+
+def WeightRam(KernelSizeMax, RamMax, ReadWidth, WriteWidth):
+	destDir = './VerilogCode/'
+	if not os.path.isdir(destDir):
+		os.mkdir(destDir)
+
+	sourceRam = './Template/Template_WeightRamFloat16.v'
+	destRam = destDir + 'WeightRamFloat16.v'
+	shutil.copy (sourceRam, destRam)
+
+	if os.path.isfile (destRam): 
+		replace(destRam, 'SET_KERNEL_SIZE_MAX', str(KernelSizeMax))
+		replace(destRam, 'SET_WEIGHT_RAM_MAX', str(RamMax))
+		replace(destRam, 'SET_WEIGHT_READ_WIDTH', str(ReadWidth))
+		replace(destRam, 'SET_WEIGHT_WRITE_WIDTH', str(WriteWidth))
+		
+		file_ram = file(destRam)
+		s_ram = file_ram.read()
+		file_ram.close()
+		a_ram = s_ram.split('\n')
+
+		inser_index_ram = 37
+
+		for i in range(KernelSizeMax*KernelSizeMax):
+			file_ram_na = file('./Template/Template_WeightRamFloat16_write.v')
+
+			for line in file_ram_na:
+				line = line.replace('SET_INDEX_ADD_ONE', str(i+1))
+				line = line.replace('SET_INDEX', str(i))
+				a_ram.insert(inser_index_ram, line) 
+				inser_index_ram = inser_index_ram+1
+		file_ram_na.close()
+
+		s_ram = '\n'.join(a_ram)
+		file_ram = file(destRam, 'w')
+		file_ram.write(s_ram)
+		file_ram.close()
+
+		print "Create WeightRamFloat16.v Success."
+
 def replace(file_path, old_str, new_str):  
 	try:  
 		f = open(file_path,'r+')  
@@ -158,4 +197,5 @@ def replace(file_path, old_str, new_str):
 		print e 
 
 #ConvParaScaleFloat16(3, 3, [3, 5], 5, 6)
-FeatureMapRam(3, 22, 3, 3)
+#FeatureMapRam(3, 22, 3, 3)
+WeightRam(5, 100, 10, 5)

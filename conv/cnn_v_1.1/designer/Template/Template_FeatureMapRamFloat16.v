@@ -1,10 +1,10 @@
 `timescale 1ns / 1ps
 
-`define DATA_WIDTH		16  // 16 bits float
+`define DATA_WIDTH			16  // 16 bits float
 
-`define PARA_Y			SET_PARA_Y	// MAC number of each MAC group
+`define PARA_Y				SET_PARA_Y	// MAC number of each MAC group
 
-`define RAM_MAX			SET_RAM_MAX 
+`define RAM_MAX				SET_RAM_MAX 
 
 `define READ_ADDR_WIDTH		SET_READ_WIDTH 
 `define WRITE_ADDR_WIDTH	SET_WRITE_WIDTH 
