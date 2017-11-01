@@ -84,7 +84,8 @@ module LayerParaScaleFloat16_tb();
     	#(`clk_period/2)
     	// reset
     	rst = 0;
-
+/*
+    	// PARA_X = 3, PARA_Y = 3, kernel size = 3, feature map size = 6 =============================================
     	#`clk_period
     	rst = 1;
 
@@ -141,6 +142,81 @@ module LayerParaScaleFloat16_tb();
     		layer_type = 1;
     		kernel_size = 3;
     	end
-    	
+    	// PARA_X = 3, PARA_Y = 3, kernel size = 3, feature map size = 6 =============================================
+*/
+    	// PARA_X = 3, PARA_Y = 3, kernel size = 3, feature map size = 8 =============================================
+    	#`clk_period
+    	rst = 1;
+
+    	layer_type = 0;
+    	init_fm_data = {16'h4200, 16'h4000, 16'h0000,
+    					16'h4000, 16'h3c00, 16'h0000,
+    					16'h0000, 16'h0000, 16'h0000};
+    	write_fm_data_addr = 0;
+    	init_fm_data_done = 0;
+
+    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] = {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
+    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] = {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4000};
+    	write_weight_data_addr = 0;
+    	weight_data_done = 0;
+
+    	#`clk_period
+    	layer_type = 0;
+    	init_fm_data = {16'h0000, 16'h4000, 16'h4400,
+    					16'h0000, 16'h3c00, 16'h4200,
+    					16'h0000, 16'h0000, 16'h0000};
+    	write_fm_data_addr = 1;
+    	init_fm_data_done = 0;
+
+    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] = {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
+    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] = {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
+    	write_weight_data_addr = 1;
+    	weight_data_done = 0;
+
+    	#`clk_period
+    	layer_type = 0;
+    	init_fm_data = {16'h0000, 16'h0000, 16'h0000,
+    					16'h0000, 16'h0000, 16'h0000,
+    					16'h0000, 16'h0000, 16'h0000};
+    	write_fm_data_addr = 2;
+    	init_fm_data_done = 0;
+
+    	weight_data_done = 1;
+
+    	#`clk_period
+    	layer_type = 0;
+    	init_fm_data = {16'h0000, 16'h0000, 16'h0000,
+    					16'h4000, 16'h4200, 16'h0000,
+    					16'h4000, 16'h3c00, 16'h0000};
+    	write_fm_data_addr = 3;
+    	init_fm_data_done = 0;
+
+    	#`clk_period
+    	layer_type = 0;
+    	init_fm_data = {16'h0000, 16'h0000, 16'h0000,
+    					16'h0000, 16'h4400, 16'h3c00,
+    					16'h0000, 16'h4200, 16'h4400};
+    	write_fm_data_addr = 4;
+    	init_fm_data_done = 0;
+
+    	#`clk_period
+    	layer_type = 0;
+    	init_fm_data = {16'h0000, 16'h0000, 16'h0000,
+    					16'h0000, 16'h0000, 16'h0000,
+    					16'h0000, 16'h0000, 16'h0000};
+    	write_fm_data_addr = 5;
+    	init_fm_data_done = 0;
+
+    	#`clk_period
+    	layer_type = 0;
+    	init_fm_data_done = 1; // just send init_fm_data_done, no write fm data
+
+    	// change to conv layer
+    	#`clk_period
+    	if (init_fm_ram_ready ==1 && init_weight_ram_ready == 1) begin
+    		layer_type = 1;
+    		kernel_size = 3;
+    	end
+    	// PARA_X = 3, PARA_Y = 3, kernel size = 3, feature map size = 8 =============================================
     end
 endmodule

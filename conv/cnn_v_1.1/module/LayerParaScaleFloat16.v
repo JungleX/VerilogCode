@@ -327,7 +327,7 @@ module LayerParaScaleFloat16(
 									fm_sub_addr_read[2]	<= fm_sub_addr_read[2] + 1;
 
 									if (clk_count == kernel_size) begin
-										fm_addr_read[0]		<= fm_addr_read[0] + 1;// [FS/Y]-[(KS-1)/Y] eg: [8/3]-[(3-1)/3]=3-1=2
+										fm_addr_read[0]		<= fm_addr_read[0] + 2;// [FS/Y]-[(KS-1)/Y] // eg: [6/3]-[(3-1)/3]=2-1=1 // eg: [8/3]-[(3-1)/3]=3-1=2
 										fm_sub_addr_read[0]	<= 0;
 										cur_fm_ram			<= 0;
 									end
@@ -370,15 +370,15 @@ module LayerParaScaleFloat16(
 										case(cur_fm_ram + 1)
 											0:
 												begin
-													fm_addr_read[0] <= fm_addr_read[0] + 1;
+													fm_addr_read[0] <= fm_addr_read[0] + 2;// [FS/Y]-[(KS-1)/Y] // eg: [6/3]-[(3-1)/3]=2-1=1 // eg: [8/3]-[(3-1)/3]=3-1=2
 												end
 											1:
 												begin
-													fm_addr_read[1] <= fm_addr_read[1] + 1;
+													fm_addr_read[1] <= fm_addr_read[1] + 2;// [FS/Y]-[(KS-1)/Y] // eg: [6/3]-[(3-1)/3]=2-1=1 // eg: [8/3]-[(3-1)/3]=3-1=2
 												end
 											2:
 												begin
-													fm_addr_read[2] <= fm_addr_read[2] + 1;
+													fm_addr_read[2] <= fm_addr_read[2] + 2;// [FS/Y]-[(KS-1)/Y] // eg: [6/3]-[(3-1)/3]=2-1=1 // eg: [8/3]-[(3-1)/3]=3-1=2
 												end
 										endcase
 									end
