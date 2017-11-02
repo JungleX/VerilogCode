@@ -93,7 +93,7 @@ def FeatureMapRam(Para_Y, RamMax, ReadWidth, WriteWidth):
 		file_ram.close()
 		a_ram = s_ram.split('\n')
 
-		inser_index_ram = 69
+		inser_index_ram = 70
 
 		for i in range(Para_Y):
 			file_ram_na = file('./Template/Template_FeatureMapRamFloat16_not_add.v')
@@ -197,5 +197,5 @@ def replace(file_path, old_str, new_str):
 		print e 
 
 #ConvParaScaleFloat16(3, 3, [3, 5], 5, 6)
-#FeatureMapRam(3, 22, 3, 3)
-WeightRam(5, 100, 10, 5)
+FeatureMapRam(3, 22, 3, 3)
+#WeightRam(5, 100, 10, 5)

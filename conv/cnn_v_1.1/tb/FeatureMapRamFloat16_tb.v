@@ -4,17 +4,18 @@
 
 `define DATA_WIDTH		16  // 16 bits float
 
-`define PARA_Y			2	// MAC number of each MAC group
+`define PARA_Y			3	// MAC number of each MAC group
 
 `define RAM_MAX			22 // 22*3(PARA_Y)>=64 // Alexnet layer 1 output 55*55*96=290400
 
-`define READ_ADDR_WIDTH		4 // 22 / 3(PARA_Y) <= 8 width:4 // MAX VALUE = RAM_MAX / PARA_Y
-`define WRITE_ADDR_WIDTH	2 // 22 / (3*3) (PARA_Y*PARA_X) <= 3 width:2
+`define READ_ADDR_WIDTH		3 // 22 / 3(PARA_Y) <= 8 width:4 // MAX VALUE = RAM_MAX / PARA_Y
+`define WRITE_ADDR_WIDTH	3 // 22 / (3*3) (PARA_Y*PARA_X) <= 3 width:2
 
 module FeatureMapRamFloat16_tb();
 
 	reg clk;
-	reg ena_wr; // 0: read; 1: write
+	reg ena_w; 
+	reg ena_r;
 
 	reg ena_add_write; // 0: not add; 1: add
 	reg [`WRITE_ADDR_WIDTH - 1:0] addr_write;
@@ -27,12 +28,13 @@ module FeatureMapRamFloat16_tb();
 
 	FeatureMapRamFloat16 ram_fm(
 		.clk(clk),
-		.ena_wr(ena_wr), // 0: read; 1: write
 
+		.ena_w(ena_w), // 0: read; 1: write
 		.ena_add_write(ena_add_write), // 0: not add; 1: add
 		.addr_write(addr_write),
 		.din(din),
 
+		.ena_r(ena_r),
 		.addr_read(addr_read),
 		.sub_addr_read(sub_addr_read),
 		.write_ready(write_ready),
@@ -47,25 +49,27 @@ module FeatureMapRamFloat16_tb();
     	#0
 
     	#(`clk_period/2)
-/*
+
     	// PARA_Y = 3 =============================================
     	// write, not add
     	#`clk_period
-    	ena_wr = 1;
+    	ena_w = 1;
     	ena_add_write = 0;
     	addr_write = 0;
     	din = {16'h3c00, 16'h4000, 16'h4200};
 
+    	ena_r = 0;
+
     	// write, not add
     	#`clk_period
-    	ena_wr = 1;
+    	ena_w = 1;
     	ena_add_write = 0;
     	addr_write = 1;
     	din = {16'h4200, 16'h4000, 16'h3c00};
 
     	// write, add
     	#`clk_period
-    	ena_wr = 1;
+    	ena_w = 1;
     	ena_add_write = 1;
     	addr_write = 1;
     	din = {16'h3c00, 16'h4000, 16'h3c00};
@@ -73,54 +77,56 @@ module FeatureMapRamFloat16_tb();
     	// write, add, wait
     	#`clk_period
 
-    	// write, add
+    	// write, add and read
     	#`clk_period
-    	ena_wr = 1;
+    	ena_w = 1;
     	ena_add_write = 1;
     	addr_write = 1;
     	din = {16'h3c00, 16'h3c00, 16'h3c00};
+
+    	ena_r = 1;
+    	addr_read = 0;
+    	sub_addr_read = 0;
 
     	// write, add, wait
     	#`clk_period
 
     	// read
     	#`clk_period
-    	ena_wr = 0;
-    	addr_read = 0;
-    	sub_addr_read = 0;
+    	ena_w = 0;
 
-    	// read
-    	#`clk_period
-    	ena_wr = 0;
+    	ena_r = 1;
     	addr_read = 1;
     	sub_addr_read = 0;
 
     	// read
     	#`clk_period
-    	ena_wr = 0;
+    	ena_r = 1;
     	addr_read = 1;
     	sub_addr_read = 1;
     	// PARA_Y = 3 ============================================= 
-*/
 
+/*
     	// PARA_Y = 2 =============================================
     	// write, not add
     	#`clk_period
-    	ena_wr = 1;
+    	ena_w = 1;
     	ena_add_write = 0;
     	addr_write = 0;
     	din = {16'h3c00, 16'h4000};
 
+    	ena_r = 0;
+
     	// write, not add
     	#`clk_period
-    	ena_wr = 1;
+    	ena_w = 1;
     	ena_add_write = 0;
     	addr_write = 1;
     	din = {16'h4200, 16'h4000};
 
     	// write, add
     	#`clk_period
-    	ena_wr = 1;
+    	ena_w = 1;
     	ena_add_write = 1;
     	addr_write = 1;
     	din = {16'h3c00, 16'h4000};
@@ -130,7 +136,7 @@ module FeatureMapRamFloat16_tb();
 
     	// write, add
     	#`clk_period
-    	ena_wr = 1;
+    	ena_w = 1;
     	ena_add_write = 1;
     	addr_write = 1;
     	din = {16'h3c00, 16'h3c00};
@@ -140,22 +146,24 @@ module FeatureMapRamFloat16_tb();
 
     	// read
     	#`clk_period
-    	ena_wr = 0;
+    	ena_w = 0;
+
+    	ena_r = 1;
     	addr_read = 0;
     	sub_addr_read = 0;
 
     	// read
     	#`clk_period
-    	ena_wr = 0;
+    	ena_r = 1;
     	addr_read = 1;
     	sub_addr_read = 0;
 
     	// read
     	#`clk_period
-    	ena_wr = 0;
+    	ena_r = 1;
     	addr_read = 1;
     	sub_addr_read = 1;
     	// PARA_Y = 2 ============================================= 
-
+*/
     end
 endmodule

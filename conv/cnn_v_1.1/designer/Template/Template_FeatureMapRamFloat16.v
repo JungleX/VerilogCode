@@ -11,12 +11,13 @@
 
 module FeatureMapRamFloat16(
 	input clk,
-	input ena_wr, // 0: read; 1: write
 
+	input ena_w, // 0: not write; 1: write
 	input ena_add_write, // 0: not add; 1: add
 	input [`WRITE_ADDR_WIDTH - 1:0] addr_write,
 	input [`PARA_Y*`DATA_WIDTH - 1:0] din,
 
+	input ena_r, // 0: not read; 1: read
 	input [`READ_ADDR_WIDTH - 1:0] addr_read,
 	input [`READ_ADDR_WIDTH - 1:0] sub_addr_read,
 
@@ -64,7 +65,7 @@ module FeatureMapRamFloat16(
 	end
 
 	always @(posedge clk) begin
-		if (ena_wr == 1) begin // write
+		if (ena_w == 1) begin // write
 			if (ena_add_write == 0) begin // not add
 				// ======== Begin: update data not add ========
 				// ======== End: update data not add ========
@@ -96,7 +97,7 @@ module FeatureMapRamFloat16(
 	end
 
 	always @(clk) begin
-		if (ena_wr == 0) begin // read
+		if (ena_r == 1) begin // read
 			// ======== Begin: read out ========
 			dout <= {
 						ram_array[addr_read*`PARA_Y+sub_addr_read]
