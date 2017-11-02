@@ -14,7 +14,8 @@
 module WeightRamFloat16_tb();
 
 	reg clk;
-	reg ena_wr; // 0: read; 1: write
+	reg ena_w; 
+	reg ena_r;
 
 	reg [`WEIGHT_WRITE_ADDR_WIDTH - 1:0] addr_write;
 	reg [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH - 1:0] din; // write a slice weight(ks*ks, eg:3*3=9) each time
@@ -25,11 +26,12 @@ module WeightRamFloat16_tb();
 
 	WeightRamFloat16 weight_ram(
 		.clk(clk),
-		.ena_wr(ena_wr), // 0: read; 1: write
 
+		.ena_w(ena_w), // 0: read; 1: write
 		.addr_write(addr_write),
 		.din(din), // write a slice weight(ks*ks, eg:3*3=9) each time
 
+		.ena_r(ena_r),
 		.addr_read(addr_read),
 
 		.dout(dout) // read a value each time
@@ -45,29 +47,29 @@ module WeightRamFloat16_tb();
     	#(`clk_period/2)
     	// write
     	#`clk_period
-    	ena_wr = 1;
+    	ena_w = 1;
     	addr_write = 0;
     	din = {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00}; // 3*3=9
 
-    	// write
+    	ena_r = 0;
+
+    	// write and read
     	#`clk_period
-    	ena_wr = 1;
+    	ena_w = 1;
     	addr_write = 1;
     	din = {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
 
-    	// read
-    	#`clk_period
-    	ena_wr = 0;
-    	addr_read = 0;
+    	ena_r = 1;
+    	addr_read = 3;
 
     	// read
     	#`clk_period
-    	ena_wr = 0;
+    	ena_r = 1;
     	addr_read = 1;
 
     	// read
     	#`clk_period
-    	ena_wr = 0;
+    	ena_r = 1;
     	addr_read = `KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX+3; //3*3+1;
 
     end
