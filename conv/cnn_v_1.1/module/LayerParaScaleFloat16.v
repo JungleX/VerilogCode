@@ -132,8 +132,9 @@ module LayerParaScaleFloat16(
     // ======== End: conv unit ========
 
     // ======== Begin: feature map ram ========
-    reg fm_ena_wr; // 0: read; 1: write
-    reg fm_ena_add_write; // 0: not add; 1: add
+    reg fm_ena_w[`PARA_X - 1:0];
+    reg fm_ena_r[`PARA_X - 1:0];
+    reg fm_ena_add_write[`PARA_X - 1:0]; // 0: not add; 1: add
 	reg [`WRITE_ADDR_WIDTH - 1:0] fm_addr_write[`PARA_X - 1:0];
 	reg [`PARA_Y*`DATA_WIDTH - 1:0] fm_din[`PARA_X - 1:0];
 
@@ -148,12 +149,13 @@ module LayerParaScaleFloat16(
     	begin
 			FeatureMapRamFloat16 ram_fm(
 				.clk(clk),
-				.ena_wr(fm_ena_wr), // 0: read; 1: write
 
-				.ena_add_write(fm_ena_add_write), // 0: not add; 1: add
+				.ena_w(fm_ena_w[fm_ram_i]), 
+				.ena_add_write(fm_ena_add_write[fm_ram_i]), // 0: not add; 1: add
 				.addr_write(fm_addr_write[fm_ram_i]),
 				.din(fm_din[fm_ram_i]),
 
+				.ena_r(fm_ena_r[fm_ram_i]),
 				.addr_read(fm_addr_read[fm_ram_i]),
 				.sub_addr_read(fm_sub_addr_read[fm_ram_i]),
 				.write_ready(fm_write_ready[fm_ram_i:fm_ram_i]),
@@ -164,7 +166,8 @@ module LayerParaScaleFloat16(
     // ======== End: feature map ram ========
 
     // ======== Begin: weight ram ========
-    reg weight_ena_wr;
+    reg weight_ena_w;
+    reg weight_ena_r;
 
     reg [`WEIGHT_WRITE_ADDR_WIDTH - 1:0] weight_addr_write[`PARA_KERNEL - 1:0];
 	reg [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH - 1:0] weight_din[`PARA_KERNEL - 1:0]; // write a slice weight(ks*ks, eg:3*3=9) each time
@@ -179,11 +182,12 @@ module LayerParaScaleFloat16(
 		begin:identifier_weight_ram
 			WeightRamFloat16 weight_ram(
 				.clk(clk),
-				.ena_wr(weight_ena_wr), // 0: read; 1: write
 
+				.ena_w(weight_ena_w),
 				.addr_write(weight_addr_write[weight_ram_i]),
 				.din(weight_din[weight_ram_i]), // write a slice weight(ks*ks, eg:3*3=9) each time
 
+				.ena_r(weight_ena_r),
 				.addr_read(weight_addr_read[weight_ram_i]),
 
 				.dout(weight_dout[weight_ram_i]) // read a value each time
@@ -227,8 +231,12 @@ module LayerParaScaleFloat16(
 					init_fm_ram_ready <= 1;
 				end
 				else begin
-					fm_ena_wr			<= 1; // write
-					fm_ena_add_write	<= 0; // not add
+					fm_ena_w[0]			<= 1; // write
+					fm_ena_add_write[0]	<= 0; // not add
+					fm_ena_w[1]			<= 1; // write
+					fm_ena_add_write[1]	<= 0; // not add
+					fm_ena_w[2]			<= 1; // write
+					fm_ena_add_write[2]	<= 0; // not add
 
 					// `PARA_X = 3
 					fm_addr_write[0]	<= write_fm_data_addr;
@@ -246,7 +254,7 @@ module LayerParaScaleFloat16(
 					init_weight_ram_ready <= 1;
 				end
 				else begin
-					weight_ena_wr <= 1; // write
+					weight_ena_w <= 1; // write
 
 					// `PARA_KERNEL = 2
 					weight_addr_write[0]	<= write_weight_data_addr;
@@ -266,8 +274,15 @@ module LayerParaScaleFloat16(
 								conv_rst	<= 0;
 
 								// start to read, next clk get read data
-								fm_ena_wr 		<= 0; 
-								weight_ena_wr	<= 0;
+								fm_ena_w[0]		<= 0; 
+								fm_ena_r[0]		<= 1;
+								fm_ena_w[1]		<= 0;  
+								fm_ena_r[1]		<= 1; 
+								fm_ena_w[2]		<= 0; 
+								fm_ena_r[2]		<= 1;
+
+								weight_ena_w	<= 0;
+								weight_ena_r	<= 1;
 
 								// `PARA_X = 3
 								/*addr_read[0]		<= 0;
