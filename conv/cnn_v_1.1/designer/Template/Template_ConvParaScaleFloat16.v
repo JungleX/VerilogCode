@@ -1,11 +1,6 @@
 `timescale 1ns / 1ps
 
-`define DATA_WIDTH			16  // 16 bits float
-`define PARA_X				SET_PARA_X	// MAC group number
-`define PARA_Y				SET_PARA_Y	// MAC number of each MAC group
-`define KERNEL_SIZE_MAX		SET_KERNEL_SIZE_MAX
-`define KERNEL_SIZE_WIDTH	SET_KERNEL_SIZE_WIDTH
-`define CLK_NUM_WIDTH		8
+`include "CNN_Parameter.vh"
  
 module ConvParaScaleFloat16(
 	input clk,

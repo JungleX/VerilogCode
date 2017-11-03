@@ -1,7 +1,7 @@
 import os
 import shutil
 
-def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList, KernelSizeMax, KernelSizeWidth):
+def ConvParaScaleFloat16(KernelSizeList):
 	destDir = './VerilogCode/'
 	if not os.path.isdir(destDir):
 		os.mkdir(destDir)
@@ -18,18 +18,13 @@ def ConvParaScaleFloat16(Para_X, Para_Y, KernelSizeList, KernelSizeMax, KernelSi
 		print "Create MultAddUnitFloat16.v Success."
 		print "Copy Template_ConvParaScaleFloat16.v Success."
 
-		replace(destFile_1, 'SET_PARA_X', str(Para_X))
-		replace(destFile_1, 'SET_PARA_Y', str(Para_Y))
-		replace(destFile_1, 'SET_KERNEL_SIZE_MAX', str(KernelSizeMax))
-		replace(destFile_1, 'SET_KERNEL_SIZE_WIDTH', str(KernelSizeWidth))
-
 		# kernel size
 		file_cpsf = file(destFile_1)
 		s_cpsf = file_cpsf.read()
 		file_cpsf.close()
 		a_cpsf = s_cpsf.split('\n')
 
-		inser_index_cpsf = 68
+		inser_index_cpsf = 63
 
 		for i in KernelSizeList:
 			file_rmv = file('./Template/Template_RegisterMoveWire.v')
@@ -183,6 +178,23 @@ def WeightRam(KernelSizeMax, RamMax, ReadWidth, WriteWidth):
 
 		print "Create WeightRamFloat16.v Success."
 
+def poolunit():
+	destDir = './VerilogCode/'
+	if not os.path.isdir(destDir):
+		os.mkdir(destDir)
+
+	sourceAvg = './Template/Template_AvgPoolUnitFloat16.v'
+	destAvg = destDir + 'AvgPoolUnitFloat16.v'
+	shutil.copy (sourceAvg, destAvg)
+
+	sourceMax = './Template/Template_MaxPoolUnitFloat16.v'
+	destMax = destDir + 'MaxPoolUnitFloat16.v'
+	shutil.copy (sourceMax, destMax)
+
+	if os.path.isfile (destAvg) and os.path.isfile (destMax):
+		print "Create AvgPoolUnitFloat16.v Success."
+		print "Create MaxPoolUnitFloat16.v Success."
+
 def replace(file_path, old_str, new_str):  
 	try:  
 		f = open(file_path,'r+')  
@@ -196,6 +208,7 @@ def replace(file_path, old_str, new_str):
 	except Exception,e:  
 		print e 
 
-#ConvParaScaleFloat16(3, 3, [3, 5], 5, 6)
-#FeatureMapRam(3, 22, 3, 3)
-WeightRam(5, 100, 10, 5)
+ConvParaScaleFloat16([3, 5])
+#FeatureMapRam(3, 100, 10, 10)
+#WeightRam(5, 100, 10, 5)
+#poolunit()
