@@ -212,6 +212,9 @@ module LayerParaScaleFloat16(
 			cur_kernel_swap		<= 0;
 			cur_kernel_slice	<= 0;
 			kernel_num_count	<= 0;
+
+			update_weight_ram		<= 0;
+			update_weight_ram_addr	<= 0; 
 		end
 		else begin
 			if (layer_type == 0) begin 
@@ -264,6 +267,23 @@ module LayerParaScaleFloat16(
 				case(layer_type)
 					1:// conv
 						begin
+							// update kernel
+							if (update_weight_ram == 1) begin
+								if (weight_data_done == 0) begin
+									weight_ena_w <= 1; // write
+
+									// `PARA_KERNEL = 2
+									weight_addr_write[0]	<= write_weight_data_addr;
+									weight_din[0]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0]; 
+									weight_addr_write[1]	<= write_weight_data_addr;
+									weight_din[1]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1];
+								end
+							end
+							else begin
+								weight_ena_w <= 0;
+							end
+
+							// conv operation
 							if (clk_count == 0) begin
 								conv_rst	<= 0;
 
@@ -282,11 +302,10 @@ module LayerParaScaleFloat16(
 								fm_addr_read[2]		<= cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
 								fm_sub_addr_read[2]	<= 0;
 
-								weight_ena_w	<= 0;
 								weight_ena_r	<= 1;
 
-								weight_addr_read[0]	<= cur_kernel_swap*fm_depth+cur_kernel_slice*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
-								weight_addr_read[1]	<= cur_kernel_swap*fm_depth+cur_kernel_slice*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+								weight_addr_read[0]	<= (cur_kernel_swap*fm_depth+cur_kernel_slice)*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+								weight_addr_read[1]	<= (cur_kernel_swap*fm_depth+cur_kernel_slice)*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
 
 								cur_fm_ram	<= 0;
 
@@ -480,6 +499,10 @@ module LayerParaScaleFloat16(
 														kernel_num_count	<= kernel_num_count + 1; // next para kernel
 														cur_kernel_swap		<= ~cur_kernel_swap; 
 														cur_kernel_slice	<= 0;
+
+														// update kernel
+														update_weight_ram		<= 1;
+														update_weight_ram_addr	<= cur_kernel_swap*fm_depth;
 													end
 													
 												end
