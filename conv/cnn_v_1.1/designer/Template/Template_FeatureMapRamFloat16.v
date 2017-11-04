@@ -1,13 +1,6 @@
 `timescale 1ns / 1ps
 
-`define DATA_WIDTH			16  // 16 bits float
-
-`define PARA_Y				SET_PARA_Y	// MAC number of each MAC group
-
-`define RAM_MAX				SET_RAM_MAX 
-
-`define READ_ADDR_WIDTH		SET_READ_WIDTH 
-`define WRITE_ADDR_WIDTH	SET_WRITE_WIDTH 
+`include "CNN_Parameter.vh"
 
 module FeatureMapRamFloat16(
 	input clk,
@@ -25,7 +18,7 @@ module FeatureMapRamFloat16(
 	output reg [`PARA_Y*`DATA_WIDTH - 1:0] dout
     );
 
-	reg [`DATA_WIDTH - 1:0] ram_array [0:`RAM_MAX - 1];
+	reg [`DATA_WIDTH - 1:0] ram_array [0:`FM_RAM_MAX - 1];
 
 	reg clk_count;
 
@@ -58,7 +51,7 @@ module FeatureMapRamFloat16(
 	initial begin
 		dout = 0;
 		clk_count = 0;
-		for (i = 0; i < `RAM_MAX; i = i + 1)
+		for (i = 0; i < `FM_RAM_MAX; i = i + 1)
 		begin
 			ram_array[i] = 0;
 		end

@@ -68,7 +68,7 @@ def ConvParaScaleFloat16(KernelSizeList):
 
 		print "Create ConvParaScaleFloat16.v Success."
 
-def FeatureMapRam(Para_Y, RamMax, ReadWidth, WriteWidth):
+def FeatureMapRam(Para_Y):
 	destDir = './VerilogCode/'
 	if not os.path.isdir(destDir):
 		os.mkdir(destDir)
@@ -78,17 +78,12 @@ def FeatureMapRam(Para_Y, RamMax, ReadWidth, WriteWidth):
 	shutil.copy (sourceRam, destRam)
 
 	if os.path.isfile (destRam): 
-		replace(destRam, 'SET_PARA_Y', str(Para_Y))
-		replace(destRam, 'SET_RAM_MAX', str(RamMax))
-		replace(destRam, 'SET_READ_WIDTH', str(ReadWidth))
-		replace(destRam, 'SET_WRITE_WIDTH', str(WriteWidth))
-		
 		file_ram = file(destRam)
 		s_ram = file_ram.read()
 		file_ram.close()
 		a_ram = s_ram.split('\n')
 
-		inser_index_ram = 70
+		inser_index_ram = 63
 
 		for i in range(Para_Y):
 			file_ram_na = file('./Template/Template_FeatureMapRamFloat16_not_add.v')
@@ -139,7 +134,7 @@ def FeatureMapRam(Para_Y, RamMax, ReadWidth, WriteWidth):
 
 		print "Create FeatureMapRamFloat16.v Success."
 
-def WeightRam(KernelSizeMax, RamMax, ReadWidth, WriteWidth):
+def WeightRam(KernelSizeMax):
 	destDir = './VerilogCode/'
 	if not os.path.isdir(destDir):
 		os.mkdir(destDir)
@@ -149,17 +144,12 @@ def WeightRam(KernelSizeMax, RamMax, ReadWidth, WriteWidth):
 	shutil.copy (sourceRam, destRam)
 
 	if os.path.isfile (destRam): 
-		replace(destRam, 'SET_KERNEL_SIZE_MAX', str(KernelSizeMax))
-		replace(destRam, 'SET_WEIGHT_RAM_MAX', str(RamMax))
-		replace(destRam, 'SET_WEIGHT_READ_WIDTH', str(ReadWidth))
-		replace(destRam, 'SET_WEIGHT_WRITE_WIDTH', str(WriteWidth))
-		
 		file_ram = file(destRam)
 		s_ram = file_ram.read()
 		file_ram.close()
 		a_ram = s_ram.split('\n')
 
-		inser_index_ram = 38
+		inser_index_ram = 31
 
 		for i in range(KernelSizeMax*KernelSizeMax):
 			file_ram_na = file('./Template/Template_WeightRamFloat16_write.v')
@@ -208,7 +198,7 @@ def replace(file_path, old_str, new_str):
 	except Exception,e:  
 		print e 
 
-ConvParaScaleFloat16([3, 5])
-#FeatureMapRam(3, 100, 10, 10)
-#WeightRam(5, 100, 10, 5)
+#ConvParaScaleFloat16([3, 5])
+FeatureMapRam(3)
+WeightRam(5)
 #poolunit()
