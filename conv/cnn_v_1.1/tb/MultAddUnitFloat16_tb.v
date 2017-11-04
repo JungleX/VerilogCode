@@ -1,32 +1,10 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2017/10/12 10:30:02
-// Design Name: 
-// Module Name: MultAddUnitFloat16_tb
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 `define clk_period 10
 
-`define DATA_WIDTH		16 // 16 bits float
-`define CLK_NUM_WIDTH	8
+`include "CNN_Parameter.vh"
 
-module MultAddUnitFloat16_tb(
-
-    );
+module MultAddUnitFloat16_tb();
 
 	reg clk;
 	reg rst;
@@ -47,7 +25,7 @@ module MultAddUnitFloat16_tb(
 
 		.clk_num(clk_num), // set the clk number, after clk_count clks, the output is ready
 
-		.result_ready(result_ready), // 1: ready; 0: not ready;
+		.result_ready(result_ready), // 1: rady; 0: not ready;
 		.mult_add_result(mult_add_result)
     );
 

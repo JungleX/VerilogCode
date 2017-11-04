@@ -1,31 +1,8 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2017/10/20 19:50:45
-// Design Name: 
-// Module Name: ConvParaScaleFloat_tb
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 `define clk_period 10
 
-`define DATA_WIDTH		16 // 16 bits float
-`define PARA_X			3	// MAC group number
-`define PARA_Y			3	// MAC number of each MAC group
-`define KERNEL_SIZE_MAX	11
-`define KERNEL_SIZE_WIDTH	6
+`include "CNN_Parameter.vh"
 
 module ConvParaScaleFloat_tb();
 
@@ -42,7 +19,6 @@ module ConvParaScaleFloat_tb();
 	wire [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] result_buffer;
 
 	ConvParaScaleFloat16 conv(
-    //ConvParaScaleFloat conv(
 		.clk(clk),
 		.rst(rst), // 0: reset; 1: none;
 
@@ -52,7 +28,7 @@ module ConvParaScaleFloat_tb();
 
 		.kernel_size(kernel_size),
 
-		.result_ready(result_ready), // 1: ready; 0: not ready;
+		.result_ready(result_ready), // 1: rady; 0: not ready;
 		.result_buffer(result_buffer)
     );
     

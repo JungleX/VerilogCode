@@ -2,9 +2,7 @@
 
 `define clk_period 10
 
-`define DATA_WIDTH		16  // 16 bits float
-`define PARA_POOL_Y		3	
-`define POOL_SIZE_WIDTH	6
+`include "CNN_Parameter.vh"
 
 module PoolMaxParaScaleFloat16_tb();
 

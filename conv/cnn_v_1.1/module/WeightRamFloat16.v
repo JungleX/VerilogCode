@@ -1,13 +1,6 @@
 `timescale 1ns / 1ps
 
-`define DATA_WIDTH		16  // 16 bits float
-
-`define KERNEL_SIZE_MAX			5
-
-`define WEIGHT_RAM_MAX			100 
-
-`define WEIGHT_READ_ADDR_WIDTH	10  
-`define WEIGHT_WRITE_ADDR_WIDTH	5 
+`include "CNN_Parameter.vh"
 
 module WeightRamFloat16(
 	input clk,

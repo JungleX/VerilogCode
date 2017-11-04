@@ -1,26 +1,6 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2017/10/12 09:46:59
-// Design Name: 
-// Module Name: MultAddUnitFloat16
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
-`define DATA_WIDTH		16 // 16 bits float
-`define CLK_NUM_WIDTH	8
+`include "CNN_Parameter.vh"
 
 module MultAddUnitFloat16(
 	input clk,
@@ -31,7 +11,7 @@ module MultAddUnitFloat16(
 
 	input [`CLK_NUM_WIDTH - 1:0] clk_num, // set the clk number, after clk_count clks, the output is ready
 
-	output reg result_ready, // 1: ready; 0: not ready;
+	output reg result_ready, // 1: rady; 0: not ready;
 	output reg [`DATA_WIDTH - 1:0] mult_add_result
     );
 

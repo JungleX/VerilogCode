@@ -2,8 +2,7 @@
 
 `define clk_period 10
 
-`define DATA_WIDTH		16 // 16 bits float
-`define CLK_NUM_WIDTH	8
+`include "CNN_Parameter.vh"
 
 module AvgPoolUnitFloat16_tb();
 

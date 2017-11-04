@@ -1,31 +1,6 @@
 `timescale 1ns / 1ps
 
-`define DATA_WIDTH		16  // 16 bits float
-
-`define PARA_KERNEL		2 // kernel number
-
-// conv
-`define PARA_X			3	// MAC group number
-`define PARA_Y			3	// MAC number of each MAC group
-`define KERNEL_SIZE_WIDTH	6
-`define FM_SIZE_WIDTH	10
-
-// pool
-`define PARA_POOL_Y		3	
-`define POOL_SIZE_WIDTH	6
-
-// feature map ram
-`define READ_ADDR_WIDTH		3 
-`define WRITE_ADDR_WIDTH	3
-`define RAM_NUM_WIDTH		4
-
-// weight ram
-`define KERNEL_SIZE_MAX			5
-`define WEIGHT_RAM_MAX			100 
-`define WEIGHT_READ_ADDR_WIDTH	10  
-`define WEIGHT_WRITE_ADDR_WIDTH	5 
-
-`define CLK_NUM_WIDTH	8
+`include "CNN_Parameter.vh"
 
 module LayerParaScaleFloat16(
 	input clk,
@@ -34,6 +9,7 @@ module LayerParaScaleFloat16(
 	input [1:0] layer_type, // 0: prepare init feature map and weight data; 1:conv; 2:pool; 3:fc;
 	input [`FM_SIZE_WIDTH - 1:0] fm_size,
 	input [`KERNEL_SIZE_WIDTH - 1:0] kernel_size,
+	input [`KERNEL_SIZE_WIDTH - 1:0] fm_depth,
 
 	input [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] init_fm_data,
 	input [`WRITE_ADDR_WIDTH - 1:0] write_fm_data_addr,
@@ -42,6 +18,8 @@ module LayerParaScaleFloat16(
 	input [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL*`DATA_WIDTH - 1:0] weight_data,
 	input [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] write_weight_data_addr,
 	input weight_data_done, // weight data transmission, 0: not ready; 1: ready
+
+	input [`KERNEL_NUM_WIDTH - 1:0] kernel_num,
 
 	output reg update_weight_ram, // 0: not update; 1: update
 	output reg update_weight_ram_addr,
@@ -200,12 +178,20 @@ module LayerParaScaleFloat16(
 
     reg [`RAM_NUM_WIDTH - 1:0] cur_fm_ram;
 
+    reg [`FM_SIZE_WIDTH - 1:0] cur_x;
+    reg [`FM_SIZE_WIDTH - 1:0] cur_y;
+    reg [`KERNEL_NUM_WIDTH - 1:0] cur_slice;
+
+    reg cur_kernel_swap; // 0 or 1; one is using, the other is updating
+    reg [`KERNEL_NUM_WIDTH - 1:0] cur_kernel_slice;
+    reg [`KERNEL_NUM_WIDTH - 1:0] kernel_num_count;
+
 	always @(posedge clk or negedge rst) begin
 		if (!rst) begin
 			// reset
 			conv_rst	<= 0;
 			mpu_rst		<= 0;
-			layer_ready		<= 0;
+			layer_ready	<= 0;
 			clk_count	<= 0;
 
 			cur_fm_ram			<= 0;
@@ -218,6 +204,14 @@ module LayerParaScaleFloat16(
 
 			weight_addr_read[0]	<= 0;
 			weight_addr_read[1]	<= 0;
+
+			cur_x		<= 0;
+			cur_y		<= 0;
+			cur_slice	<= 0;
+
+			cur_kernel_swap		<= 0;
+			cur_kernel_slice	<= 0;
+			kernel_num_count	<= 0;
 		end
 		else begin
 			if (layer_type == 0) begin 
@@ -281,16 +275,18 @@ module LayerParaScaleFloat16(
 								fm_ena_w[2]		<= 0; 
 								fm_ena_r[2]		<= 1;
 
+								fm_addr_read[0]		<= cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X); // [fm_size/`PARA_Y]=(fm_size+`PARA_Y-1)/`PARA_Y [8/3] = 3
+								fm_sub_addr_read[0]	<= 0;
+								fm_addr_read[1]		<= cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
+								fm_sub_addr_read[1]	<= 0;
+								fm_addr_read[2]		<= cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
+								fm_sub_addr_read[2]	<= 0;
+
 								weight_ena_w	<= 0;
 								weight_ena_r	<= 1;
 
-								// `PARA_X = 3
-								/*addr_read[0]		<= 0;
-								sub_addr_read[0]	<= 0;
-								addr_read[1]		<= 0;
-								sub_addr_read[1]	<= 0;
-								addr_read[2]		<= 0;
-								sub_addr_read[2]	<= 0;*/
+								weight_addr_read[0]	<= cur_kernel_swap*fm_depth+cur_kernel_slice*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+								weight_addr_read[1]	<= cur_kernel_swap*fm_depth+cur_kernel_slice*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
 
 								cur_fm_ram	<= 0;
 
@@ -461,7 +457,42 @@ module LayerParaScaleFloat16(
 										// write result to feature map ram
 										// todo
 
-										// go to next slice
+										
+										if ((cur_y + kernel_size + `PARA_Y - 1) < fm_size) begin
+											cur_y <= cur_y + `PARA_Y; // next para window y
+										end
+										else begin
+											cur_y <= 0;
+
+											if ((cur_x + kernel_size + `PARA_X - 1) <fm_size ) begin
+												cur_x <= cur_x + `PARA_X; // next para window x
+											end
+											else begin 
+												if (cur_slice == (fm_depth - 1)) begin // conv end, next para kernel
+													cur_slice	<= 0; 
+													cur_x		<= 0;
+													cur_y		<= 0;
+
+													if (kernel_num_count == (kernel_num - 1)) begin // conv layer end, next layer
+														kernel_num_count	<= 0;
+													end
+													else begin
+														kernel_num_count	<= kernel_num_count + 1; // next para kernel
+														cur_kernel_swap		<= ~cur_kernel_swap; 
+														cur_kernel_slice	<= 0;
+													end
+													
+												end
+												else begin
+													cur_slice	<= cur_slice + 1; // next feature map slice
+													cur_x		<= 0;
+													cur_y		<= 0;
+
+													cur_kernel_slice	<= cur_kernel_slice + 1; // next kernel slice
+												end
+											end
+										end
+
 									end
 									else begin
 										clk_count <= clk_count + 1;

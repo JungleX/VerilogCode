@@ -2,14 +2,7 @@
 
 `define clk_period 10
 
-`define DATA_WIDTH		16  // 16 bits float
-
-`define PARA_Y			3	// MAC number of each MAC group
-
-`define RAM_MAX			22 // 22*3(PARA_Y)>=64 // Alexnet layer 1 output 55*55*96=290400
-
-`define READ_ADDR_WIDTH		3 // 22 / 3(PARA_Y) <= 8 width:4 // MAX VALUE = RAM_MAX / PARA_Y
-`define WRITE_ADDR_WIDTH	3 // 22 / (3*3) (PARA_Y*PARA_X) <= 3 width:2
+`include "CNN_Parameter.vh"
 
 module FeatureMapRamFloat16_tb();
 

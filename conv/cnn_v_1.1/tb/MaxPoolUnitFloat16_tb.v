@@ -2,8 +2,7 @@
 
 `define clk_period 10
 
-`define DATA_WIDTH		16 // 16 bits float
-`define CLK_NUM_WIDTH	8
+`include "CNN_Parameter.vh"
 
 module MaxPoolUnitFloat16_tb();
 
@@ -24,7 +23,7 @@ module MaxPoolUnitFloat16_tb();
 
 		.data_num(data_num), // set the clk number, after clk_count clks, the output is ready
 
-		.result_ready(result_ready), // 1: ready; 0: not ready;
+		.result_ready(result_ready), // 1: rady; 0: not ready;
 		.max_pool_result(max_pool_result)
 	);
 

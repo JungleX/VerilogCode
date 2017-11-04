@@ -1,8 +1,6 @@
 `timescale 1ns / 1ps
 
-`define DATA_WIDTH		16 // 16 bits float
-`define CLK_NUM_WIDTH	8
-`define COM_RET_WIDTH	8
+`include "CNN_Parameter.vh"
 
 // need data_num + 2 clks to get result
 // wait for 2 clks after submit the last number
@@ -14,7 +12,7 @@ module MaxPoolUnitFloat16(
 
 	input [`CLK_NUM_WIDTH - 1:0] data_num,
 
-	output reg result_ready, // 1: ready; 0: not ready;
+	output reg result_ready, // 1: rady; 0: not ready;
 	output reg [`DATA_WIDTH - 1:0] max_pool_result
 );
 	reg [`CLK_NUM_WIDTH - 1:0] clk_count;

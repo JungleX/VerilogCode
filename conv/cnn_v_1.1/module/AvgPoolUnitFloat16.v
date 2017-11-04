@@ -1,7 +1,6 @@
 `timescale 1ns / 1ps
 
-`define DATA_WIDTH		16 // 16 bits float
-`define CLK_NUM_WIDTH	8
+`include "CNN_Parameter.vh"
 
 module AvgPoolUnitFloat16(
 	input clk,
