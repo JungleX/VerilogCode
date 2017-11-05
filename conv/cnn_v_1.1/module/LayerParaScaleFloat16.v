@@ -22,7 +22,7 @@ module LayerParaScaleFloat16(
 	input [`KERNEL_NUM_WIDTH - 1:0] kernel_num,
 
 	output reg update_weight_ram, // 0: not update; 1: update
-	output reg update_weight_ram_addr,
+	output reg [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr,
 
 	output reg init_fm_ram_ready, // 0: not ready; 1: ready
 	output reg init_weight_ram_ready, // 0: not ready; 1: ready
@@ -186,6 +186,8 @@ module LayerParaScaleFloat16(
     reg [`KERNEL_NUM_WIDTH - 1:0] cur_kernel_slice;
     reg [`KERNEL_NUM_WIDTH - 1:0] kernel_num_count;
 
+    reg update_weight_wait_count;
+
 	always @(posedge clk or negedge rst) begin
 		if (!rst) begin
 			// reset
@@ -215,6 +217,7 @@ module LayerParaScaleFloat16(
 
 			update_weight_ram		<= 0;
 			update_weight_ram_addr	<= 0; 
+			update_weight_wait_count <= 0;
 		end
 		else begin
 			if (layer_type == 0) begin 
@@ -269,14 +272,22 @@ module LayerParaScaleFloat16(
 						begin
 							// update kernel
 							if (update_weight_ram == 1) begin
-								if (weight_data_done == 0) begin
-									weight_ena_w <= 1; // write
+								if (update_weight_wait_count == 0) begin
+									update_weight_wait_count <= 1;
+								end
+								else if(update_weight_wait_count == 1) begin
+									if (weight_data_done == 0) begin
+										weight_ena_w <= 1; // write
 
-									// `PARA_KERNEL = 2
-									weight_addr_write[0]	<= write_weight_data_addr;
-									weight_din[0]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0]; 
-									weight_addr_write[1]	<= write_weight_data_addr;
-									weight_din[1]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1];
+										// `PARA_KERNEL = 2
+										weight_addr_write[0]	<= write_weight_data_addr;
+										weight_din[0]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0]; 
+										weight_addr_write[1]	<= write_weight_data_addr;
+										weight_din[1]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1];
+									end
+									else if(weight_data_done == 1) begin
+										update_weight_ram <= 0;
+									end
 								end
 							end
 							else begin
@@ -503,6 +514,7 @@ module LayerParaScaleFloat16(
 														// update kernel
 														update_weight_ram		<= 1;
 														update_weight_ram_addr	<= cur_kernel_swap*fm_depth;
+														update_weight_wait_count<= 0;
 													end
 													
 												end

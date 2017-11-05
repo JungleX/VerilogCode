@@ -25,7 +25,7 @@ module LayerParaScaleFloat16_tb();
 	reg [`KERNEL_NUM_WIDTH - 1:0] kernel_num;
 
 	wire update_weight_ram; // 0: not update; 1: update
-	wire update_weight_ram_addr;
+	wire [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr;
 
 	wire init_fm_ram_ready;
 	wire init_weight_ram_ready;
@@ -61,6 +61,10 @@ module LayerParaScaleFloat16_tb();
 	initial 
         clk = 1'b0;
     always #(`clk_period/2)clk = ~clk;
+
+    integer i;
+
+    reg [`KERNEL_SIZE_WIDTH:0] update_weight_count;
 
     initial begin
     	#0
@@ -194,7 +198,7 @@ module LayerParaScaleFloat16_tb();
     	init_fm_data_done = 0;
 
         weight_data_done = 1;
-        
+
     	#`clk_period
     	layer_type = 0;
     	init_fm_data = {16'h0000, 16'h0000, 16'h3c00,
@@ -314,5 +318,28 @@ module LayerParaScaleFloat16_tb();
     	end
     	// PARA_X = 3, PARA_Y = 3, kernel size = 3, feature map size = 8 =============================================
 
+        update_weight_count = 0;
+        for (i=0; i<200; i=i+1) begin
+            #`clk_period
+            if (update_weight_ram == 1) begin
+                if (update_weight_count == 0) begin
+                    weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4000};
+                    weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
+                    write_weight_data_addr <= update_weight_ram_addr;
+                    update_weight_count <= 1;
+                    weight_data_done <= 0;
+                end
+                else if (update_weight_count == 1) begin
+                    weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
+                    weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
+                    update_weight_count <= 2;
+                    write_weight_data_addr <= update_weight_ram_addr + 1;
+                    weight_data_done <= 0;
+                end
+                else if(update_weight_count == 2) begin
+                    weight_data_done <= 1;
+                end
+            end
+        end
     end
 endmodule
