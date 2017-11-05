@@ -114,13 +114,13 @@ module FeatureMapRamFloat16(
 		else if(ena_para_w == 1) begin // para write
 			if (ena_add_write == 0) begin // not add
 				// ======== Begin: update feature map data add ========
-				ram_array[addr_para_write + fm_out_size*fm_out_size*0 + 0]	<= para_din[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-				ram_array[addr_para_write + fm_out_size*fm_out_size*0 + 1]	<= para_din[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-				ram_array[addr_para_write + fm_out_size*fm_out_size*0 + 2]	<= para_din[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
+				ram_array[addr_para_write + fm_out_size*fm_out_size*0 + 0]	<= para_din[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
+				ram_array[addr_para_write + fm_out_size*fm_out_size*0 + 1]	<= para_din[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
+				ram_array[addr_para_write + fm_out_size*fm_out_size*0 + 2]	<= para_din[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
 
-				ram_array[addr_para_write + fm_out_size*fm_out_size*1 + 0]	<= para_din[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-				ram_array[addr_para_write + fm_out_size*fm_out_size*1 + 1]	<= para_din[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-				ram_array[addr_para_write + fm_out_size*fm_out_size*1 + 2]	<= para_din[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
+				ram_array[addr_para_write + fm_out_size*fm_out_size*1 + 0]	<= para_din[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3];
+				ram_array[addr_para_write + fm_out_size*fm_out_size*1 + 1]	<= para_din[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4];
+				ram_array[addr_para_write + fm_out_size*fm_out_size*1 + 2]	<= para_din[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5];
 				// ======== End: update feature map data add ========
 			end
 			else if (ena_add_write == 1) begin // add
@@ -147,13 +147,13 @@ module FeatureMapRamFloat16(
 					write_ready	<= 1;
 
 					// ======== Begin: update feature map data add ========
-					ram_array[addr_para_write + fm_out_size*fm_out_size*0 + 0]	<= add_re_tdata[0]; 
-					ram_array[addr_para_write + fm_out_size*fm_out_size*0 + 1]	<= add_re_tdata[1]; 
-					ram_array[addr_para_write + fm_out_size*fm_out_size*0 + 2]	<= add_re_tdata[2]; 
+					ram_array[addr_para_write + fm_out_size*fm_out_size*0 + 0]	<= add_re_tdata[0];
+					ram_array[addr_para_write + fm_out_size*fm_out_size*0 + 1]	<= add_re_tdata[1];
+					ram_array[addr_para_write + fm_out_size*fm_out_size*0 + 2]	<= add_re_tdata[2];
 
-					ram_array[addr_para_write + fm_out_size*fm_out_size*1 + 0]	<= add_re_tdata[3]; 
-					ram_array[addr_para_write + fm_out_size*fm_out_size*1 + 1]	<= add_re_tdata[4]; 
-					ram_array[addr_para_write + fm_out_size*fm_out_size*1 + 2]	<= add_re_tdata[5]; 
+					ram_array[addr_para_write + fm_out_size*fm_out_size*1 + 0]	<= add_re_tdata[3];
+					ram_array[addr_para_write + fm_out_size*fm_out_size*1 + 1]	<= add_re_tdata[4];
+					ram_array[addr_para_write + fm_out_size*fm_out_size*1 + 2]	<= add_re_tdata[5];
 					// ======== End: update feature map data add ========
 
 					clk_count	<= 0;
