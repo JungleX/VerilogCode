@@ -1,0 +1,1 @@
+				ram_array[addr_para_write + fm_out_size*fm_out_size*SET_PARA_KERNEL + SET_INDEX_0]	<= para_din[`DATA_WIDTH*SET_INDEX_1_ADD_ONE - 1:`DATA_WIDTH*SET_INDEX_1]; 

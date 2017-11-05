@@ -5,10 +5,20 @@
 module FeatureMapRamFloat16(
 	input clk,
 
+	input ena_add_write, // 0: not add; 1: add 
+
+	input ena_zero_w, // 0: not write; 1: write
+	input [`WRITE_ADDR_WIDTH - 1:0] zero_start_addr,
+	input [`WRITE_ADDR_WIDTH - 1:0] zero_end_addr,
+
 	input ena_w, // 0: not write; 1: write
-	input ena_add_write, // 0: not add; 1: add
 	input [`WRITE_ADDR_WIDTH - 1:0] addr_write,
 	input [`PARA_Y*`DATA_WIDTH - 1:0] din,
+
+	input ena_para_w, // 0: not write; 1: write
+	input [`WRITE_ADDR_WIDTH - 1:0] addr_para_write, // single index, one by one
+	input [`FM_SIZE_WIDTH - 1:0] fm_out_size,
+	input [`PARA_Y*`PARA_KERNEL*`DATA_WIDTH - 1:0] para_din,
 
 	input ena_r, // 0: not read; 1: read
 	input [`READ_ADDR_WIDTH - 1:0] addr_read,
@@ -24,15 +34,15 @@ module FeatureMapRamFloat16(
 
 	// addition
 	reg add_a_tvalid;
-	reg [`PARA_Y*`DATA_WIDTH - 1:0] add_a_tdata;
+	reg [`PARA_Y*`PARA_KERNEL*`DATA_WIDTH - 1:0] add_a_tdata;
 	reg add_b_tvalid;
-	reg [`PARA_Y*`DATA_WIDTH - 1:0] add_b_tdata;
+	reg [`PARA_Y*`PARA_KERNEL*`DATA_WIDTH - 1:0] add_b_tdata;
 
-	wire [`PARA_Y - 1:0] add_re_tvalid;
-	wire [`DATA_WIDTH - 1:0] add_re_tdata[0:`PARA_Y - 1] ;
+	wire [`PARA_Y*`PARA_KERNEL - 1:0] add_re_tvalid;
+	wire [`DATA_WIDTH - 1:0] add_re_tdata[0:`PARA_Y*`PARA_KERNEL - 1] ;
 	generate
 		genvar add_i;
-		for (add_i = 0; add_i < `PARA_Y; add_i = add_i + 1)
+		for (add_i = 0; add_i < `PARA_Y*`PARA_KERNEL; add_i = add_i + 1)
 		begin
 			floating_point_add add(
 		        .s_axis_a_tvalid(add_a_tvalid),
@@ -58,7 +68,13 @@ module FeatureMapRamFloat16(
 	end
 
 	always @(posedge clk) begin
-		if (ena_w == 1) begin // write
+		if (ena_zero_w == 1) begin
+			for (i = zero_start_addr; i < zero_end_addr; i = i + 1)
+			begin
+				ram_array[i] = 0;
+			end
+		end
+		else if (ena_w == 1) begin // init write
 			if (ena_add_write == 0) begin // not add
 				// ======== Begin: update data not add ========
 				// ======== End: update data not add ========
@@ -82,6 +98,34 @@ module FeatureMapRamFloat16(
 
 					// ======== Begin: update data add ========
 					// ======== End: update data add ========
+
+					clk_count	<= 0;
+				end
+			end
+		end
+		else if(ena_para_w == 1) begin // para write
+			if (ena_add_write == 0) begin // not add
+				// ======== Begin: update feature map data add ========
+				// ======== End: update feature map data add ========
+			end
+			else if (ena_add_write == 1) begin // add
+				if (clk_count == 0) begin
+					write_ready <= 0;
+
+					// ======== Begin: add operation ========
+					add_a_tdata <= {
+								};
+					// ======== End: add operation ========
+
+					add_b_tdata <= para_din;
+
+					clk_count	<= 1;
+				end
+				else begin
+					write_ready	<= 1;
+
+					// ======== Begin: update feature map data add ========
+					// ======== End: update feature map data add ========
 
 					clk_count	<= 0;
 				end

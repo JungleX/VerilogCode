@@ -29,6 +29,8 @@
 `define WEIGHT_WRITE_ADDR_WIDTH	5
 
 // feature map
-`define DEPTH_MAX		4
+`define DEPTH_MAX			4
+`define PADDING_NUM_WIDTH	3
+
 // clock count
 `define CLK_NUM_WIDTH	8
