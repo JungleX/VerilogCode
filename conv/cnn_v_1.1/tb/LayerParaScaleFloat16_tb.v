@@ -173,7 +173,7 @@ module LayerParaScaleFloat16_tb();
 
         weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] = {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4000};
         weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] = {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
-        write_weight_data_addr = 2; // fm_depth = 2 slice = 0
+        write_weight_data_addr = `DEPTH_MAX*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX; // slice = 0
         weight_data_done = 0;
 
     	#`clk_period
@@ -186,7 +186,7 @@ module LayerParaScaleFloat16_tb();
 
         weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] = {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
         weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] = {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
-        write_weight_data_addr = 2+1; // fm_depth = 2 slice = 1
+        write_weight_data_addr = (`DEPTH_MAX+1)*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX; // slice = 1
         weight_data_done = 0;
 
     	#`clk_period

@@ -182,11 +182,16 @@ module LayerParaScaleFloat16(
     reg [`FM_SIZE_WIDTH - 1:0] cur_y;
     reg [`KERNEL_NUM_WIDTH - 1:0] cur_slice;
 
+    // update kernel
     reg cur_kernel_swap; // 0 or 1; one is using, the other is updating
     reg [`KERNEL_NUM_WIDTH - 1:0] cur_kernel_slice;
     reg [`KERNEL_NUM_WIDTH - 1:0] kernel_num_count;
 
     reg update_weight_wait_count;
+
+    // write fm result to ram
+    reg cur_fm_swap;
+    reg [`WRITE_ADDR_WIDTH - 1:0] cur_fm_write_index;
 
 	always @(posedge clk or negedge rst) begin
 		if (!rst) begin
@@ -218,6 +223,9 @@ module LayerParaScaleFloat16(
 			update_weight_ram		<= 0;
 			update_weight_ram_addr	<= 0; 
 			update_weight_wait_count <= 0;
+
+			cur_fm_swap			<= 0;
+			cur_fm_write_index	<= 0;
 		end
 		else begin
 			if (layer_type == 0) begin 
@@ -315,8 +323,8 @@ module LayerParaScaleFloat16(
 
 								weight_ena_r	<= 1;
 
-								weight_addr_read[0]	<= (cur_kernel_swap*fm_depth+cur_kernel_slice)*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
-								weight_addr_read[1]	<= (cur_kernel_swap*fm_depth+cur_kernel_slice)*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+								weight_addr_read[0]	<= (cur_kernel_swap*`DEPTH_MAX+cur_kernel_slice)*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+								weight_addr_read[1]	<= (cur_kernel_swap*`DEPTH_MAX+cur_kernel_slice)*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
 
 								cur_fm_ram	<= 0;
 
@@ -513,7 +521,7 @@ module LayerParaScaleFloat16(
 
 														// update kernel
 														update_weight_ram		<= 1;
-														update_weight_ram_addr	<= cur_kernel_swap*fm_depth;
+														update_weight_ram_addr	<= cur_kernel_swap*`DEPTH_MAX;
 														update_weight_wait_count<= 0;
 													end
 													
