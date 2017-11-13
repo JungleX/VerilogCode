@@ -82,7 +82,7 @@ module LayerParaScaleFloat16_tb();
     	// reset
     	rst <= 0;
 /*
-    	// PARA_X <= 3, PARA_Y <= 3, kernel size <= 3, feature map size <= 6 <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+    	// PARA_X <= 3, PARA_Y <= 3, kernel size <= 3, feature map size <= 6 ============================================
     	#`clk_period
     	rst <= 1;
 
@@ -140,9 +140,9 @@ module LayerParaScaleFloat16_tb();
     		fm_size <= 6;
     		kernel_size <= 3;
     	end
-    	// PARA_X <= 3, PARA_Y <= 3, kernel size <= 3, feature map size <= 6 <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+    	// PARA_X <= 3, PARA_Y <= 3, kernel size <= 3, feature map size <= 6 ============================================
 */
-    	// PARA_X <= 3, PARA_Y <= 3, kernel size <= 3, feature map size <= 8 <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+    	// PARA_X <= 3, PARA_Y <= 3, kernel size <= 3, feature map size <= 8 ============================================
     	// slice 0
     	#`clk_period
     	rst <= 1;
@@ -329,13 +329,14 @@ module LayerParaScaleFloat16_tb();
         fm_size <= 8;
         fm_depth <= 2;
             
-        fm_size_out <= 6;
-        padding_out <= 0;
-        kernel_num  <= 4;
+        fm_size_out <= 8;
+        padding_out <= 1;
+        kernel_num  <= 6;
 
         kernel_size <= 3;
-    	// PARA_X <= 3, PARA_Y <= 3, kernel size <= 3, feature map size <= 8 <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+    	// PARA_X <= 3, PARA_Y <= 3, kernel size <= 3, feature map size <= 8 ============================================
 
+        // update a kernel
         update_weight_count <= 0;
         for (i=0; i<200; i=i+1) begin
             #`clk_period
@@ -359,5 +360,12 @@ module LayerParaScaleFloat16_tb();
                 end
             end
         end
+
+        while(layer_ready !=1) begin
+            #`clk_period
+            layer_type <= 1;
+        end
+
+        layer_type <= 2;
     end
 endmodule

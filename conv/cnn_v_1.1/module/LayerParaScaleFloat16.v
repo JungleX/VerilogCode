@@ -323,7 +323,6 @@ module LayerParaScaleFloat16(
 					1:// conv
 						begin
 							layer_ready <= 0;
-							conv_to_next_layer	<= 0;
 
 							// prepare output ram
 							if (zero_write_count == 0) begin // prepare zero padding
@@ -357,6 +356,8 @@ module LayerParaScaleFloat16(
 								cur_write_start_ram	<= padding_out-(padding_out/`PARA_X)*`PARA_X;
 								cur_write_end_ram	<= fm_size_out-(fm_size_out/`PARA_X)*`PARA_X;
 								zero_write_count	<= 1;
+
+								conv_to_next_layer	<= 0;
 							end
 
 							// update kernel
@@ -382,9 +383,10 @@ module LayerParaScaleFloat16(
 							else begin
 								weight_ena_w <= 0;
 							end
-
+							
 							// conv operation
 							if (clk_count == 0) begin
+								if (conv_to_next_layer == 0) begin
 								conv_rst	<= 0;
 
 								// start to read, next clk get read data
@@ -410,6 +412,8 @@ module LayerParaScaleFloat16(
 								cur_fm_ram	<= 0;
 
 								clk_count	<= clk_count + 1;
+
+								end
 							end
 							else begin
 								conv_rst	<= 1;
@@ -603,7 +607,7 @@ module LayerParaScaleFloat16(
 
 										        fm_ena_add_write[2] <= 1;
 										        fm_addr_para_write[2] <= fm_zero_start_addr[2] 
-										        						+ cur_out_slice*((fm_size_out+`PARA_X-1)/`PARA_X)*(((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y)  
+										        						+ cur_out_slice*((fm_size_out+`PARA_X-1)/`PARA_X)*(((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y)
 										        						+ cur_out_index[2];
 	        									fm_out_size[2] <= fm_size_out; 
 
@@ -622,7 +626,6 @@ module LayerParaScaleFloat16(
 	        														conv_out_buffer[1][`PARA_Y*3*`DATA_WIDTH - 1:`PARA_Y*2*`DATA_WIDTH],
 	        														conv_out_buffer[0][`PARA_Y*3*`DATA_WIDTH - 1:`PARA_Y*2*`DATA_WIDTH]
 	        													};
-
 											end
 										end
 										
@@ -644,7 +647,7 @@ module LayerParaScaleFloat16(
 												cur_out_index[2] <= (((cur_out_index[2] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 											end
 											else begin 
-												if (cur_slice == (fm_depth - 1)) begin // conv end, next para kernel
+												if (cur_slice == (fm_depth - 1)) begin // next para kernel or conv end
 													cur_slice	<= 0; 
 													cur_x		<= 0;
 													cur_y		<= 0;
@@ -662,16 +665,13 @@ module LayerParaScaleFloat16(
 														update_weight_ram_addr	<= cur_kernel_swap*`DEPTH_MAX;
 														update_weight_wait_count<= 0;
 
-														cur_out_index[0]	<= (cur_out_slice+1)*((fm_size_out+`PARA_X-1)/`PARA_X)*(((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y)
-																				+ ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
+														cur_out_index[0]	<= ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 
-														cur_out_index[1]	<= (cur_out_slice+1)*((fm_size_out+`PARA_X-1)/`PARA_X)*(((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y)
-																				+ ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
+														cur_out_index[1]	<= ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 
-														cur_out_index[2]	<= (cur_out_slice+1)*((fm_size_out+`PARA_X-1)/`PARA_X)*(((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y)
-																				+ ((padding_out-2+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
+														cur_out_index[2]	<= ((padding_out-2+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 
-														cur_out_slice 		<= cur_out_slice + 1;
+														cur_out_slice 		<= cur_out_slice + `PARA_KERNEL;
 													end
 												end
 												else begin
@@ -697,45 +697,41 @@ module LayerParaScaleFloat16(
 							if(write_ready_clk_count == 1) begin
 								write_ready_clk_count <= write_ready_clk_count + 1;
 							end
-							else if(write_ready_clk_count > 1) begin
-								if (&fm_write_ready == 1) begin 
-									fm_ena_zero_w[0] 	<= 0;
-									fm_ena_w[0] 		<= 0;
-									fm_ena_para_w[0] 	<= 0;
+							else if(write_ready_clk_count == 2) begin
+								fm_ena_zero_w[0] 	<= 0;
+								fm_ena_w[0] 		<= 0;
+								fm_ena_para_w[0] 	<= 0;
 											        
-									fm_ena_zero_w[1] 	<= 0;
-									fm_ena_w[1] 		<= 0;
-									fm_ena_para_w[1] 	<= 0;
+								fm_ena_zero_w[1] 	<= 0;
+								fm_ena_w[1] 		<= 0;
+								fm_ena_para_w[1] 	<= 0;
 
-									fm_ena_zero_w[2] 	<= 0;
-									fm_ena_w[2] 		<= 0;
-									fm_ena_para_w[2] 	<= 0;
+								fm_ena_zero_w[2] 	<= 0;
+								fm_ena_w[2] 		<= 0;
+								fm_ena_para_w[2] 	<= 0;
 
-									write_ready_clk_count <= 0;
+								write_ready_clk_count <= 0;
 
-									// conv layer end, next layer 
-									if (conv_to_next_layer == 1) begin 
-											kernel_num_count	<= 0;
-											cur_fm_swap			<= ~cur_fm_swap;
+								// conv layer end, next layer 
+								if (conv_to_next_layer == 1) begin 
+									kernel_num_count	<= 0;
+									cur_fm_swap			<= ~cur_fm_swap;
 
-											cur_out_index[0]	<= 0;
-											cur_out_index[1]	<= 0;
-											cur_out_index[2]	<= 0;
+									cur_out_index[0]	<= 0;
+									cur_out_index[1]	<= 0;
+									cur_out_index[2]	<= 0;
 
-											cur_out_slice		<= 0;
-											zero_write_count	<= 0;
+									cur_out_slice		<= 0;
+									zero_write_count	<= 0;
 
-											layer_ready	<= 1;
-									end
-								end
-								else begin
-									write_ready_clk_count <= write_ready_clk_count + 1;
+									clk_count	<= 0;
+									layer_ready	<= 1;
 								end
 							end
 						end
 					2:// pool
 						begin
-							
+							mpu_rst <= 1;
 						end
 					3:// fc
 						begin
