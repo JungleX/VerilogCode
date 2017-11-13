@@ -10,9 +10,16 @@ module LayerParaScaleFloat16_tb();
 	reg rst;
 
 	reg [1:0] layer_type;
+
 	reg [`FM_SIZE_WIDTH - 1:0] fm_size;
-	reg [`KERNEL_SIZE_WIDTH - 1:0] kernel_size;
 	reg [`KERNEL_SIZE_WIDTH - 1:0] fm_depth;
+
+    reg [`FM_SIZE_WIDTH - 1:0] fm_size_out;
+    reg [`PADDING_NUM_WIDTH - 1:0] padding_out;
+    reg [`KERNEL_NUM_WIDTH - 1:0] kernel_num;
+
+    reg [`KERNEL_SIZE_WIDTH - 1:0] kernel_size;
+
 	reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] init_fm_data;
 	reg [`WRITE_ADDR_WIDTH - 1:0] write_fm_data_addr;
 
@@ -21,8 +28,6 @@ module LayerParaScaleFloat16_tb();
 	reg [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL*`DATA_WIDTH - 1:0] weight_data;
 	reg [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] write_weight_data_addr;
 	reg weight_data_done; // weight data transmission, 0: not ready; 1: ready
-
-	reg [`KERNEL_NUM_WIDTH - 1:0] kernel_num;
 
 	wire update_weight_ram; // 0: not update; 1: update
 	wire [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr;
@@ -36,9 +41,15 @@ module LayerParaScaleFloat16_tb();
 		.rst(rst),
 
 		.layer_type(layer_type), // 0: prepare init feature map data; 1:conv; 2:pool; 3:fc;
+
 		.fm_size(fm_size),
-		.kernel_size(kernel_size),
 		.fm_depth(fm_depth),
+
+        .fm_size_out(fm_size_out),
+        .padding_out(padding_out),
+        .kernel_num(kernel_num),
+
+        .kernel_size(kernel_size),
 
 		.init_fm_data(init_fm_data),
 		.write_fm_data_addr(write_fm_data_addr),
@@ -47,8 +58,6 @@ module LayerParaScaleFloat16_tb();
 		.weight_data(weight_data),
 		.write_weight_data_addr(write_weight_data_addr),
 		.weight_data_done(weight_data_done), // weight data transmission, 0: not ready; 1: ready
-
-		.kernel_num(kernel_num),
 
 		.update_weight_ram(update_weight_ram), // 0: not update; 1: update
 		.update_weight_ram_addr(update_weight_ram_addr),
@@ -71,254 +80,263 @@ module LayerParaScaleFloat16_tb();
 
     	#(`clk_period/2)
     	// reset
-    	rst = 0;
+    	rst <= 0;
 /*
-    	// PARA_X = 3, PARA_Y = 3, kernel size = 3, feature map size = 6 =============================================
+    	// PARA_X <= 3, PARA_Y <= 3, kernel size <= 3, feature map size <= 6 <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
     	#`clk_period
-    	rst = 1;
+    	rst <= 1;
 
-    	layer_type = 0;
-    	init_fm_data = {16'h4200, 16'h4000, 16'h0000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h4200, 16'h4000, 16'h0000,
     					16'h4000, 16'h3c00, 16'h0000,
     					16'h0000, 16'h0000, 16'h0000};
-    	write_fm_data_addr = 0;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 0;
+    	init_fm_data_done <= 0;
 
-    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] = {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
-    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] = {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4000};
-    	write_weight_data_addr = 0;
-    	weight_data_done = 0;
+    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
+    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4000};
+    	write_weight_data_addr <= 0;
+    	weight_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h0000, 16'h4000, 16'h4400,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h0000, 16'h4000, 16'h4400,
     					16'h0000, 16'h3c00, 16'h4200,
     					16'h0000, 16'h0000, 16'h0000};
-    	write_fm_data_addr = 1;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 1;
+    	init_fm_data_done <= 0;
 
-    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] = {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
-    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] = {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
-    	write_weight_data_addr = 1;
-    	weight_data_done = 0;
+    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
+    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
+    	write_weight_data_addr <= 1;
+    	weight_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h0000, 16'h0000, 16'h0000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h0000, 16'h0000, 16'h0000,
     					16'h4000, 16'h4200, 16'h0000,
     					16'h4000, 16'h3c00, 16'h0000};
-    	write_fm_data_addr = 2;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 2;
+    	init_fm_data_done <= 0;
 
-    	weight_data_done = 1;
+    	weight_data_done <= 1;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h0000, 16'h0000, 16'h0000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h0000, 16'h0000, 16'h0000,
     					16'h0000, 16'h4400, 16'h3c00,
     					16'h0000, 16'h4200, 16'h4400};
-    	write_fm_data_addr = 3;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 3;
+    	init_fm_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data_done = 1; // just send init_fm_data_done, no write fm data
+    	layer_type <= 0;
+    	init_fm_data_done <= 1; // just send init_fm_data_done, no write fm data
 
     	// change to conv layer
     	#`clk_period
-    	if (init_fm_ram_ready ==1 && init_weight_ram_ready == 1) begin
-    		layer_type = 1;
-    		fm_size = 6;
-    		kernel_size = 3;
+    	if (init_fm_ram_ready <=<=1 && init_weight_ram_ready <=<= 1) begin
+    		layer_type <= 1;
+    		fm_size <= 6;
+    		kernel_size <= 3;
     	end
-    	// PARA_X = 3, PARA_Y = 3, kernel size = 3, feature map size = 6 =============================================
+    	// PARA_X <= 3, PARA_Y <= 3, kernel size <= 3, feature map size <= 6 <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
 */
-    	// PARA_X = 3, PARA_Y = 3, kernel size = 3, feature map size = 8 =============================================
+    	// PARA_X <= 3, PARA_Y <= 3, kernel size <= 3, feature map size <= 8 <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
     	// slice 0
     	#`clk_period
-    	rst = 1;
+    	rst <= 1;
 
-    	layer_type = 0;
-    	init_fm_data = {16'h4200, 16'h4000, 16'h0000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h4200, 16'h4000, 16'h0000,
     					16'h4000, 16'h3c00, 16'h0000,
     					16'h0000, 16'h0000, 16'h0000};
-    	write_fm_data_addr = 0;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 0;
+    	init_fm_data_done <= 0;
 
-    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] = {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
-    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] = {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4000};
-    	write_weight_data_addr = 0;
-    	weight_data_done = 0;
+    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
+    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4000};
+    	write_weight_data_addr <= 0;
+    	weight_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h3c00, 16'h4000, 16'h4400,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h3c00, 16'h4000, 16'h4400,
     					16'h3c00, 16'h3c00, 16'h4200,
     					16'h0000, 16'h0000, 16'h0000};
-    	write_fm_data_addr = 1;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 1;
+    	init_fm_data_done <= 0;
 
-    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] = {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
-    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] = {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
-    	write_weight_data_addr = 1;
-    	weight_data_done = 0;
+    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
+    	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
+    	write_weight_data_addr <= 1;
+    	weight_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h0000, 16'h0000, 16'h4400,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h0000, 16'h0000, 16'h4400,
     					16'h0000, 16'h0000, 16'h4200,
     					16'h0000, 16'h0000, 16'h0000};
-    	write_fm_data_addr = 2;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 2;
+    	init_fm_data_done <= 0;
 
-        weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] = {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4000};
-        weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] = {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
-        write_weight_data_addr = `DEPTH_MAX*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX; // slice = 0
-        weight_data_done = 0;
+        weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4000};
+        weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
+        write_weight_data_addr <= `DEPTH_MAX; // slice <= 0
+        weight_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h3c00, 16'h4000, 16'h0000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h3c00, 16'h4000, 16'h0000,
     					16'h4000, 16'h4200, 16'h0000,
     					16'h4000, 16'h3c00, 16'h0000};
-    	write_fm_data_addr = 3;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 3;
+    	init_fm_data_done <= 0;
 
-        weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] = {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
-        weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] = {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
-        write_weight_data_addr = (`DEPTH_MAX+1)*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX; // slice = 1
-        weight_data_done = 0;
+        weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
+        weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
+        write_weight_data_addr <= `DEPTH_MAX+1; // slice <= 1
+        weight_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h4200, 16'h3c00, 16'h4000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h4200, 16'h3c00, 16'h4000,
     					16'h4000, 16'h4400, 16'h3c00,
     					16'h4000, 16'h4200, 16'h4400};
-    	write_fm_data_addr = 4;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 4;
+    	init_fm_data_done <= 0;
 
-        weight_data_done = 1;
+        weight_data_done <= 1;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h0000, 16'h0000, 16'h3c00,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h0000, 16'h0000, 16'h3c00,
     					16'h0000, 16'h0000, 16'h4200,
     					16'h0000, 16'h0000, 16'h4200};
-    	write_fm_data_addr = 5;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 5;
+    	init_fm_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h0000, 16'h0000, 16'h0000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h0000, 16'h0000, 16'h0000,
     					16'h0000, 16'h0000, 16'h0000,
     					16'h4400, 16'h4200, 16'h0000};
-    	write_fm_data_addr = 6;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 6;
+    	init_fm_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h0000, 16'h0000, 16'h0000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h0000, 16'h0000, 16'h0000,
     					16'h0000, 16'h0000, 16'h0000,
     					16'h3c00, 16'h4000, 16'h3c00};
-    	write_fm_data_addr = 7;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 7;
+    	init_fm_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h0000, 16'h0000, 16'h0000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h0000, 16'h0000, 16'h0000,
     					16'h0000, 16'h0000, 16'h0000,
     					16'h0000, 16'h0000, 16'h4400};
-    	write_fm_data_addr = 8;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 8;
+    	init_fm_data_done <= 0;
 
     	// slice 1
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h4000, 16'h4000, 16'h0000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h4000, 16'h4000, 16'h0000,
     					16'h3c00, 16'h4200, 16'h0000,
     					16'h0000, 16'h0000, 16'h0000};
-    	write_fm_data_addr = 9;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 9;
+    	init_fm_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h3c00, 16'h4200, 16'h3c00,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h3c00, 16'h4200, 16'h3c00,
     					16'h0000, 16'h4400, 16'h4000,
     					16'h0000, 16'h0000, 16'h0000};
-    	write_fm_data_addr = 10;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 10;
+    	init_fm_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h0000, 16'h0000, 16'h4400,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h0000, 16'h0000, 16'h4400,
     					16'h0000, 16'h0000, 16'h3c00,
     					16'h0000, 16'h0000, 16'h0000};
-    	write_fm_data_addr = 11;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 11;
+    	init_fm_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h3c00, 16'h4000, 16'h0000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h3c00, 16'h4000, 16'h0000,
     					16'h4000, 16'h3c00, 16'h0000,
     					16'h4400, 16'h3c00, 16'h0000};
-    	write_fm_data_addr = 12;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 12;
+    	init_fm_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h3c00, 16'h4200, 16'h4400,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h3c00, 16'h4200, 16'h4400,
     					16'h4200, 16'h4400, 16'h4200,
     					16'h4200, 16'h3c00, 16'h4000};
-    	write_fm_data_addr = 13;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 13;
+    	init_fm_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h0000, 16'h0000, 16'h4000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h0000, 16'h0000, 16'h4000,
     					16'h0000, 16'h0000, 16'h4000,
     					16'h0000, 16'h0000, 16'h3c00};
-    	write_fm_data_addr = 14;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 14;
+    	init_fm_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h0000, 16'h0000, 16'h0000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h0000, 16'h0000, 16'h0000,
     					16'h0000, 16'h0000, 16'h0000,
     					16'h4000, 16'h4200, 16'h0000};
-    	write_fm_data_addr = 15;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 15;
+    	init_fm_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h0000, 16'h0000, 16'h0000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h0000, 16'h0000, 16'h0000,
     					16'h0000, 16'h0000, 16'h0000,
     					16'h4000, 16'h4200, 16'h4400};
-    	write_fm_data_addr = 16;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 16;
+    	init_fm_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data = {16'h0000, 16'h0000, 16'h0000,
+    	layer_type <= 0;
+    	init_fm_data <= {16'h0000, 16'h0000, 16'h0000,
     					16'h0000, 16'h0000, 16'h0000,
     					16'h0000, 16'h0000, 16'h3c00};
-    	write_fm_data_addr = 17;
-    	init_fm_data_done = 0;
+    	write_fm_data_addr <= 17;
+    	init_fm_data_done <= 0;
 
     	#`clk_period
-    	layer_type = 0;
-    	init_fm_data_done = 1; // just send init_fm_data_done, no write fm data
+    	layer_type <= 0;
+    	init_fm_data_done <= 1; // just send init_fm_data_done, not write fm data
 
     	// change to conv layer
-    	#`clk_period
-    	if (init_fm_ram_ready ==1 && init_weight_ram_ready == 1) begin
-    		layer_type = 1;
-    		fm_size = 8;
-    		fm_depth = 2;
-    		kernel_size = 3;
-    	end
-    	// PARA_X = 3, PARA_Y = 3, kernel size = 3, feature map size = 8 =============================================
 
-        update_weight_count = 0;
+        while(init_fm_ram_ready !=1 || init_weight_ram_ready != 1) begin
+            #`clk_period
+            layer_type <= 0;
+        end
+
+        layer_type <= 1;
+
+        fm_size <= 8;
+        fm_depth <= 2;
+            
+        fm_size_out <= 6;
+        padding_out <= 0;
+        kernel_num  <= 4;
+
+        kernel_size <= 3;
+    	// PARA_X <= 3, PARA_Y <= 3, kernel size <= 3, feature map size <= 8 <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+
+        update_weight_count <= 0;
         for (i=0; i<200; i=i+1) begin
             #`clk_period
             if (update_weight_ram == 1) begin

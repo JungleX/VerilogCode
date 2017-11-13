@@ -1,1 +1,1 @@
-					ram_array[addr_para_write + fm_out_size*fm_out_size*SET_PARA_KERNEL + SET_INDEX_0]	<= add_re_tdata[SET_INDEX_1];
+					ram_array[addr_para_write + ((fm_out_size+`PARA_X-1)/`PARA_X)*(((fm_out_size+`PARA_Y-1)/`PARA_Y)*`PARA_Y)*SET_PARA_KERNEL + SET_INDEX_0]	<= add_re_tdata[SET_INDEX_1];
