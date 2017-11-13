@@ -1,7 +1,7 @@
 import os
 import shutil
 
-def ConvParaScaleFloat16(KernelSizeList):
+def ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y):
 	destDir = './VerilogCode/'
 	if not os.path.isdir(destDir):
 		os.mkdir(destDir)
@@ -37,7 +37,26 @@ def ConvParaScaleFloat16(KernelSizeList):
 				inser_index_cpsf = inser_index_cpsf+1
 		file_rmv.close()
 
-		inser_index_cpsf = inser_index_cpsf + 48
+		inser_index_cpsf = inser_index_cpsf + 37
+
+		# result
+		for i in range(Para_X):
+			for j in range(Para_Y):
+				file_cr = file('./Template/Template_Conv_result.v')
+				for line in file_cr:
+					line = line.replace('SET_INDEX_ADD_ONE', str((Para_X-i-1)*Para_Y+j+1))
+					line = line.replace('SET_INDEX', str((Para_X-i-1)*Para_Y+j))
+					if i==Para_X-1 and j==Para_Y-1:
+						line = line[:-1]
+					a_cpsf.insert(inser_index_cpsf, line)
+					inser_index_cpsf = inser_index_cpsf+1
+				file_cr.close()
+
+			if i<(Para_X-1):
+				a_cpsf.insert(inser_index_cpsf, '')
+				inser_index_cpsf = inser_index_cpsf+1
+
+		inser_index_cpsf = inser_index_cpsf + 14
 
 		file_crm = file('./Template/Template_ClkRegisterMove.v')
 		s_crm = file_crm.read()
@@ -250,7 +269,7 @@ def replace(file_path, old_str, new_str):
 	except Exception,e:  
 		print e 
 
-#ConvParaScaleFloat16([3, 5])
-FeatureMapRam(3, 2)
+ConvParaScaleFloat16([3, 5], 3, 3)
+#FeatureMapRam(3, 2)
 #WeightRam(5)
 #poolunit()

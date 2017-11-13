@@ -92,6 +92,13 @@ module ConvParaScaleFloat_tb();
     	#`clk_period
         input_data[`DATA_WIDTH - 1:0] = 16'h4400;
         weight = 16'h3c00;
+
+        // wait for result
+        while(result_ready !=1) begin
+            #`clk_period
+            rst = 1;
+        end
+        rst = 0;
         // PARA_X = 3, PARA_Y = 3, kernel size = 3 =============================================
 
 /*
@@ -328,7 +335,7 @@ module ConvParaScaleFloat_tb();
 
         // PARA_X = 3, PARA_Y = 3, kernel size = 5 =============================================
 */
-    	#(`clk_period*3)
+//    	#(`clk_period*3)
     	// wait
 
     	/*#`clk_period
@@ -338,7 +345,7 @@ module ConvParaScaleFloat_tb();
 
         // PARA_X = 3, PARA_Y = 3, kernel size = 5 =============================================
     	// 0
-		#`clk_period
+/*		#`clk_period
     	rst = 1;
     	kernel_size = 5;
     	input_data[`DATA_WIDTH*`PARA_X*`PARA_Y - 1:0] = {16'h0000, 16'h4000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h0000, 16'h0000, 16'h0000};
@@ -467,14 +474,12 @@ module ConvParaScaleFloat_tb();
 
         // PARA_X = 3, PARA_Y = 3, kernel size = 5 =============================================
 
-        #(`clk_period*3)
-    	// wait
-
-    	// finish PARA_X = 3, PARA_Y = 3, kernel size = 3 and 5
-        #`clk_period
-        if (result_ready == 1) begin
-            rst = 0;
+        // wait for result
+        while(result_ready !=1) begin
+            #`clk_period
+            rst = 1;
         end
+        rst = 0;*/
 
     end
 

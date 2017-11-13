@@ -234,7 +234,21 @@ module ConvParaScaleFloat16(
 					clk_count		<= 0;
 					result_ready	<= 1;
 
-					result_buffer	<= result_temp;
+					// ======== Begin: result buffer ========
+					result_buffer	<= {
+										result_temp[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6],
+										result_temp[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7],
+										result_temp[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8],
+
+										result_temp[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3],
+										result_temp[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4],
+										result_temp[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5],
+
+										result_temp[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0],
+										result_temp[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1],
+										result_temp[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]
+									};
+					// ======== End: result buffer ========
 
 					mau_rst			<= 0;
 				end

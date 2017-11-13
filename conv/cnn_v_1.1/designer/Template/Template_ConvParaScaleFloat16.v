@@ -96,7 +96,10 @@ module ConvParaScaleFloat16(
 					clk_count		<= 0;
 					result_ready	<= 1;
 
-					result_buffer	<= result_temp;
+					// ======== Begin: result buffer ========
+					result_buffer	<= {
+									};
+					// ======== End: result buffer ========
 
 					mau_rst			<= 0;
 				end
