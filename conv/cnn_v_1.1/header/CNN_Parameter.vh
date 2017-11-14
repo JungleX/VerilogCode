@@ -13,23 +13,25 @@
 `define FM_SIZE_WIDTH		10
 
 // pool
-`define PARA_POOL_Y			3	
+`define POOL_PARA_Y			3	
 `define POOL_SIZE_WIDTH		6
 `define COM_RET_WIDTH	    8
 
 // feature map ram
-`define FM_RAM_MAX			400 
-`define READ_ADDR_WIDTH		10 
+`define FM_RAM_MAX			480 // 10*[10/3]*6*2=480 // FM_SIZE_MAX * (FM_SIZE_MAX / PARA_X)  * DEPTH_MAX * 2
+`define FM_RAM_HALF			240  // FM_SIZE_MAX * (FM_SIZE_MAX / PARA_X) * DEPTH_MAX
+`define READ_ADDR_WIDTH		10  
 `define WRITE_ADDR_WIDTH	10
 `define RAM_NUM_WIDTH		4
 
 // weight ram
-`define WEIGHT_RAM_MAX			400
+`define WEIGHT_RAM_MAX			300 // KERNEL_SIZE_MAX * KERNEL_SIZE_MAX * DEPTH_MAX * 2
 `define WEIGHT_READ_ADDR_WIDTH	10  
 `define WEIGHT_WRITE_ADDR_WIDTH	5
 
 // feature map
-`define DEPTH_MAX			4
+`define FM_SIZE_MAX			10
+`define DEPTH_MAX			6
 `define PADDING_NUM_WIDTH	3
 
 // clock count

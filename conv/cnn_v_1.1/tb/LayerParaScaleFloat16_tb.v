@@ -29,6 +29,9 @@ module LayerParaScaleFloat16_tb();
 	reg [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] write_weight_data_addr;
 	reg weight_data_done; // weight data transmission, 0: not ready; 1: ready
 
+    reg pool_type;
+    reg [`POOL_SIZE_WIDTH - 1:0] pool_win_size; 
+
 	wire update_weight_ram; // 0: not update; 1: update
 	wire [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr;
 
@@ -58,6 +61,9 @@ module LayerParaScaleFloat16_tb();
 		.weight_data(weight_data),
 		.write_weight_data_addr(write_weight_data_addr),
 		.weight_data_done(weight_data_done), // weight data transmission, 0: not ready; 1: ready
+
+        .pool_type(pool_type), // 0: max pool; 1: avg pool
+        .pool_win_size(pool_win_size), 
 
 		.update_weight_ram(update_weight_ram), // 0: not update; 1: update
 		.update_weight_ram_addr(update_weight_ram_addr),
