@@ -11,6 +11,8 @@ module LayerParaScaleFloat16_tb();
 
 	reg [1:0] layer_type;
 
+    reg [`LAYER_NUM_WIDTH - 1:0] layer_num;
+
 	reg [`FM_SIZE_WIDTH - 1:0] fm_size;
 	reg [`KERNEL_SIZE_WIDTH - 1:0] fm_depth;
 
@@ -44,6 +46,8 @@ module LayerParaScaleFloat16_tb();
 		.rst(rst),
 
 		.layer_type(layer_type), // 0: prepare init feature map data; 1:conv; 2:pool; 3:fc;
+
+        .layer_num(layer_num),
 
 		.fm_size(fm_size),
 		.fm_depth(fm_depth),
@@ -154,6 +158,7 @@ module LayerParaScaleFloat16_tb();
     	rst <= 1;
 
     	layer_type <= 0;
+        layer_num  <= 0;
     	init_fm_data <= {16'h4200, 16'h4000, 16'h0000,
     					16'h4000, 16'h3c00, 16'h0000,
     					16'h0000, 16'h0000, 16'h0000};
@@ -323,14 +328,14 @@ module LayerParaScaleFloat16_tb();
     	layer_type <= 0;
     	init_fm_data_done <= 1; // just send init_fm_data_done, not write fm data
 
-    	// change to conv layer
-
-        while(init_fm_ram_ready !=1 || init_weight_ram_ready != 1) begin
+        while(layer_ready == 0) begin
             #`clk_period
             layer_type <= 0;
         end
 
+    	// change to conv layer
         layer_type <= 1;
+        layer_num  <= 1;
 
         fm_size <= 8;
         fm_depth <= 2;
@@ -373,5 +378,6 @@ module LayerParaScaleFloat16_tb();
         end
 
         layer_type <= 2;
+        layer_num  <= 2;
     end
 endmodule
