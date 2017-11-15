@@ -8,18 +8,18 @@ module PoolMaxParaScaleFloat16_tb();
 
 	reg clk;
 
-	reg [`PARA_POOL_Y*`DATA_WIDTH - 1:0] input_data;
+	reg [`POOL_PARA_Y*`DATA_WIDTH - 1:0] input_data;
 
 	reg [`POOL_SIZE_WIDTH - 1:0] pool_size;
 
 	reg mpu_rst;
 
-	wire [`PARA_POOL_Y - 1:0] mpu_out_ready;
-	wire [`PARA_POOL_Y*`DATA_WIDTH - 1:0] mpu_result;
+	wire [`POOL_PARA_Y - 1:0] mpu_out_ready;
+	wire [`POOL_PARA_Y*`DATA_WIDTH - 1:0] mpu_result;
 
 	generate
 		genvar i;
-		for (i = 0; i < `PARA_POOL_Y; i = i + 1)
+		for (i = 0; i < `POOL_PARA_Y; i = i + 1)
 		begin:identifier_mpu
 			MaxPoolUnitFloat16 mpu(
 				.clk(clk),

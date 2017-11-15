@@ -33,41 +33,41 @@ module AvgPoolUnitFloat16_tb();
 
     initial begin
     	#0
-    	rst = 1;
+    	rst <= 1;
 
     	#(`clk_period/2)
     	// reset
-    	rst = 0;
+    	rst <= 0;
 
     	#`clk_period
-    	rst = 1;
+    	rst <= 1;
 
-    	data_num	= 5;
-    	avg_input_data = 16'h3c00;
-
-    	#`clk_period
-    	avg_input_data = 16'h3c00;
+    	data_num	<= 5;
+    	avg_input_data <= 16'h3c00;
 
     	#`clk_period
-    	avg_input_data = 16'h3c00;
+    	avg_input_data <= 16'h3c00;
+
+    	#`clk_period
+    	avg_input_data <= 16'h3c00;
 
         #`clk_period
-        avg_input_data = 16'h3c00;
+        avg_input_data <= 16'h3c00;
 
         #`clk_period
-        avg_input_data = 16'h3c00;
+        avg_input_data <= 16'h3c00;
 
         #(`clk_period*3)
 
         #`clk_period
-        data_num    = 3;
-        avg_input_data = 16'h4000;
+        data_num    <= 3;
+        avg_input_data <= 16'h4000;
 
         #`clk_period
-        avg_input_data = 16'h3c00;
+        avg_input_data <= 16'h3c00;
 
         #`clk_period
-        avg_input_data = 16'h4200;
+        avg_input_data <= 16'h4200;
 
         #(`clk_period*3)
 

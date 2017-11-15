@@ -100,7 +100,7 @@ module AvgPoolUnitFloat16(
 
 		end
 		else begin
-			if (clk_count == (data_num + 2)) begin
+			if (clk_count == (data_num + 1)) begin
 				clk_count		<= 0;
 
 				add_data_num 	<= 16'h0000;
@@ -121,7 +121,7 @@ module AvgPoolUnitFloat16(
 				if (clk_count == 0) begin
 					add_data	<= 0;
 				end
-				else begin
+				else if (clk_count < data_num) begin
 					add_data	<= add_re_tdata;
 				end
 
@@ -129,11 +129,11 @@ module AvgPoolUnitFloat16(
 					div_b			<= add_re_num_tdata;
 
 					add_data_num 	<= 16'h0000;
-					add_one			<= 16'h3c00;
+					add_one			<= 16'h0000;
 				end
 
-				if (clk_count == (data_num + 1)) begin
-					div_a			<= add_data;
+				if (clk_count == data_num) begin
+					div_a			<= add_re_tdata;                  
 
 					div_a_tvalid	<= 1;
 					div_b_tvalid	<= 1;
