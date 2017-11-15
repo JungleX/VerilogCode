@@ -70,10 +70,10 @@ module MultAddUnitFloat16(
 			add_b_tvalid	<= 0;
 		end
 		else begin
-			if(clk_count == (cur_clk_num + 1)) begin
-				clk_count		<= 1;
+			if(clk_count == (cur_clk_num-1)) begin			    
+				clk_count		<= 0;
 				cur_clk_num		<= clk_num;
-				mult_add_result	<= sum;
+				mult_add_result	<= add_re_tdata;
 				sum				<= 0;
 				result_ready	<= 1;
 
@@ -93,12 +93,13 @@ module MultAddUnitFloat16(
 				// clk 0
 				mult_a_tvalid	<= 1;
 				mult_b_tvalid	<= 1;
-
+				
+                
 				// clk 1
 				add_a_tvalid	<= 1;
 				add_b_tvalid	<= 1;
-
 				// clk 2
+			
 				sum	<= add_re_tdata;
 			end
 		end

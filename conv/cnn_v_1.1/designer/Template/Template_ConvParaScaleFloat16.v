@@ -91,7 +91,7 @@ module ConvParaScaleFloat16(
 		else begin
 			if(clk_count == (clk_num + 1)) begin
 				if (&mau_out_ready == 1) begin // MultAddUnits are ready
-					clk_num = kernel_size * kernel_size - 1;
+					clk_num = kernel_size * kernel_size;
 
 					clk_count		<= 0;
 					result_ready	<= 1;
@@ -109,7 +109,7 @@ module ConvParaScaleFloat16(
 				
 				mau_rst				<= 1;
 
-				clk_num = kernel_size * kernel_size - 1;
+				clk_num = kernel_size * kernel_size;
 
 				// ======== Begin: register operation ========
 				// ======== End: register operation ========

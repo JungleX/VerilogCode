@@ -35,51 +35,50 @@ module MultAddUnitFloat16_tb();
 
     initial begin
     	#0
-    	rst = 1;
+    	rst <= 1;
 
     	#(`clk_period/2)
     	// reset
-    	rst = 0;
+    	rst <= 0;
 
     	#`clk_period
-    	rst = 1;
+    	rst <= 1;
 
-    	clk_num	= 4;
-    	mult_a	= 16'h3c00; // 1
-    	mult_b	= 16'h4000; // 2
+    	clk_num	<= 4;
+    	mult_a	<= 16'h3c00; // 1
+    	mult_b	<= 16'h4000; // 2
     	// 4000
 
     	#`clk_period
-    	mult_a	= 16'h4000; // 2
-    	mult_b	= 16'h4000; // 2
+    	mult_a	<= 16'h4000; // 2
+    	mult_b	<= 16'h4000; // 2
     	// 4400
 
     	#`clk_period
-    	mult_a	= 16'h4000; // 2
-    	mult_b	= 16'h4200; // 3
+    	mult_a	<= 16'h4000; // 2
+    	mult_b	<= 16'h4200; // 3
     	// 4600
 
 		#`clk_period
-    	mult_a	= 16'h3c00; // 1
-    	mult_b	= 16'h4000; // 2
+    	mult_a	<= 16'h3c00; // 1
+    	mult_b	<= 16'h4000; // 2
     	// 4000
 
-    	#(`clk_period*2)
-    	clk_num	= 2;
-    	mult_a	= 16'h3c00; // 1
-    	mult_b	= 16'h4000; // 2
+    	#(`clk_period*1)
+    	
+    	clk_num	<= 2;
+    	mult_a	<= 16'h3c00; // 1
+    	mult_b	<= 16'h4000; // 2
     	// 4000
 
     	#`clk_period
-    	mult_a	= 16'h4000; // 2
-    	mult_b	= 16'h4000; // 2
+    	mult_a	<= 16'h4000; // 2
+    	mult_b	<= 16'h4000; // 2
     	// 4400
 
+    	#(`clk_period*1)
     	#`clk_period
-    	mult_a	= 0;
-    	mult_b	= 0; 
-
-    	#(`clk_period*2)
-    	rst = 0;
+    	
+    	rst <= 0;
     end
 endmodule

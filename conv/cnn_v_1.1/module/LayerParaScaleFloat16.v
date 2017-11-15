@@ -477,7 +477,7 @@ module LayerParaScaleFloat16(
 
 									clk_count	<= clk_count + 1;
 								end
-								else if (clk_count%kernel_size == 1) begin
+								else if (clk_count%kernel_size == 1 && clk_count <= (kernel_size*kernel_size)) begin
 									conv_input_data[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fm_dout[cur_fm_ram][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
 									conv_input_data[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fm_dout[cur_fm_ram][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
 									conv_input_data[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fm_dout[cur_fm_ram][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
