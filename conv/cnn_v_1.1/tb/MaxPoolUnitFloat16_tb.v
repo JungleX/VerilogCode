@@ -33,56 +33,56 @@ module MaxPoolUnitFloat16_tb();
 
     initial begin
     	#0
-    	rst = 1;
+    	rst <= 1;
 
     	#(`clk_period/2)
     	// reset
-    	rst = 0;
+    	rst <= 0;
 
     	#`clk_period
-    	rst = 1;
-
-    	data_num	= 3;
-    	cmp_data = 16'h4000;
+    	#`clk_period
+    	rst <= 1;
+    	
+    	data_num	<= 3;
+    	cmp_data <= 16'h4000;
 
     	#`clk_period
-    	cmp_data = 16'h3c00;
+    	cmp_data <= 16'h3c00;
 
     	#`clk_period
-    	cmp_data = 16'h4700;
-
-        // need data_num + 2 clks to get result
-        // wait for 2 clks after submit the last number
-        #(`clk_period*2)
-
-    	#`clk_period
-    	data_num	= 3;
-    	cmp_data = 16'h4000;
-
-    	#`clk_period
-    	cmp_data = 16'h4400;
-
-    	#`clk_period
-    	cmp_data = 16'h4200;
+    	cmp_data <= 16'h4700;
 
         #(`clk_period*2)
-
         #`clk_period
-        data_num    = 4;
-        cmp_data = 16'h4800;
-
         #`clk_period
-        cmp_data = 16'h4000;
-
+    	data_num	<= 3;
+    	cmp_data<= 16'h4000;
+        
         #`clk_period
-        cmp_data = 16'h4400;
+    	
+    	cmp_data <= 16'h4400;
 
-        #`clk_period
-        cmp_data = 16'h4200;
+    	#`clk_period
+    	cmp_data <= 16'h4200;
 
         #(`clk_period*2)
+       #`clk_period
+       #`clk_period
+        data_num    <= 4;
+        cmp_data <= 16'h4800;
 
         #`clk_period
-        rst = 0;
+        cmp_data <= 16'h4000;
+
+        #`clk_period
+        cmp_data <= 16'h4400;
+
+        #`clk_period
+        cmp_data <= 16'h4200;
+
+        #(`clk_period*2)
+        #`clk_period
+        #`clk_period
+        rst <= 0;
     end
 endmodule

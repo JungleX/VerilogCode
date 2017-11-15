@@ -2,8 +2,6 @@
 
 `include "CNN_Parameter.vh"
 
-// need data_num + 2 clks to get result
-// wait for 2 clks after submit the last number
 module MaxPoolUnitFloat16(
 	input clk,
 	input rst, // 0: reset; 1: none;
@@ -51,7 +49,7 @@ module MaxPoolUnitFloat16(
 		end
 		else begin
 			if (clk_count == (data_num + 1)) begin
-				clk_count		<= 0;
+				clk_count		<= -1;
 
 				result_ready	<= 1;
 				if (com_re_tdata[0:0] == 0) begin
@@ -73,10 +71,9 @@ module MaxPoolUnitFloat16(
 
 				clk_count <= clk_count + 1;
 			end
-
-			if (clk_count == 0) begin
-				max_data	<= cmp_data;
-				cmp_b		<= cmp_data;
+            if (clk_count == 0) begin
+                max_data	<= cmp_data;
+                cmp_b		<= cmp_data;
 			end
 			else begin
 				if (com_re_tdata[0:0] == 0) begin
