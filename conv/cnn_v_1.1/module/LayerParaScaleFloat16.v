@@ -95,6 +95,7 @@ module LayerParaScaleFloat16(
 	// ======== Begin: conv unit ========
 	reg conv_rst;
 
+	reg op_type;
 	reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] conv_input_data;
 	reg [`DATA_WIDTH - 1:0] conv_weight[`PARA_KERNEL - 1:0];
 
@@ -109,8 +110,8 @@ module LayerParaScaleFloat16(
 				.clk(clk),
 				.rst(conv_rst), // 0: reset; 1: none;
 
+				.op_type(op_type),
 				.input_data(conv_input_data),
-
 				.weight(conv_weight[conv_i]),
 
 				.kernel_size(kernel_size),
@@ -241,6 +242,7 @@ module LayerParaScaleFloat16(
 		if (!rst) begin
 			// reset
 			conv_rst	<= 0;
+			op_type		<= 0;
 			pu_rst		<= 0;
 			layer_ready	<= 0;
 			clk_count	<= 0;
@@ -349,6 +351,8 @@ module LayerParaScaleFloat16(
 					case(layer_type)
 						1:// conv
 							begin
+								op_type	<= 0; // set conv unit type
+
 								// prepare output ram
 								if (zero_write_count == 0) begin // prepare zero padding
 									fm_ena_zero_w[0] 	<= 1;
@@ -664,7 +668,9 @@ module LayerParaScaleFloat16(
 									write_ready_clk_count <= 0;
 
 									// conv layer end, next layer 
-									if (conv_to_next_layer == 1) begin 
+									if (conv_to_next_layer == 1) begin
+										conv_rst	<= 0;
+
 										kernel_num_count	<= 0;
 										cur_fm_swap			<= ~cur_fm_swap;
 
