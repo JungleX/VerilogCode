@@ -45,16 +45,16 @@ module LayerParaScaleFloat16(
 	// ======== Begin: pool unit ========
 	reg pu_rst;
 
-	reg [`POOL_PARA_Y*`DATA_WIDTH - 1:0] pool_input_data;
+	reg [`PARA_Y*`DATA_WIDTH - 1:0] pool_input_data;
 	reg [`POOL_SIZE_WIDTH - 1:0] pool_size;
 
-	wire [`POOL_PARA_Y - 1:0] pu_out_ready;
-	wire [`POOL_PARA_Y*`DATA_WIDTH - 1:0] pu_result;
+	wire [`PARA_Y - 1:0] pu_out_ready;
+	wire [`PARA_Y*`DATA_WIDTH - 1:0] pu_result;
 
 	// === Begin: max pool ===
 	generate
 		genvar pool_i;
-		for (pool_i = 0; pool_i < `POOL_PARA_Y; pool_i = pool_i + 1)
+		for (pool_i = 0; pool_i < `PARA_Y; pool_i = pool_i + 1)
 		begin:identifier_pu
 			MaxPoolUnitFloat16 mpu(
 				.clk(clk),
@@ -64,7 +64,7 @@ module LayerParaScaleFloat16(
 
 				.data_num(pool_size*pool_size), // set the clk number, after clk_count clks, the output is ready
 
-				.result_ready(pu_out_ready[pool_i:pool_i]), // 1: rady; 0: not ready;
+				.result_ready(pu_out_ready[pool_i:pool_i]), // 1: ready; 0: not ready;
 				.max_pool_result(pu_result[`DATA_WIDTH*(pool_i+1):`DATA_WIDTH*pool_i])
 			);
 		end
@@ -74,7 +74,7 @@ module LayerParaScaleFloat16(
 	// === Begin: avg pool ===
 	/*generate
 		genvar pool_i;
-		for (pool_i = 0; pool_i < `PARA_POOL_Y; pool_i = pool_i + 1)
+		for (pool_i = 0; pool_i < `PARA_Y; pool_i = pool_i + 1)
 		begin:identifier_pu
 			AvgPoolUnitFloat16 apu(
 				.clk(clk),
@@ -143,6 +143,9 @@ module LayerParaScaleFloat16(
 	reg [`READ_ADDR_WIDTH - 1:0] fm_addr_read[`PARA_X - 1:0];
 	reg [`READ_ADDR_WIDTH - 1:0] fm_sub_addr_read[`PARA_X - 1:0];
 
+	reg fm_ena_pool_r[`PARA_X - 1:0]; 
+    reg [`READ_ADDR_WIDTH - 1:0] fm_addr_pool_read[`PARA_X - 1:0];
+
 	wire [`PARA_X - 1:0] fm_write_ready;
 	wire [`PARA_Y*`DATA_WIDTH - 1:0] fm_dout[`PARA_X - 1:0];
 
@@ -171,6 +174,9 @@ module LayerParaScaleFloat16(
 				.ena_r(fm_ena_r[fm_ram_i]),
 				.addr_read(fm_addr_read[fm_ram_i]),
 				.sub_addr_read(fm_sub_addr_read[fm_ram_i]),
+
+				.ena_pool_r(fm_ena_pool_r[fm_ram_i]),
+        		.addr_pool_read(fm_addr_pool_read[fm_ram_i]),
 
 				.write_ready(fm_write_ready[fm_ram_i:fm_ram_i]),
 				.dout(fm_dout[fm_ram_i])
@@ -421,10 +427,13 @@ module LayerParaScaleFloat16(
 										// start to read, next clk get read data
 										fm_ena_w[0]		<= 0; 
 										fm_ena_r[0]		<= 1;
+										fm_ena_pool_r[0]<= 0;
 										fm_ena_w[1]		<= 0;  
-										fm_ena_r[1]		<= 1; 
+										fm_ena_r[1]		<= 1;
+										fm_ena_pool_r[1]<= 0; 
 										fm_ena_w[2]		<= 0; 
 										fm_ena_r[2]		<= 1;
+										fm_ena_pool_r[2]<= 0;
 
 										fm_addr_read[0]		<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X); // [fm_size/`PARA_Y]=(fm_size+`PARA_Y-1)/`PARA_Y [8/3] = 3
 										fm_sub_addr_read[0]	<= 0;

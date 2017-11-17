@@ -24,6 +24,9 @@ module FeatureMapRamFloat16(
 	input [`READ_ADDR_WIDTH - 1:0] addr_read,
 	input [`READ_ADDR_WIDTH - 1:0] sub_addr_read,
 
+	input ena_pool_r, // 0: not read; 1: read
+	input [`READ_ADDR_WIDTH - 1:0] addr_pool_read,
+
 	output reg write_ready,
 	output reg [`PARA_Y*`DATA_WIDTH - 1:0] dout
     );
@@ -134,12 +137,17 @@ module FeatureMapRamFloat16(
 	end
 
 	always @(clk) begin
-		if (ena_r == 1) begin // read
-			// ======== Begin: read out ========
+		if (ena_r == 1) begin // conv read
+			// ======== Begin: conv read out ========
 			dout <= {
-						ram_array[addr_read*`PARA_Y+sub_addr_read]
 					};
-			// ======== End: read out ========
+			// ======== End: conv read out ========
+		end
+		else if(ena_pool_r == 1) begin // pool read
+			// ======== Begin: pool read out ========
+			dout <= {
+					};
+			// ======== End: pool read out ========
 		end
 	end
 endmodule

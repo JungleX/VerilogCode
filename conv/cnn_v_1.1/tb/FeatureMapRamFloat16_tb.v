@@ -25,6 +25,10 @@ module FeatureMapRamFloat16_tb();
 
 	reg [`READ_ADDR_WIDTH - 1:0] addr_read;
 	reg [`READ_ADDR_WIDTH - 1:0] sub_addr_read;
+
+    reg ena_pool_r; // 0: not read; 1: read
+    reg [`READ_ADDR_WIDTH - 1:0] addr_pool_read;
+
 	wire write_ready;
 	wire [`PARA_Y*`DATA_WIDTH - 1:0] dout;
 
@@ -49,6 +53,10 @@ module FeatureMapRamFloat16_tb();
 		.ena_r(ena_r),
 		.addr_read(addr_read),
 		.sub_addr_read(sub_addr_read),
+
+        .ena_pool_r(ena_pool_r), // 0: not read; 1: read
+        .addr_pool_read(addr_pool_read),
+
 		.write_ready(write_ready),
 		.dout(dout)
     );
@@ -118,14 +126,14 @@ module FeatureMapRamFloat16_tb();
     	sub_addr_read = 1;
 
         // padding write
-        #`clk_period
+/*        #`clk_period
         ena_zero_w = 1;
         ena_w = 0;
         ena_para_w = 0;
         fm_out_size = 8; // 6+1*2=8
         zero_start_addr = 0;
         zero_end_addr = 128; // 8*8*2=128 fm_s*fm_s*fm_d
-
+*/
         // para write
         #`clk_period
         ena_zero_w = 0;
@@ -152,6 +160,19 @@ module FeatureMapRamFloat16_tb();
         #`clk_period
         ena_para_w = 0;
     	// PARA_Y = 3 ============================================= 
+
+        // PARA_Y = 3 POOL read =============================================
+        #`clk_period
+        ena_r      <= 0;
+        ena_pool_r <= 1;
+        addr_pool_read  <= 0;
+
+        #`clk_period
+        ena_pool_r <= 1;
+        addr_pool_read  <= 3;
+
+        // PARA_Y = 3 POOL read =============================================
+
 
 /*
     	// PARA_Y = 2 =============================================

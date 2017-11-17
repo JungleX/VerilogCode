@@ -136,7 +136,7 @@ def FeatureMapRam(Para_Y, Para_kernel):
 		file_ram.close()
 		a_ram = s_ram.split('\n')
 
-		inser_index_ram = 79
+		inser_index_ram = 82
 
 		for i in range(Para_Y):
 			file_ram_na = file('./Template/Template_FeatureMapRamFloat16_not_add.v')
@@ -146,7 +146,7 @@ def FeatureMapRam(Para_Y, Para_kernel):
 				line = line.replace('SET_INDEX', str(i))
 				a_ram.insert(inser_index_ram, line) 
 				inser_index_ram = inser_index_ram+1
-		file_ram_na.close()
+			file_ram_na.close()
 
 		inser_index_ram = inser_index_ram + 8
 
@@ -157,7 +157,7 @@ def FeatureMapRam(Para_Y, Para_kernel):
 				line = line.replace('SET_INDEX', str(Para_Y-i-1))
 				a_ram.insert(inser_index_ram, line) 
 				inser_index_ram = inser_index_ram+1
-		file_ram_a0.close()
+			file_ram_a0.close()
 
 		inser_index_ram = inser_index_ram + 12
 
@@ -168,7 +168,7 @@ def FeatureMapRam(Para_Y, Para_kernel):
 				line = line.replace('SET_INDEX', str(i))
 				a_ram.insert(inser_index_ram, line) 
 				inser_index_ram = inser_index_ram+1
-		file_ram_a1.close()
+			file_ram_a1.close()
 
 		inser_index_ram = inser_index_ram + 9
 		for i in range(Para_kernel):
@@ -182,11 +182,11 @@ def FeatureMapRam(Para_Y, Para_kernel):
 					line = line.replace('SET_PARA_KERNEL', str(i))
 					a_ram.insert(inser_index_ram, line) 
 					inser_index_ram = inser_index_ram+1
+				file_ram_na.close()
 			
 			if i<(Para_kernel-1):
 				a_ram.insert(inser_index_ram, "")
 				inser_index_ram = inser_index_ram+1
-		file_ram_na.close()
 
 		inser_index_ram = inser_index_ram + 8
 		for i in range(Para_kernel):
@@ -199,10 +199,10 @@ def FeatureMapRam(Para_Y, Para_kernel):
 					if i==0 and j==0:
 						line = line[:-1]
 					a_ram.insert(inser_index_ram, line) 
+				file_ram_a0.close()
 			
 			if i<(Para_kernel-1):
 				a_ram.insert(inser_index_ram, "")
-		file_ram_a0.close()
 
 		inser_index_ram = inser_index_ram + Para_Y*Para_kernel + Para_kernel + 10
 		for i in range(Para_kernel):
@@ -215,22 +215,41 @@ def FeatureMapRam(Para_Y, Para_kernel):
 					line = line.replace('SET_INDEX_1', str(i*Para_Y+j))
 					a_ram.insert(inser_index_ram, line) 
 					inser_index_ram = inser_index_ram+1
+				file_ram_a1.close()
 
 			if i<(Para_kernel-1):
 				a_ram.insert(inser_index_ram, "")
 				inser_index_ram = inser_index_ram+1
-		file_ram_a1.close()
 
+		# read out
 		inser_index_ram = inser_index_ram + 12
-		for i in range(Para_Y-1):
+		for i in range(Para_Y):
 			file_ram_out = file('./Template/Template_FeatureMapRamFloat16_read_out.v')
 
 			for line in file_ram_out:
 				line = line.replace('SET_INDEX', str(Para_Y-i-1))
+
+				if i==(Para_Y-1):
+					line = line[:-1]
+
+				a_ram.insert(inser_index_ram, line)
+				inser_index_ram = inser_index_ram+1
+			file_ram_out.close()
+
+		# pool read out
+		inser_index_ram = inser_index_ram + 6
+		for i in range(Para_Y):
+			file_po = file('./Template/Template_FeatureMapRamFloat16_pool_read_out.v')
+
+			for line in file_po:
+				line = line.replace('SET_INDEX', str(Para_Y-i-1))
+
+				if i==(Para_Y-1):
+					line = line[:-1]
+
 				a_ram.insert(inser_index_ram, line) 
 				inser_index_ram = inser_index_ram+1
-		file_ram_out.close()
-
+			file_po.close()
 
 		s_ram = '\n'.join(a_ram)
 		file_ram = file(destRam, 'w')
@@ -303,7 +322,7 @@ def replace(file_path, old_str, new_str):
 	except Exception,e:  
 		print e 
 
-ConvParaScaleFloat16([3, 5], 3, 3)
-#FeatureMapRam(3, 2)
+#ConvParaScaleFloat16([3, 5], 3, 3)
+FeatureMapRam(3, 2)
 #WeightRam(5)
 #poolunit()
