@@ -45,10 +45,10 @@
     	rst <= 0;
 
         #`clk_period
-
+/*
     	// PARA_X = 3, PARA_Y = 3, kernel size = 3 =============================================
     	// 0
-/*		#`clk_period
+		#`clk_period
         op_type = 0;
 
     	rst = 1;

@@ -6,11 +6,11 @@ module ConvParaScaleFloat16(
 	input clk,
 	input rst, // 0: reset; 1: none;
 
-	input [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] input_data,
+	input op_type, // 0: conv; 1:fc
+	input [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] input_data, // op_type=0, input_data is fm data; op_type=1, input_data is weight data
+	input [`DATA_WIDTH - 1:0] weight, // op_type=0, weight is weight data; op_type=1, weight is fm data
 
-	input [`DATA_WIDTH - 1:0] weight,
-
-	input [`KERNEL_SIZE_WIDTH - 1:0] kernel_size,
+	input [`KERNEL_SIZE_WIDTH - 1:0] kernel_size, // op_type=0, input_data is conv kernerl size; op_type=1, kernel_size is fm all data number
 
 	output reg result_ready, // 1: ready; 0: not ready;
 	output reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] result_buffer
@@ -227,114 +227,164 @@ module ConvParaScaleFloat16(
 			mau_rst         <= 0;
 		end
 		else begin
-			if(clk_count == (clk_num + 1)) begin
-				if (&mau_out_ready == 1) begin // MultAddUnits are ready
-					clk_num <= kernel_size * kernel_size;
+			case(op_type)
+				0: // conv
+					begin
+						if(clk_count == (clk_num + 1)) begin
+							if (&mau_out_ready == 1) begin // MultAddUnits are ready
+								clk_num <= kernel_size * kernel_size;
 
-					clk_count		<= 0;
-					result_ready	<= 1;
+								clk_count		<= 0;
+								result_ready	<= 1;
 
-					// ======== Begin: result buffer ========
-					result_buffer	<= {
-										result_temp[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6],
-										result_temp[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7],
-										result_temp[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8],
+								// ======== Begin: result buffer ========
+								result_buffer	<= {
+													result_temp[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6],
+													result_temp[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7],
+													result_temp[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8],
 
-										result_temp[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3],
-										result_temp[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4],
-										result_temp[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5],
+													result_temp[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3],
+													result_temp[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4],
+													result_temp[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5],
 
-										result_temp[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0],
-										result_temp[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1],
-										result_temp[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]
-									};
-					// ======== End: result buffer ========
+													result_temp[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0],
+													result_temp[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1],
+													result_temp[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]
+												};
+								// ======== End: result buffer ========
 
-					mau_rst			<= 0;
-				end
-			end
-			else begin
-				result_ready		<= 0;
+								mau_rst			<= 0;
+							end
+						end
+						else begin
+							result_ready		<= 0;
+							
+							mau_rst				<= 1;
+
+							clk_num <= kernel_size * kernel_size;
+
+							// ======== Begin: register operation ========
+							if (clk_count == 0) begin // clk type 0
+								for (l1=0; l1<`PARA_X; l1=l1+1)
+								begin
+									case(kernel_size)
+										// ======== Begin: kernel size case, clk type 0 ========
+										3:
+											begin
+												register[l1] <= register_ks3_0[l1];
+											end
+										5:
+											begin
+												register[l1] <= register_ks5_0[l1];
+											end
+										// ======== End: kernel size case, clk type 0 ======== 
+									endcase
+								end
+							end
+							else if (clk_count%kernel_size == 0) begin // clk type 2
+								for (l1=0; l1<`PARA_X; l1=l1+1)
+								begin
+			                        case(kernel_size)
+										// ======== Begin: kernel size case, clk type 2 ========
+										3:
+											begin
+												register[l1] <= register_ks3_2[l1];
+											end
+										5:
+											begin
+												register[l1] <= register_ks5_2[l1];
+											end
+										// ======== End: kernel size case, clk type 2 ======== 
+									endcase
+								end
+							end
+							else if(clk_count > 0 && clk_count < kernel_size) begin // clk type 1
+								for (l1=0; l1<`PARA_X; l1=l1+1)
+								begin
+			                        case(kernel_size)
+										// ======== Begin: kernel size case, clk type 1 ========
+										3:
+											begin
+												register[l1] <= register_ks3_1[l1];
+											end
+										5:
+											begin
+												register[l1] <= register_ks5_1[l1];
+											end
+										// ======== End: kernel size case, clk type 1 ======== 
+									endcase
+								end
+							end
+							else begin // clk type 3
+								for (l1=0; l1<`PARA_X; l1=l1+1)
+								begin
+			                        case(kernel_size)
+										// ======== Begin: kernel size case, clk type 3 ========
+										3:
+											begin
+												register[l1] <= register_ks3_3[l1];
+											end
+										5:
+											begin
+												register[l1] <= register_ks5_3[l1];
+											end
+										// ======== End: kernel size case, clk type 3 ======== 
+									endcase
+								end
+							end
 				
-				mau_rst				<= 1;
+							// ======== End: register operation ========
 
-				clk_num <= kernel_size * kernel_size;
+							clk_count <= clk_count + 1;
+						end
+					end
+				1: // fc
+					begin
+						if(clk_count == (clk_num + 1)) begin
+							if (&mau_out_ready == 1) begin // MultAddUnits are ready
+								clk_num <= kernel_size;
 
-				// ======== Begin: register operation ========
-				if (clk_count == 0) begin // clk type 0
-					for (l1=0; l1<`PARA_X; l1=l1+1)
-					begin
-						case(kernel_size)
-							// ======== Begin: kernel size case, clk type 0 ========
-							3:
-								begin
-									register[l1] <= register_ks3_0[l1];
-								end
-							5:
-								begin
-									register[l1] <= register_ks5_0[l1];
-								end
-							// ======== End: kernel size case, clk type 0 ======== 
-						endcase
-					end
-				end
-				else if (clk_count%kernel_size == 0) begin // clk type 2
-					for (l1=0; l1<`PARA_X; l1=l1+1)
-					begin
-                        case(kernel_size)
-							// ======== Begin: kernel size case, clk type 2 ========
-							3:
-								begin
-									register[l1] <= register_ks3_2[l1];
-								end
-							5:
-								begin
-									register[l1] <= register_ks5_2[l1];
-								end
-							// ======== End: kernel size case, clk type 2 ======== 
-						endcase
-					end
-				end
-				else if(clk_count > 0 && clk_count < kernel_size) begin // clk type 1
-					for (l1=0; l1<`PARA_X; l1=l1+1)
-					begin
-                        case(kernel_size)
-							// ======== Begin: kernel size case, clk type 1 ========
-							3:
-								begin
-									register[l1] <= register_ks3_1[l1];
-								end
-							5:
-								begin
-									register[l1] <= register_ks5_1[l1];
-								end
-							// ======== End: kernel size case, clk type 1 ======== 
-						endcase
-					end
-				end
-				else begin // clk type 3
-					for (l1=0; l1<`PARA_X; l1=l1+1)
-					begin
-                        case(kernel_size)
-							// ======== Begin: kernel size case, clk type 3 ========
-							3:
-								begin
-									register[l1] <= register_ks3_3[l1];
-								end
-							5:
-								begin
-									register[l1] <= register_ks5_3[l1];
-								end
-							// ======== End: kernel size case, clk type 3 ======== 
-						endcase
-					end
-				end
-				
-				// ======== End: register operation ========
+								clk_count		<= 0;
+								result_ready	<= 1;
 
-				clk_count <= clk_count + 1;
-			end
-		
+								// ======== Begin: result buffer ========
+								result_buffer	<= {
+													ma_result[6],
+													ma_result[7],
+													ma_result[8],
+
+													ma_result[3],
+													ma_result[4],
+													ma_result[5],
+
+													ma_result[0],
+													ma_result[1],
+													ma_result[2]
+												};
+								// ======== End: result buffer ========
+
+								mau_rst			<= 0;
+							end
+						end
+						else begin
+							result_ready		<= 0;
+							
+							mau_rst				<= 1;
+
+							clk_num <= kernel_size;
+
+							// ======== Begin: MultAddUnitFloat16 input data ========
+								//    PARA_X                        PARA_Y
+								register[0] <= input_data[`DATA_WIDTH*3 - 1:`DATA_WIDTH*0];
+								register[1] <= input_data[`DATA_WIDTH*6 - 1:`DATA_WIDTH*3];
+								register[2] <= input_data[`DATA_WIDTH*9 - 1:`DATA_WIDTH*6];
+							// ======== End: MultAddUnitFloat16 input data ========
+
+							clk_count <= clk_count + 1;
+						end
+						
+					end
+			endcase
 		end
 	end
 

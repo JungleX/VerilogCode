@@ -6,11 +6,11 @@ module ConvParaScaleFloat16(
 	input clk,
 	input rst, // 0: reset; 1: none;
 
-	input [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] input_data,
+	input op_type, // 0: conv; 1:fc
+	input [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] input_data, // op_type=0, input_data is fm data; op_type=1, input_data is weight data
+	input [`DATA_WIDTH - 1:0] weight, // op_type=0, weight is weight data; op_type=1, weight is fm data
 
-	input [`DATA_WIDTH - 1:0] weight,
-
-	input [`KERNEL_SIZE_WIDTH - 1:0] kernel_size,
+	input [`KERNEL_SIZE_WIDTH - 1:0] kernel_size, // op_type=0, input_data is conv kernerl size; op_type=1, kernel_size is fm all data number
 
 	output reg result_ready, // 1: ready; 0: not ready;
 	output reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] result_buffer
@@ -89,34 +89,70 @@ module ConvParaScaleFloat16(
 			mau_rst         <= 0;
 		end
 		else begin
-			if(clk_count == (clk_num + 1)) begin
-				if (&mau_out_ready == 1) begin // MultAddUnits are ready
-					clk_num <= kernel_size * kernel_size;
+			case(op_type)
+				0: // conv
+					begin
+						if(clk_count == (clk_num + 1)) begin
+							if (&mau_out_ready == 1) begin // MultAddUnits are ready
+								clk_num <= kernel_size * kernel_size;
 
-					clk_count		<= 0;
-					result_ready	<= 1;
+								clk_count		<= 0;
+								result_ready	<= 1;
 
-					// ======== Begin: result buffer ========
-					result_buffer	<= {
-									};
-					// ======== End: result buffer ========
+								// ======== Begin: result buffer ========
+								result_buffer	<= {
+												};
+								// ======== End: result buffer ========
 
-					mau_rst			<= 0;
-				end
-			end
-			else begin
-				result_ready		<= 0;
-				
-				mau_rst				<= 1;
+								mau_rst			<= 0;
+							end
+						end
+						else begin
+							result_ready		<= 0;
+							
+							mau_rst				<= 1;
 
-				clk_num <= kernel_size * kernel_size;
+							clk_num <= kernel_size * kernel_size;
 
-				// ======== Begin: register operation ========
-				// ======== End: register operation ========
+							// ======== Begin: register operation ========
+							// ======== End: register operation ========
 
-				clk_count <= clk_count + 1;
-			end
-		
+							clk_count <= clk_count + 1;
+						end
+					end
+				1: // fc
+					begin
+						if(clk_count == (clk_num + 1)) begin
+							if (&mau_out_ready == 1) begin // MultAddUnits are ready
+								clk_num <= kernel_size;
+
+								clk_count		<= 0;
+								result_ready	<= 1;
+
+								// ======== Begin: result buffer ========
+								result_buffer	<= {
+												};
+								// ======== End: result buffer ========
+
+								mau_rst			<= 0;
+							end
+						end
+						else begin
+							result_ready		<= 0;
+							
+							mau_rst				<= 1;
+
+							clk_num <= kernel_size;
+
+							// ======== Begin: MultAddUnitFloat16 input data ========
+								//    PARA_X                        PARA_Y
+							// ======== End: MultAddUnitFloat16 input data ========
+
+							clk_count <= clk_count + 1;
+						end
+						
+					end
+			endcase
 		end
 	end
 

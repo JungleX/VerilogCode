@@ -24,6 +24,7 @@ def ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y):
 		file_cpsf.close()
 		a_cpsf = s_cpsf.split('\n')
 
+		# register move wire
 		inser_index_cpsf = 63
 
 		for i in KernelSizeList:
@@ -37,9 +38,9 @@ def ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y):
 				inser_index_cpsf = inser_index_cpsf+1
 		file_rmv.close()
 
-		inser_index_cpsf = inser_index_cpsf + 37
+		# result buffer
+		inser_index_cpsf = inser_index_cpsf + 40
 
-		# result
 		for i in range(Para_X):
 			for j in range(Para_Y):
 				file_cr = file('./Template/Template_Conv_result.v')
@@ -56,6 +57,7 @@ def ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y):
 				a_cpsf.insert(inser_index_cpsf, '')
 				inser_index_cpsf = inser_index_cpsf+1
 
+		# register operation
 		inser_index_cpsf = inser_index_cpsf + 14
 
 		file_crm = file('./Template/Template_ClkRegisterMove.v')
@@ -80,6 +82,38 @@ def ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y):
 			a_cpsf.insert(inser_index_cpsf, line)
 			inser_index_cpsf = inser_index_cpsf + 1
 
+		# fc result buffer
+		inser_index_cpsf = inser_index_cpsf + 16
+
+		for i in range(Para_X):
+			for j in range(Para_Y):
+				file_fcr = file('./Template/Template_FC_result.v')
+				for line in file_fcr:
+					line = line.replace('SET_INDEX', str((Para_X-i-1)*Para_Y+j))
+					if i==Para_X-1 and j==Para_Y-1:
+						line = line[:-1]
+					a_cpsf.insert(inser_index_cpsf, line)
+					inser_index_cpsf = inser_index_cpsf+1
+				file_fcr.close()
+
+			if i<(Para_X-1):
+				a_cpsf.insert(inser_index_cpsf, '')
+				inser_index_cpsf = inser_index_cpsf+1
+
+		# MultAddUnitFloat16 input data
+		inser_index_cpsf = inser_index_cpsf + 15
+
+		for i in range(Para_X):
+			file_fcmi = file('./Template/Template_FC_mau_input.v')
+			for line in file_fcmi:
+				line = line.replace('SET_INDEX_Y_1', str(((i+1)*Para_Y)))
+				line = line.replace('SET_INDEX_Y_0', str(i*Para_Y))
+				line = line.replace('SET_INDEX', str(i))
+				a_cpsf.insert(inser_index_cpsf, line)
+				inser_index_cpsf = inser_index_cpsf+1
+			file_fcmi.close()
+		
+		# save file
 		s_cpsf = '\n'.join(a_cpsf)
 		file_cpsf = file(destFile_1, 'w')
 		file_cpsf.write(s_cpsf)

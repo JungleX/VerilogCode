@@ -332,7 +332,7 @@ module ConvParaScaleFloat16(
 									endcase
 								end
 							end
-							
+				
 							// ======== End: register operation ========
 
 							clk_count <= clk_count + 1;
@@ -377,7 +377,7 @@ module ConvParaScaleFloat16(
 								//    PARA_X                        PARA_Y
 								register[0] <= input_data[`DATA_WIDTH*3 - 1:`DATA_WIDTH*0];
 								register[1] <= input_data[`DATA_WIDTH*6 - 1:`DATA_WIDTH*3];
-								register[2]	<= input_data[`DATA_WIDTH*9 - 1:`DATA_WIDTH*6];
+								register[2] <= input_data[`DATA_WIDTH*9 - 1:`DATA_WIDTH*6];
 							// ======== End: MultAddUnitFloat16 input data ========
 
 							clk_count <= clk_count + 1;
