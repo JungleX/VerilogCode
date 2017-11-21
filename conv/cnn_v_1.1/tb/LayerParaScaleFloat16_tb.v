@@ -372,12 +372,34 @@ module LayerParaScaleFloat16_tb();
             end
         end
 
+        #(`clk_period*2)
+        layer_type <= 1;
+
         while(layer_ready !=1) begin
             #`clk_period
             layer_type <= 1;
         end
 
+        // change to pool
+        #`clk_period
         layer_type <= 2;
         layer_num  <= 2;
+        pool_type  <= 0;
+        pool_win_size <= `POOL_SIZE;
+        fm_size <= 8;
+        fm_size_out <= 4;
+        padding_out <= 0;
+
+        #(`clk_period*2)
+        layer_type <= 2;
+
+        while(layer_ready !=1) begin
+            #`clk_period
+            layer_type <= 2;
+        end
+
+        // change to fc
+        #`clk_period
+        layer_type <= 3;
     end
 endmodule

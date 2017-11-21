@@ -171,7 +171,7 @@ module FeatureMapRamFloat16(
 			dout <= {
 						ram_array[addr_read*`PARA_Y+sub_addr_read+2],
 						ram_array[addr_read*`PARA_Y+sub_addr_read+1],
-						ram_array[addr_read*`PARA_Y+sub_addr_read]
+						ram_array[addr_read*`PARA_Y+sub_addr_read+0]
 					};
 			// ======== End: conv read out ========
 		end
