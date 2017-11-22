@@ -136,7 +136,7 @@ def FeatureMapRam(Para_Y, Para_kernel):
 		file_ram.close()
 		a_ram = s_ram.split('\n')
 
-		inser_index_ram = 82
+		inser_index_ram = 85
 
 		for i in range(Para_Y):
 			file_ram_na = file('./Template/Template_FeatureMapRamFloat16_not_add.v')
@@ -150,17 +150,18 @@ def FeatureMapRam(Para_Y, Para_kernel):
 
 		inser_index_ram = inser_index_ram + 8
 
-		for i in range(Para_Y-1):
+		for i in range(Para_Y):
 			file_ram_a0 = file('./Template/Template_FeatureMapRamFloat16_add_0.v')
 
 			for line in file_ram_a0:
 				line = line.replace('SET_INDEX', str(Para_Y-i-1))
+				if i==Para_Y-1:
+					line = line[:-1]
 				a_ram.insert(inser_index_ram, line) 
 				inser_index_ram = inser_index_ram+1
 			file_ram_a0.close()
 
-		inser_index_ram = inser_index_ram + 12
-
+		inser_index_ram = inser_index_ram + 11
 		for i in range(Para_Y):
 			file_ram_a1 = file('./Template/Template_FeatureMapRamFloat16_add_1.v')
 
@@ -170,59 +171,67 @@ def FeatureMapRam(Para_Y, Para_kernel):
 				inser_index_ram = inser_index_ram+1
 			file_ram_a1.close()
 
-		inser_index_ram = inser_index_ram + 9
-		for i in range(Para_kernel):
-			for j in range(Para_Y):
-				file_ram_na = file("./Template/Template_FeatureMapRamFloat16_fm_para_not_add.v")
+		inser_index_ram = inser_index_ram + 14
+		for i in range(Para_Y):
+			file_ram_a0 = file('./Template/Template_FeatureMapRamFloat16_fm_para_add_0.v')
 
-				for line in file_ram_na:
-					line = line.replace('SET_INDEX_0', str(j))
-					line = line.replace('SET_INDEX_1_ADD_ONE', str(i*Para_Y+j+1))
-					line = line.replace('SET_INDEX_1', str(i*Para_Y+j))
-					line = line.replace('SET_PARA_KERNEL', str(i))
-					a_ram.insert(inser_index_ram, line) 
-					inser_index_ram = inser_index_ram+1
-				file_ram_na.close()
-			
-			if i<(Para_kernel-1):
-				a_ram.insert(inser_index_ram, "")
+			for line in file_ram_a0:
+				line = line.replace('SET_INDEX', str(Para_Y-i-1))
+				if i==Para_Y-1:
+					line = line[:-1]
+				a_ram.insert(inser_index_ram, line)
 				inser_index_ram = inser_index_ram+1
+			file_ram_a0.close()
 
-		inser_index_ram = inser_index_ram + 8
-		for i in range(Para_kernel):
-			for j in range(Para_Y):
-				file_ram_a0 = file('./Template/Template_FeatureMapRamFloat16_fm_para_add_0.v')
-				
-				for line in file_ram_a0:
-					line = line.replace('SET_PARA_KERNEL', str(i))
-					line = line.replace('SET_INDEX', str(j))
-					if i==0 and j==0:
-						line = line[:-1]
-					a_ram.insert(inser_index_ram, line) 
-				file_ram_a0.close()
-			
-			if i<(Para_kernel-1):
-				a_ram.insert(inser_index_ram, "")
-
-		inser_index_ram = inser_index_ram + Para_Y*Para_kernel + Para_kernel + 10
-		for i in range(Para_kernel):
+		inser_index_ram = inser_index_ram + 6
+		for i in range(Para_kernel-1):
 			for j in range(Para_Y):
 				file_ram_a1 = file('./Template/Template_FeatureMapRamFloat16_fm_para_add_1.v')
-
+					
 				for line in file_ram_a1:
-					line = line.replace('SET_PARA_KERNEL', str(i))
-					line = line.replace('SET_INDEX_0', str(j))
-					line = line.replace('SET_INDEX_1', str(i*Para_Y+j))
+					line = line.replace('SET_INDEX_0_ADD_ONE', str((i+1)*Para_Y+j+1))
+					line = line.replace('SET_INDEX_0', str((i+1)*Para_Y+j))
+					line = line.replace('SET_INDEX', str(i*Para_Y+j))
 					a_ram.insert(inser_index_ram, line) 
 					inser_index_ram = inser_index_ram+1
 				file_ram_a1.close()
 
-			if i<(Para_kernel-1):
-				a_ram.insert(inser_index_ram, "")
+		inser_index_ram = inser_index_ram + 5
+		for i in range(Para_Y):
+			file_ram_a2 = file('./Template/Template_FeatureMapRamFloat16_fm_para_add_2.v')
+
+			for line in file_ram_a2:
+				line = line.replace('SET_INDEX', str(Para_Y-i-1))
+				if i==Para_Y-1:
+					line = line[:-1]
+				a_ram.insert(inser_index_ram, line)
 				inser_index_ram = inser_index_ram+1
+			file_ram_a2.close()
+
+		inser_index_ram = inser_index_ram + 3
+		for i in range(Para_Y):
+			file_ram_a3 = file('./Template/Template_FeatureMapRamFloat16_fm_para_add_3.v')
+
+			for line in file_ram_a3:
+				line = line.replace('SET_INDEX', str(Para_Y-i-1))
+				if i==Para_Y-1:
+					line = line[:-1]
+				a_ram.insert(inser_index_ram, line)
+				inser_index_ram = inser_index_ram+1
+			file_ram_a3.close()
+
+		inser_index_ram = inser_index_ram + 5
+		for i in range(Para_Y):
+			file_ram_a4 = file('./Template/Template_FeatureMapRamFloat16_fm_para_add_4.v')
+
+			for line in file_ram_a4:
+				line = line.replace('SET_INDEX', str(i))
+				a_ram.insert(inser_index_ram, line)
+				inser_index_ram = inser_index_ram+1
+			file_ram_a4.close()
 
 		# read out
-		inser_index_ram = inser_index_ram + 12
+		inser_index_ram = inser_index_ram + 23
 		for i in range(Para_Y):
 			file_ram_out = file('./Template/Template_FeatureMapRamFloat16_read_out.v')
 

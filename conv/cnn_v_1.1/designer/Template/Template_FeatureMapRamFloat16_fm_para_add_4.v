@@ -1,0 +1,1 @@
+						ram_array[addr_para_write + ((fm_out_size+`PARA_X-1)/`PARA_X)*(((fm_out_size+`PARA_Y-1)/`PARA_Y)*`PARA_Y)*(clk_count/2) + SET_INDEX]	<= add_re_tdata[SET_INDEX];

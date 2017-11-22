@@ -70,7 +70,7 @@ module FeatureMapRamFloat16_tb();
 
     	#(`clk_period/2)
 
-    	// PARA_Y = 3 =============================================
+/*    	// PARA_Y = 3 =============================================
     	// write, not add
     	#`clk_period
     	ena_w = 1;
@@ -124,7 +124,7 @@ module FeatureMapRamFloat16_tb();
     	ena_r = 1;
     	addr_read = 1;
     	sub_addr_read = 1;
-
+*/
         // padding write
 /*        #`clk_period
         ena_zero_w = 1;
@@ -136,41 +136,61 @@ module FeatureMapRamFloat16_tb();
 */
         // para write
         #`clk_period
-        ena_zero_w = 0;
-        ena_w = 0;
-        ena_para_w = 1;
-        ena_add_write = 0;
-        addr_para_write = 9; // padding = 1; 6+1*2 + 1 = 9
-        fm_out_size = 8; // 6+1*2=8
-        para_din = {16'h3c00, 16'h4000, 16'h3c00, 16'h3c00, 16'h4000, 16'h3c00};
+        ena_zero_w <= 0;
+        ena_w <= 0;
+        ena_para_w <= 1;
+        ena_add_write <= 1;
+        addr_para_write <= 9; // padding = 1; 6+1*2 + 1 = 9
+        fm_out_size <= 8; // 6+1*2=8
+        para_din <= {16'h3c00, 16'h4000, 16'h3c00, 16'h3c00, 16'h4000, 16'h4200};
+
+        //#(`clk_period*2)
+        #`clk_period
+        ena_para_w <= 1;
+
+        while(write_ready == 0) begin
+            #`clk_period
+            ena_para_w <= 1;
+        end
+
+        //#`clk_period
+        ena_para_w <= 0;
+        ena_w <= 0;
+        ena_zero_w <= 0;
 
         #`clk_period
-        ena_zero_w = 0;
-        ena_w = 0;
-        ena_para_w = 1;
-        ena_add_write = 1;
-        addr_para_write = 9;
-        fm_out_size = 8;
-        para_din = {16'h3c00, 16'h3c00, 16'h3c00, 16'h3c00, 16'h3c00, 16'h3c00};
+        ena_zero_w <= 0;
+        ena_w <= 0;
+        ena_para_w <= 1;
+        ena_add_write <= 1;
+        addr_para_write <= 9;
+        fm_out_size <= 8;
+        para_din <= {16'h3c00, 16'h4000, 16'h4200, 16'h4000, 16'h3c00, 16'h4200};
 
-        // write, add, wait
+        //#(`clk_period*2)
         #`clk_period
+        ena_para_w <= 1;
 
-        // read
-        #`clk_period
-        ena_para_w = 0;
+        while(write_ready == 0) begin
+            #`clk_period
+            ena_para_w <= 1;
+        end
+
+        //#`clk_period
+        ena_para_w <= 0;
+        ena_w <= 0;
+        ena_zero_w <= 0;
     	// PARA_Y = 3 ============================================= 
 
         // PARA_Y = 3 POOL read =============================================
-        #`clk_period
+        /*#`clk_period
         ena_r      <= 0;
         ena_pool_r <= 1;
         addr_pool_read  <= 0;
 
         #`clk_period
         ena_pool_r <= 1;
-        addr_pool_read  <= 3;
-
+        addr_pool_read  <= 3;*/
         // PARA_Y = 3 POOL read =============================================
 
 

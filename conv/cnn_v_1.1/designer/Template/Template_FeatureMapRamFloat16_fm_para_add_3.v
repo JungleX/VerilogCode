@@ -1,0 +1,1 @@
+										para_din_buffer[((clk_count/2)-1)*`PARA_Y+SET_INDEX],

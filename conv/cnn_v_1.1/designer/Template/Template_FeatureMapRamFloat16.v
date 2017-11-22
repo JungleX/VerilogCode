@@ -33,19 +33,21 @@ module FeatureMapRamFloat16(
 
 	reg [`DATA_WIDTH - 1:0] ram_array [0:`FM_RAM_MAX - 1];
 
-	reg clk_count;
+	reg [`CLK_NUM_WIDTH - 1:0] clk_count;
+
+	reg [`DATA_WIDTH - 1:0] para_din_buffer[`PARA_Y*(`PARA_KERNEL-1) - 1:0];
 
 	// addition
 	reg add_a_tvalid;
-	reg [`PARA_Y*`PARA_KERNEL*`DATA_WIDTH - 1:0] add_a_tdata;
+	reg [`PARA_Y*`DATA_WIDTH - 1:0] add_a_tdata;
 	reg add_b_tvalid;
-	reg [`PARA_Y*`PARA_KERNEL*`DATA_WIDTH - 1:0] add_b_tdata;
+	reg [`PARA_Y*`DATA_WIDTH - 1:0] add_b_tdata;
 
-	wire [`PARA_Y*`PARA_KERNEL - 1:0] add_re_tvalid;
-	wire [`DATA_WIDTH - 1:0] add_re_tdata[0:`PARA_Y*`PARA_KERNEL - 1] ;
+	wire [`PARA_Y - 1:0] add_re_tvalid;
+	wire [`DATA_WIDTH - 1:0] add_re_tdata[0:`PARA_Y - 1] ;
 	generate
 		genvar add_i;
-		for (add_i = 0; add_i < `PARA_Y*`PARA_KERNEL; add_i = add_i + 1)
+		for (add_i = 0; add_i < `PARA_Y; add_i = add_i + 1)
 		begin
 			floating_point_add add(
 		        .s_axis_a_tvalid(add_a_tvalid),
@@ -64,6 +66,7 @@ module FeatureMapRamFloat16(
 	initial begin
 		dout = 0;
 		clk_count = 0;
+		write_ready <= 0;
 		for (i = 0; i < `FM_RAM_MAX; i = i + 1)
 		begin
 			ram_array[i] = 0;
@@ -88,7 +91,6 @@ module FeatureMapRamFloat16(
 
 					// ======== Begin: add operation ========
 					add_a_tdata <= {
-									ram_array[addr_write*`PARA_Y]
 								};
 					// ======== End: add operation ========
 
@@ -107,32 +109,48 @@ module FeatureMapRamFloat16(
 			end
 		end
 		else if(ena_para_w == 1) begin // para write
-			if (ena_add_write == 0) begin // not add
-				// ======== Begin: update feature map data add ========
-				// ======== End: update feature map data add ========
-			end
-			else if (ena_add_write == 1) begin // add
-				if (clk_count == 0) begin
+			if (ena_add_write == 1) begin // add
+				if (clk_count <(`PARA_KERNEL*2) && write_ready == 0) begin
 					write_ready <= 0;
 
-					// ======== Begin: add operation ========
-					add_a_tdata <= {
-								};
-					// ======== End: add operation ========
+					if (clk_count == 0) begin
+						// ======== Begin: add operation ========
+						add_a_tdata <= {
+									};
+						// ======== End: add operation ========
 
-					add_b_tdata <= para_din;
+						add_b_tdata <= para_din[`DATA_WIDTH*`PARA_Y - 1:0];
 
-					clk_count	<= 1;
+						// ======== Begin: data buffer ========
+						// ======== End: data buffer ========
+					end
+					else if ((clk_count-((clk_count/2)*2)) == 0) begin
+						// ======== Begin: add operation ========
+						add_a_tdata <= {
+									};
+
+						add_b_tdata <= {
+									};
+						// ======== End: add operation ========
+					end
+					else begin
+						// ======== Begin: update feature map data add ========
+						// ======== End: update feature map data add ========
+					end
+
+					clk_count <= clk_count + 1;
 				end
 				else begin
 					write_ready	<= 1;
 
-					// ======== Begin: update feature map data add ========
-					// ======== End: update feature map data add ========
-
 					clk_count	<= 0;
 				end
 			end
+		end
+		else begin
+			write_ready	<= 0;
+
+			clk_count	<= 0;
 		end
 	end
 
