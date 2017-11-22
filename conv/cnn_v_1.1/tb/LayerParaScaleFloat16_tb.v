@@ -10,6 +10,7 @@ module LayerParaScaleFloat16_tb();
 	reg rst;
 
 	reg [1:0] layer_type;
+    reg [1:0] pre_layer_type;
 
     reg [`LAYER_NUM_WIDTH - 1:0] layer_num;
 
@@ -401,5 +402,6 @@ module LayerParaScaleFloat16_tb();
         // change to fc
         #`clk_period
         layer_type <= 3;
+        pre_layer_type <= 2;
     end
 endmodule

@@ -7,6 +7,7 @@ module LayerParaScaleFloat16(
 	input rst,
 
 	input [1:0] layer_type, // 0: prepare init feature map and weight data; 1:conv; 2:pool; 3:fc;
+	input [1:0] pre_layer_type,
 
 	input [`LAYER_NUM_WIDTH - 1:0] layer_num,
 
@@ -661,44 +662,47 @@ module LayerParaScaleFloat16(
 								end
 
 								if(write_ready_clk_count == 1) begin
-									write_ready_clk_count <= write_ready_clk_count + 1;
+									write_ready_clk_count <= 2;
 								end
+								//else if(write_ready_clk_count == 2) begin
 								else if(write_ready_clk_count == 2) begin
-									fm_ena_zero_w[0] 	<= 0;
-									fm_ena_w[0] 		<= 0;
-									fm_ena_para_w[0] 	<= 0;
-												        
-									fm_ena_zero_w[1] 	<= 0;
-									fm_ena_w[1] 		<= 0;
-									fm_ena_para_w[1] 	<= 0;
+									if (&fm_write_ready == 1) begin
+										fm_ena_zero_w[0] 	<= 0;
+										fm_ena_w[0] 		<= 0;
+										fm_ena_para_w[0] 	<= 0;
+													        
+										fm_ena_zero_w[1] 	<= 0;
+										fm_ena_w[1] 		<= 0;
+										fm_ena_para_w[1] 	<= 0;
 
-									fm_ena_zero_w[2] 	<= 0;
-									fm_ena_w[2] 		<= 0;
-									fm_ena_para_w[2] 	<= 0;
+										fm_ena_zero_w[2] 	<= 0;
+										fm_ena_w[2] 		<= 0;
+										fm_ena_para_w[2] 	<= 0;
 
-									write_ready_clk_count <= 0;
+										write_ready_clk_count <= 0;
 
-									// conv layer end, next layer 
-									if (go_to_next_layer == 1) begin
-										conv_rst	<= 0;
+										// conv layer end, next layer 
+										if (go_to_next_layer == 1) begin
+											conv_rst	<= 0;
 
-										kernel_num_count	<= 0;
-										cur_fm_swap			<= ~cur_fm_swap;
+											kernel_num_count	<= 0;
+											cur_fm_swap			<= ~cur_fm_swap;
 
-										cur_x		<= 0;
-										cur_y		<= 0;
-										cur_slice	<= 0;
-										cur_fm_ram	<= 0;
+											cur_x		<= 0;
+											cur_y		<= 0;
+											cur_slice	<= 0;
+											cur_fm_ram	<= 0;
 
-										cur_out_index[0]	<= 0;
-										cur_out_index[1]	<= 0;
-										cur_out_index[2]	<= 0;
+											cur_out_index[0]	<= 0;
+											cur_out_index[1]	<= 0;
+											cur_out_index[2]	<= 0;
 
-										cur_out_slice		<= 0;
-										zero_write_count	<= 0;
+											cur_out_slice		<= 0;
+											zero_write_count	<= 0;
 
-										clk_count	<= 0;
-										layer_ready	<= 1;
+											clk_count	<= 0;
+											layer_ready	<= 1;
+										end
 									end
 								end
 							end
