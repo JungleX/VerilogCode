@@ -35,6 +35,9 @@ module LayerParaScaleFloat16(
 	input pool_type, // 0: max pool; 1: avg pool
 	input [`POOL_SIZE_WIDTH - 1:0] pool_win_size, 
 
+	// activation
+	input [1:0] activation, // 0: none; 1: ReLU. current just none or ReLU
+
 	output reg update_weight_ram, // 0: not update; 1: update
 	output reg [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr,
 
@@ -116,6 +119,8 @@ module LayerParaScaleFloat16(
 				.weight(conv_weight[conv_i]),
 
 				.kernel_size(kernel_size),
+
+				.activation(activation),
 
 				.result_ready(conv_out_ready[conv_i:conv_i]), // 1: ready; 0: not ready;
 				.result_buffer(conv_out_buffer[conv_i])

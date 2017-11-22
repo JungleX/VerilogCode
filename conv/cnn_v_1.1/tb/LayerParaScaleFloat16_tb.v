@@ -35,6 +35,8 @@ module LayerParaScaleFloat16_tb();
     reg pool_type;
     reg [`POOL_SIZE_WIDTH - 1:0] pool_win_size; 
 
+    reg [1:0] activation;
+
 	wire update_weight_ram; // 0: not update; 1: update
 	wire [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr;
 
@@ -69,6 +71,8 @@ module LayerParaScaleFloat16_tb();
 
         .pool_type(pool_type), // 0: max pool; 1: avg pool
         .pool_win_size(pool_win_size), 
+
+        .activation(activation),
 
 		.update_weight_ram(update_weight_ram), // 0: not update; 1: update
 		.update_weight_ram_addr(update_weight_ram_addr),
@@ -337,6 +341,7 @@ module LayerParaScaleFloat16_tb();
     	// change to conv layer
         layer_type <= 1;
         layer_num  <= 1;
+        activation <= 1;
 
         fm_size <= 8;
         fm_depth <= 2;
@@ -385,6 +390,7 @@ module LayerParaScaleFloat16_tb();
         #`clk_period
         layer_type <= 2;
         layer_num  <= 2;
+        activation <= 0;
         pool_type  <= 0;
         pool_win_size <= `POOL_SIZE;
         fm_size <= 8;

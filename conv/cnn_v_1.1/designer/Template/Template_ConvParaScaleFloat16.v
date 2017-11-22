@@ -12,6 +12,9 @@ module ConvParaScaleFloat16(
 
 	input [`KERNEL_SIZE_WIDTH - 1:0] kernel_size, // op_type=0, input_data is conv kernerl size; op_type=1, kernel_size is fm all data number
 
+	// activation
+	input [1:0] activation, // 0: none; 1: ReLU. current just none or ReLU
+
 	output reg result_ready, // 1: ready; 0: not ready;
 	output reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] result_buffer
     );
@@ -100,8 +103,12 @@ module ConvParaScaleFloat16(
 								result_ready	<= 1;
 
 								// ======== Begin: result buffer ========
-								result_buffer	<= {
-												};
+								if (activation == 0) begin // none
+									result_buffer	<= {
+													};
+								end
+								else if (activation == 1) begin // ReLU
+								end
 								// ======== End: result buffer ========
 
 								mau_rst			<= 0;

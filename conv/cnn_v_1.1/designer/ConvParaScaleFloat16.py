@@ -25,7 +25,7 @@ def ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y):
 		a_cpsf = s_cpsf.split('\n')
 
 		# register move wire
-		inser_index_cpsf = 63
+		inser_index_cpsf = 66
 
 		for i in KernelSizeList:
 			file_rmv = file('./Template/Template_RegisterMoveWire.v')
@@ -39,11 +39,12 @@ def ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y):
 		file_rmv.close()
 
 		# result buffer
-		inser_index_cpsf = inser_index_cpsf + 40
+		# activation = 0 none
+		inser_index_cpsf = inser_index_cpsf + 41
 
 		for i in range(Para_X):
 			for j in range(Para_Y):
-				file_cr = file('./Template/Template_Conv_result.v')
+				file_cr = file('./Template/Template_Conv_result_action_none.v')
 				for line in file_cr:
 					line = line.replace('SET_INDEX_ADD_ONE', str((Para_X-i-1)*Para_Y+j+1))
 					line = line.replace('SET_INDEX', str((Para_X-i-1)*Para_Y+j))
@@ -52,6 +53,28 @@ def ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y):
 					a_cpsf.insert(inser_index_cpsf, line)
 					inser_index_cpsf = inser_index_cpsf+1
 				file_cr.close()
+
+			if i<(Para_X-1):
+				a_cpsf.insert(inser_index_cpsf, '')
+				inser_index_cpsf = inser_index_cpsf+1
+
+		# activation = 1 ReLU
+		inser_index_cpsf = inser_index_cpsf + 3
+		index_count = Para_X*Para_Y-1
+
+		for i in range(Para_X):
+			for j in range(Para_Y):
+				file_cr = file('./Template/Template_Conv_result_action_ReLU.v')
+				for line in file_cr:
+					line = line.replace('SET_INDEX_0_ADD_ONE', str(index_count+1))
+					line = line.replace('SET_INDEX_0', str(index_count))
+					line = line.replace('SET_INDEX_ADD_ONE', str((Para_X-i-1)*Para_Y+j+1))
+					line = line.replace('SET_INDEX', str((Para_X-i-1)*Para_Y+j))
+					line = line[:-1]
+					a_cpsf.insert(inser_index_cpsf, line)
+					inser_index_cpsf = inser_index_cpsf+1
+				file_cr.close()
+				index_count = index_count-1
 
 			if i<(Para_X-1):
 				a_cpsf.insert(inser_index_cpsf, '')
@@ -331,7 +354,7 @@ def replace(file_path, old_str, new_str):
 	except Exception,e:  
 		print e 
 
-#ConvParaScaleFloat16([3, 5], 3, 3)
-FeatureMapRam(3, 2)
+ConvParaScaleFloat16([3, 5], 3, 3)
+#FeatureMapRam(3, 2)
 #WeightRam(5)
 #poolunit()

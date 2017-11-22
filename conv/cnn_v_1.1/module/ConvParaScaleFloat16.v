@@ -12,6 +12,9 @@ module ConvParaScaleFloat16(
 
 	input [`KERNEL_SIZE_WIDTH - 1:0] kernel_size, // op_type=0, input_data is conv kernerl size; op_type=1, kernel_size is fm all data number
 
+	// activation
+	input [1:0] activation, // 0: none; 1: ReLU. current just none or ReLU
+
 	output reg result_ready, // 1: ready; 0: not ready;
 	output reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] result_buffer
     );
@@ -238,19 +241,79 @@ module ConvParaScaleFloat16(
 								result_ready	<= 1;
 
 								// ======== Begin: result buffer ========
-								result_buffer	<= {
-													result_temp[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6],
-													result_temp[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7],
-													result_temp[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8],
+								if (activation == 0) begin // none
+									result_buffer	<= {
+														result_temp[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6],
+														result_temp[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7],
+														result_temp[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8],
 
-													result_temp[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3],
-													result_temp[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4],
-													result_temp[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5],
+														result_temp[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3],
+														result_temp[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4],
+														result_temp[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5],
 
-													result_temp[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0],
-													result_temp[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1],
-													result_temp[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]
-												};
+														result_temp[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0],
+														result_temp[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1],
+														result_temp[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]
+													};
+								end
+								else if (activation == 1) begin // ReLU
+									if (result_temp[`DATA_WIDTH*7 - 1:`DATA_WIDTH*7 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= result_temp[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6];
+									end
+									if (result_temp[`DATA_WIDTH*8 - 1:`DATA_WIDTH*8 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= result_temp[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7];
+									end
+									if (result_temp[`DATA_WIDTH*9 - 1:`DATA_WIDTH*9 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= result_temp[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8];
+									end
+
+									if (result_temp[`DATA_WIDTH*4 - 1:`DATA_WIDTH*4 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= result_temp[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3];
+									end
+									if (result_temp[`DATA_WIDTH*5 - 1:`DATA_WIDTH*5 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= result_temp[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4];
+									end
+									if (result_temp[`DATA_WIDTH*6 - 1:`DATA_WIDTH*6 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= result_temp[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5];
+									end
+
+									if (result_temp[`DATA_WIDTH*1 - 1:`DATA_WIDTH*1 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= result_temp[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
+									end
+									if (result_temp[`DATA_WIDTH*2 - 1:`DATA_WIDTH*2 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= result_temp[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
+									end
+									if (result_temp[`DATA_WIDTH*3 - 1:`DATA_WIDTH*3 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= result_temp[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
+									end
+								end
 								// ======== End: result buffer ========
 
 								mau_rst			<= 0;
