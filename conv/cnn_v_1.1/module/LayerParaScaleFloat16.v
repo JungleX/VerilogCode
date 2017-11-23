@@ -200,7 +200,7 @@ module LayerParaScaleFloat16(
 
 	reg [`WEIGHT_READ_ADDR_WIDTH - 1:0] weight_addr_read[`PARA_KERNEL - 1:0];
 
-	wire [`DATA_WIDTH - 1:0] weight_dout[`PARA_KERNEL - 1:0]; // read a value each time
+	wire [`PARA_Y*`DATA_WIDTH - 1:0] weight_dout[`PARA_KERNEL - 1:0]; // read a value each time
 
     generate
     	genvar weight_ram_i;
@@ -468,9 +468,9 @@ module LayerParaScaleFloat16(
 									else if (clk_count <= (kernel_size*kernel_size + 1)) begin
 										//`PARA_KERNEL = 2
 										weight_addr_read[0]	<= weight_addr_read[0] + 1;
-										conv_weight[0]	<= weight_dout[0];
+										conv_weight[0]	<= weight_dout[0][`DATA_WIDTH - 1:0];
 										weight_addr_read[1]	<= weight_addr_read[1] + 1;
-										conv_weight[1]	<= weight_dout[1]; 
+										conv_weight[1]	<= weight_dout[1][`DATA_WIDTH - 1:0]; 
 									end
 
 									// feature map data
@@ -561,7 +561,7 @@ module LayerParaScaleFloat16(
 										end
 
 										conv_input_data[0][`DATA_WIDTH - 1:0] <= fm_dout[cur_fm_ram][`DATA_WIDTH - 1:0];
-										
+
 										conv_input_data[1][`DATA_WIDTH - 1:0] <= fm_dout[cur_fm_ram][`DATA_WIDTH - 1:0];
 
 										clk_count	<= clk_count + 1;
@@ -1006,7 +1006,8 @@ module LayerParaScaleFloat16(
 									conv_weight[1] <= fm_dout[cur_fm_ram][`DATA_WIDTH - 1:0];
 
 									// read weight data
-									//conv_input_data[0]
+									//conv_input_data[0][`DATA_WIDTH*`PARA_Y - 1:0] <= ;
+									//conv_input_data[1][`DATA_WIDTH*`PARA_Y - 1:0] <= ;
 								end
 
 								// set read address

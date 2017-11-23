@@ -284,7 +284,7 @@ def FeatureMapRam(Para_Y, Para_kernel):
 
 		print "Create FeatureMapRamFloat16.v Success."
 
-def WeightRam(KernelSizeMax):
+def WeightRam(Para_Y, KernelSizeMax):
 	destDir = './VerilogCode/'
 	if not os.path.isdir(destDir):
 		os.mkdir(destDir)
@@ -299,7 +299,7 @@ def WeightRam(KernelSizeMax):
 		file_ram.close()
 		a_ram = s_ram.split('\n')
 
-		inser_index_ram = 31
+		inser_index_ram = 38
 
 		for i in range(KernelSizeMax*KernelSizeMax):
 			file_ram_na = file('./Template/Template_WeightRamFloat16_write.v')
@@ -310,6 +310,19 @@ def WeightRam(KernelSizeMax):
 				a_ram.insert(inser_index_ram, line) 
 				inser_index_ram = inser_index_ram+1
 		file_ram_na.close()
+
+		inser_index_ram = inser_index_ram + 11
+
+		for i in range(Para_Y):
+			file_ram_fcr = file('./Template/Template_WeightRamFloat16_fc_read_out.v')
+
+			for line in file_ram_fcr:
+				line = line.replace('SET_INDEX', str(Para_Y-i-1))
+				if i==Para_Y-1:
+					line = line[:-1]
+				a_ram.insert(inser_index_ram, line) 
+				inser_index_ram = inser_index_ram+1
+		file_ram_fcr.close()
 
 		s_ram = '\n'.join(a_ram)
 		file_ram = file(destRam, 'w')
@@ -348,7 +361,7 @@ def replace(file_path, old_str, new_str):
 	except Exception,e:  
 		print e 
 
-ConvParaScaleFloat16([3, 5], 3, 3)
+#ConvParaScaleFloat16([3, 5], 3, 3)
 #FeatureMapRam(3, 2)
-#WeightRam(5)
+WeightRam(3, 5)
 #poolunit()
