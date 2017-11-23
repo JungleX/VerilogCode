@@ -108,33 +108,27 @@ def ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y):
 		# fc result buffer
 		inser_index_cpsf = inser_index_cpsf + 16
 
-		for i in range(Para_X):
-			for j in range(Para_Y):
-				file_fcr = file('./Template/Template_FC_result.v')
-				for line in file_fcr:
-					line = line.replace('SET_INDEX', str((Para_X-i-1)*Para_Y+j))
-					if i==Para_X-1 and j==Para_Y-1:
+		for i in range(Para_Y):
+			file_fcr = file('./Template/Template_FC_result.v')
+			for line in file_fcr:
+				line = line.replace('SET_INDEX', str(i))
+				if i==Para_Y-1:
 						line = line[:-1]
-					a_cpsf.insert(inser_index_cpsf, line)
-					inser_index_cpsf = inser_index_cpsf+1
-				file_fcr.close()
-
-			if i<(Para_X-1):
-				a_cpsf.insert(inser_index_cpsf, '')
+				a_cpsf.insert(inser_index_cpsf, line)
 				inser_index_cpsf = inser_index_cpsf+1
+			file_fcr.close()
 
 		# MultAddUnitFloat16 input data
 		inser_index_cpsf = inser_index_cpsf + 15
-
-		for i in range(Para_X):
-			file_fcmi = file('./Template/Template_FC_mau_input.v')
-			for line in file_fcmi:
-				line = line.replace('SET_INDEX_Y_1', str(((i+1)*Para_Y)))
-				line = line.replace('SET_INDEX_Y_0', str(i*Para_Y))
-				line = line.replace('SET_INDEX', str(i))
-				a_cpsf.insert(inser_index_cpsf, line)
-				inser_index_cpsf = inser_index_cpsf+1
-			file_fcmi.close()
+		
+		file_fcmi = file('./Template/Template_FC_mau_input.v')
+		for line in file_fcmi:
+			line = line.replace('SET_INDEX_Y_1', str(Para_Y))
+			line = line.replace('SET_INDEX_Y_0', str(0))
+			line = line.replace('SET_INDEX', str(0))
+			a_cpsf.insert(inser_index_cpsf, line)
+			inser_index_cpsf = inser_index_cpsf+1
+		file_fcmi.close()
 		
 		# save file
 		s_cpsf = '\n'.join(a_cpsf)

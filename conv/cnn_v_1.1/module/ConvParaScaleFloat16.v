@@ -412,14 +412,6 @@ module ConvParaScaleFloat16(
 
 								// ======== Begin: result buffer ========
 								result_buffer	<= {
-													ma_result[6],
-													ma_result[7],
-													ma_result[8],
-
-													ma_result[3],
-													ma_result[4],
-													ma_result[5],
-
 													ma_result[0],
 													ma_result[1],
 													ma_result[2]
@@ -437,10 +429,8 @@ module ConvParaScaleFloat16(
 							clk_num <= kernel_size;
 
 							// ======== Begin: MultAddUnitFloat16 input data ========
-								//    PARA_X                        PARA_Y
+								//                                  PARA_Y
 								register[0] <= input_data[`DATA_WIDTH*3 - 1:`DATA_WIDTH*0];
-								register[1] <= input_data[`DATA_WIDTH*6 - 1:`DATA_WIDTH*3];
-								register[2] <= input_data[`DATA_WIDTH*9 - 1:`DATA_WIDTH*6];
 							// ======== End: MultAddUnitFloat16 input data ========
 
 							clk_count <= clk_count + 1;

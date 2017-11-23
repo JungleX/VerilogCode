@@ -152,7 +152,7 @@ module ConvParaScaleFloat16(
 							clk_num <= kernel_size;
 
 							// ======== Begin: MultAddUnitFloat16 input data ========
-								//    PARA_X                        PARA_Y
+								//                                  PARA_Y
 							// ======== End: MultAddUnitFloat16 input data ========
 
 							clk_count <= clk_count + 1;

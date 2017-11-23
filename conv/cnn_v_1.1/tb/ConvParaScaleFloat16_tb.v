@@ -492,27 +492,27 @@
 
         rst <= 1;
         kernel_size <= 4;
-        input_data[`DATA_WIDTH*`PARA_X*`PARA_Y - 1:0] <= {16'h0000, 16'h4000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h0000, 16'h0000, 16'h0000};
+        input_data[`DATA_WIDTH*`PARA_Y - 1:0] <= {16'h0000, 16'h4000, 16'h4200};
         
         #`clk_period
         weight <= 16'h3c00;
 
-        input_data[`DATA_WIDTH*`PARA_X*`PARA_Y - 1:0] <= {16'h3c00, 16'h4000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h0000, 16'h0000, 16'h0000};
+        input_data[`DATA_WIDTH*`PARA_Y - 1:0] <= {16'h3c00, 16'h4000, 16'h4200};
 
         #`clk_period
         weight <= 16'h4000;
 
-        input_data[`DATA_WIDTH*`PARA_X*`PARA_Y - 1:0] <= {16'h0000, 16'h4200, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h0000, 16'h0000, 16'h0000};
+        input_data[`DATA_WIDTH*`PARA_Y - 1:0] <= {16'h0000, 16'h4200, 16'h4200};
 
         #`clk_period
         weight <= 16'h4200;
 
-        input_data[`DATA_WIDTH*`PARA_X*`PARA_Y - 1:0] <= {16'h0000, 16'h4000, 16'h4200, 16'h3c00, 16'h3c00, 16'h4000, 16'h0000, 16'h0000, 16'h0000};
+        input_data[`DATA_WIDTH*`PARA_Y - 1:0] <= {16'h0000, 16'h4000, 16'h4200};
 
         #`clk_period
         weight <= 16'h4400;
 
-        // result: 4000,4dc0,4f80,4400,4900,4d00,0000,0000,0000
+        // result: 4000,4dc0,4f80
         // wait for result
         while(result_ready !=1) begin
             #`clk_period
