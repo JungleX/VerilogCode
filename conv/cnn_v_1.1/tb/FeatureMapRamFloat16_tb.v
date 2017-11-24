@@ -23,11 +23,9 @@ module FeatureMapRamFloat16_tb();
     reg [`FM_SIZE_WIDTH - 1:0] fm_out_size;
     reg [`PARA_Y*`PARA_KERNEL*`DATA_WIDTH - 1:0] para_din;
 
+    reg [1:0] read_type;
 	reg [`READ_ADDR_WIDTH - 1:0] addr_read;
 	reg [`READ_ADDR_WIDTH - 1:0] sub_addr_read;
-
-    reg ena_pool_r; // 0: not read; 1: read
-    reg [`READ_ADDR_WIDTH - 1:0] addr_pool_read;
 
 	wire write_ready;
 	wire [`PARA_Y*`DATA_WIDTH - 1:0] dout;
@@ -51,11 +49,9 @@ module FeatureMapRamFloat16_tb();
         .para_din(para_din),
 
 		.ena_r(ena_r),
+        .read_type(read_type),
 		.addr_read(addr_read),
 		.sub_addr_read(sub_addr_read),
-
-        .ena_pool_r(ena_pool_r), // 0: not read; 1: read
-        .addr_pool_read(addr_pool_read),
 
 		.write_ready(write_ready),
 		.dout(dout)
@@ -70,70 +66,6 @@ module FeatureMapRamFloat16_tb();
 
     	#(`clk_period/2)
 
-/*    	// PARA_Y = 3 =============================================
-    	// write, not add
-    	#`clk_period
-    	ena_w = 1;
-    	ena_add_write = 0;
-    	addr_write = 0;
-    	din = {16'h3c00, 16'h4000, 16'h4200};
-
-    	ena_r = 0;
-
-    	// write, not add
-    	#`clk_period
-    	ena_w = 1;
-    	ena_add_write = 0;
-    	addr_write = 1;
-    	din = {16'h4200, 16'h4000, 16'h3c00};
-
-    	// write, add
-    	#`clk_period
-    	ena_w = 1;
-    	ena_add_write = 1;
-    	addr_write = 1;
-    	din = {16'h3c00, 16'h4000, 16'h3c00};
-
-    	// write, add, wait
-    	#`clk_period
-
-    	// write, add and read
-    	#`clk_period
-    	ena_w = 1;
-    	ena_add_write = 1;
-    	addr_write = 1;
-    	din = {16'h3c00, 16'h3c00, 16'h3c00};
-
-    	ena_r = 1;
-    	addr_read = 0;
-    	sub_addr_read = 0;
-
-    	// write, add, wait
-    	#`clk_period
-
-    	// read
-    	#`clk_period
-    	ena_w = 0;
-
-    	ena_r = 1;
-    	addr_read = 1;
-    	sub_addr_read = 0;
-
-    	// read
-    	#`clk_period
-    	ena_r = 1;
-    	addr_read = 1;
-    	sub_addr_read = 1;
-*/
-        // padding write
-/*        #`clk_period
-        ena_zero_w = 1;
-        ena_w = 0;
-        ena_para_w = 0;
-        fm_out_size = 8; // 6+1*2=8
-        zero_start_addr = 0;
-        zero_end_addr = 128; // 8*8*2=128 fm_s*fm_s*fm_d
-*/
         // para write
         #`clk_period
         ena_zero_w <= 0;
@@ -167,7 +99,6 @@ module FeatureMapRamFloat16_tb();
         fm_out_size <= 8;
         para_din <= {16'h3c00, 16'h4000, 16'h4200, 16'h4000, 16'h3c00, 16'h4200};
 
-        //#(`clk_period*2)
         #`clk_period
         ena_para_w <= 1;
 
@@ -182,76 +113,39 @@ module FeatureMapRamFloat16_tb();
         ena_zero_w <= 0;
     	// PARA_Y = 3 ============================================= 
 
-        // PARA_Y = 3 POOL read =============================================
-        /*#`clk_period
-        ena_r      <= 0;
-        ena_pool_r <= 1;
-        addr_pool_read  <= 0;
+        // PARA_Y = 3 CONV read =============================================
+        #`clk_period
+        ena_r      <= 1;
+        read_type   <= 0;
+        addr_read  <= 3;
+        sub_addr_read <= 0;
 
         #`clk_period
-        ena_pool_r <= 1;
-        addr_pool_read  <= 3;*/
+        read_type   <= 0;
+        addr_read  <= 3;
+        sub_addr_read <= 1;
+        // PARA_Y = 3 CONV read =============================================
+
+        // PARA_Y = 3 POOL read =============================================
+        #`clk_period
+        ena_r      <= 1;
+        read_type   <= 1;
+        addr_read  <= 9;
+
+        #`clk_period
+        read_type   <= 1;
+        addr_read  <= 10;
         // PARA_Y = 3 POOL read =============================================
 
+        // PARA_Y = 3 FC read =============================================
+        #`clk_period
+        ena_r      <= 1;
+        read_type   <= 2;
+        addr_read  <= 9;
 
-/*
-    	// PARA_Y = 2 =============================================
-    	// write, not add
-    	#`clk_period
-    	ena_w = 1;
-    	ena_add_write = 0;
-    	addr_write = 0;
-    	din = {16'h3c00, 16'h4000};
-
-    	ena_r = 0;
-
-    	// write, not add
-    	#`clk_period
-    	ena_w = 1;
-    	ena_add_write = 0;
-    	addr_write = 1;
-    	din = {16'h4200, 16'h4000};
-
-    	// write, add
-    	#`clk_period
-    	ena_w = 1;
-    	ena_add_write = 1;
-    	addr_write = 1;
-    	din = {16'h3c00, 16'h4000};
-
-    	// write, add, wait
-    	#`clk_period
-
-    	// write, add
-    	#`clk_period
-    	ena_w = 1;
-    	ena_add_write = 1;
-    	addr_write = 1;
-    	din = {16'h3c00, 16'h3c00};
-
-    	// write, add, wait
-    	#`clk_period
-
-    	// read
-    	#`clk_period
-    	ena_w = 0;
-
-    	ena_r = 1;
-    	addr_read = 0;
-    	sub_addr_read = 0;
-
-    	// read
-    	#`clk_period
-    	ena_r = 1;
-    	addr_read = 1;
-    	sub_addr_read = 0;
-
-    	// read
-    	#`clk_period
-    	ena_r = 1;
-    	addr_read = 1;
-    	sub_addr_read = 1;
-    	// PARA_Y = 2 ============================================= 
-*/
+        #`clk_period
+        read_type   <= 2;
+        addr_read  <= 10;
+        // PARA_Y = 3 FC read =============================================
     end
 endmodule
