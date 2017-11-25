@@ -25,7 +25,8 @@ module DataTransmission(
     input clk,
     input rst,
     
-    input init,                                                               //init: a waveform generated in FSM which looks like:_____-______
+    input init,
+    output reg start,
     
     input update_weight_ram, // 0: not update; 1: update
     input [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr,
@@ -49,26 +50,29 @@ reg [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL*`DATA_WIDTH - 1:0] weight_se
 
 initial
 begin
-fm_set_one <= {`PARA_X*`PARA_Y{16'h3c00}};
-weight_set_one <= {`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL{16'h3c00}};
+    fm_set_one <= {`PARA_X*`PARA_Y{16'h3c00}};
+    weight_set_one <= {`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL{16'h3c00}};
 end
 //provide all-1 arrays for featuremap and weightram
 
-
+always @(posedge clk) start <= init;
 
 reg cnt;
 reg update_ena = 1'b0;
+reg [5:0] ini_cnt = 6'b0; 
 always @(posedge clk) begin
-if (rst) begin
-init_fm_data <= 0;
-write_fm_data_addr <= 0;
-init_fm_data_done <= 0;
-weight_data <= 0;
-write_weight_data_addr <= 0;
-weight_data_done <= 0;
-update_ena <= 0;
-end
-if (init) begin
+
+    if (rst) begin
+        init_fm_data <= 0;
+        write_fm_data_addr <= 0;
+        init_fm_data_done <= 0;
+        weight_data <= 0;
+        write_weight_data_addr <= 0;
+        weight_data_done <= 0;
+        update_ena <= 0;
+    end
+    
+    if (init) begin
 init_fm_data <= fm_set_one;
 write_fm_data_addr <= 0;
 init_fm_data_done <= 1;

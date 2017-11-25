@@ -27,6 +27,8 @@ module FSM(
      input transmission_start
     );
     
+wire clk;
+
 IBUFDS #(
         .DIFF_TERM("FALSE"),
         .IBUF_LOW_PWR("TRUE"),
@@ -42,20 +44,41 @@ reg [`LAYER_NUM_WIDTH - 1:0] layer_num = `LAYER_NUM_WIDTH'b0;
 reg [1:0] layer_type; // 0: prepare init feature map and weight data; 1:conv; 2:pool; 3:fc;
 reg [1:0] pre_layer_type = 2'b00;
 
+reg init = 1'b0;
+reg init_disable = 1'b1;
+reg init_cnt = 1'b1;
+wire start;
+
 always @(*) assign workstate = transmission_start & (!rst);
+always @(posedge clk) begin
+    if (rst) begin
+    init <= 0;
+    init_disable <= 1;
+    layer_num <= `LAYER_NUM_WIDTH'b0;
+    pre_layer_type <= 2'b00;
+    end
+end                                                             //rst all
+
+
+
 always @(posedge clk)
-if (rst) begin
-layer_num = `LAYER_NUM_WIDTH'b0;
-pre_layer_type = 2'b00;
+    if (!init_cnt) init_cnt <= 1'b1;
+always @(posedge clk) begin
+    if ((workstate) && (init_disable)) begin
+        init <= 1;
+        init_disable <= 0;
+        init_cnt <= 0;
+    end
 end
 
-reg init = 1'b0;
-reg dis_init = 1'b0;
-always @(posedge clk) dis_init <= workstate;
+always @(posedge clk) if (!init_cnt) init_cnt <= 1;
+ 
 always @(posedge clk) begin
-if ((workstate == 1) && (dis_init == 0)) init <= 1'b1;
-else init <= 1'b0;
-end//generate a initial waveform which sustains for only 1 clock cycle,looking like:_______-_______
+    if ((workstate) && (!start))begin
+        init <= 1'b1;
+        init_cnt <= 0;
+    end
+end
 
 always @(posedge clk) begin
 if (workstate) begin
@@ -87,7 +110,8 @@ DataTransmission DT(
     .clk(clk),
     .rst(rst),
     
-    .init(init),                                                               //init: a waveform generated in FSM which looks like:_____-______
+    .init(init),
+    .start(start),
     
     .update_weight_ram(update_weight_ram), // 0: not update; 1: update
     .update_weight_ram_addr(update_weight_ram_addr),
