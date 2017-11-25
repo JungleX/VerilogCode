@@ -153,7 +153,7 @@ def FeatureMapRam(Para_Y, Para_kernel):
 		file_ram.close()
 		a_ram = s_ram.split('\n')
 
-		inser_index_ram = 85
+		inser_index_ram = 83
 
 		for i in range(Para_Y):
 			file_ram_na = file('./Template/Template_FeatureMapRamFloat16_not_add.v')
@@ -247,10 +247,10 @@ def FeatureMapRam(Para_Y, Para_kernel):
 				inser_index_ram = inser_index_ram+1
 			file_ram_a4.close()
 
-		# read out
-		inser_index_ram = inser_index_ram + 23
+		# conv read out
+		inser_index_ram = inser_index_ram + 26
 		for i in range(Para_Y):
-			file_ram_out = file('./Template/Template_FeatureMapRamFloat16_read_out.v')
+			file_ram_out = file('./Template/Template_FeatureMapRamFloat16_conv_read_out.v')
 
 			for line in file_ram_out:
 				line = line.replace('SET_INDEX', str(Para_Y-i-1))
@@ -263,11 +263,11 @@ def FeatureMapRam(Para_Y, Para_kernel):
 			file_ram_out.close()
 
 		# pool read out
-		inser_index_ram = inser_index_ram + 6
+		inser_index_ram = inser_index_ram + 7
 		for i in range(Para_Y):
-			file_po = file('./Template/Template_FeatureMapRamFloat16_pool_read_out.v')
+			file_ram_out = file('./Template/Template_FeatureMapRamFloat16_pool_read_out.v')
 
-			for line in file_po:
+			for line in file_ram_out:
 				line = line.replace('SET_INDEX', str(Para_Y-i-1))
 
 				if i==(Para_Y-1):
@@ -275,7 +275,22 @@ def FeatureMapRam(Para_Y, Para_kernel):
 
 				a_ram.insert(inser_index_ram, line) 
 				inser_index_ram = inser_index_ram+1
-			file_po.close()
+			file_ram_out.close()
+
+		# fc read out
+		inser_index_ram = inser_index_ram + 7
+		for i in range(Para_Y):
+			file_ram_out = file('./Template/Template_FeatureMapRamFloat16_fc_read_out.v')
+
+			for line in file_ram_out:
+				line = line.replace('SET_INDEX', str(Para_Y-i-1))
+
+				if i==(Para_Y-1):
+					line = line[:-1]
+
+				a_ram.insert(inser_index_ram, line) 
+				inser_index_ram = inser_index_ram+1
+			file_ram_out.close()
 
 		s_ram = '\n'.join(a_ram)
 		file_ram = file(destRam, 'w')
@@ -362,6 +377,6 @@ def replace(file_path, old_str, new_str):
 		print e 
 
 #ConvParaScaleFloat16([3, 5], 3, 3)
-#FeatureMapRam(3, 2)
-WeightRam(3, 5)
+FeatureMapRam(3, 2)
+#WeightRam(3, 5)
 #poolunit()

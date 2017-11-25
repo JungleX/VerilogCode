@@ -1,1 +1,0 @@
-						ram_array[addr_read*`PARA_Y+sub_addr_read+SET_INDEX],

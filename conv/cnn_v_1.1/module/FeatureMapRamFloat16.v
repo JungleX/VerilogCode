@@ -21,11 +21,9 @@ module FeatureMapRamFloat16(
 	input [`PARA_Y*`PARA_KERNEL*`DATA_WIDTH - 1:0] para_din,
 
 	input ena_r, // 0: not read; 1: read
+	input [1:0] read_type, // 0: conv read; 1: pool read; 2: fc read;
 	input [`READ_ADDR_WIDTH - 1:0] addr_read,
 	input [`READ_ADDR_WIDTH - 1:0] sub_addr_read,
-
-	input ena_pool_r, // 0: not read; 1: read
-	input [`READ_ADDR_WIDTH - 1:0] addr_pool_read,
 
 	output reg write_ready,
 	output reg [`PARA_Y*`DATA_WIDTH - 1:0] dout
@@ -180,22 +178,38 @@ module FeatureMapRamFloat16(
 
 	always @(clk) begin
 		if (ena_r == 1) begin // conv read
-			// ======== Begin: conv read out ========
-			dout <= {
-						ram_array[addr_read*`PARA_Y+sub_addr_read+2],
-						ram_array[addr_read*`PARA_Y+sub_addr_read+1],
-						ram_array[addr_read*`PARA_Y+sub_addr_read+0]
-					};
-			// ======== End: conv read out ========
-		end
-		else if(ena_pool_r == 1) begin // pool read
-			// ======== Begin: pool read out ========
-			dout <= {
-						ram_array[addr_pool_read+`POOL_SIZE*2],
-						ram_array[addr_pool_read+`POOL_SIZE*1],
-						ram_array[addr_pool_read+`POOL_SIZE*0]
-					};
-			// ======== End: pool read out ========
+			case(read_type)
+				0:
+					begin
+						// ======== Begin: conv read out ========
+						dout <= {
+									ram_array[addr_read*`PARA_Y+sub_addr_read+2],
+									ram_array[addr_read*`PARA_Y+sub_addr_read+1],
+									ram_array[addr_read*`PARA_Y+sub_addr_read+0]
+								};
+						// ======== End: conv read out ========
+					end
+				1:
+					begin
+						// ======== Begin: pool read out ========
+						dout <= {
+									ram_array[addr_read+`POOL_SIZE*2],
+									ram_array[addr_read+`POOL_SIZE*1],
+									ram_array[addr_read+`POOL_SIZE*0]
+								};
+						// ======== End: pool read out ========
+					end
+				2:
+					begin
+						// ======== Begin: fc read out ========
+						dout <= {
+									ram_array[addr_read+2],
+									ram_array[addr_read+1],
+									ram_array[addr_read+0]
+								};
+						// ======== End: fc read out ========
+					end
+			endcase
 		end
 	end
 endmodule

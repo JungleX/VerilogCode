@@ -16,6 +16,7 @@ module LayerParaScaleFloat16_tb();
 
 	reg [`FM_SIZE_WIDTH - 1:0] fm_size;
 	reg [`KERNEL_SIZE_WIDTH - 1:0] fm_depth;
+    reg [`FM_SIZE_WIDTH - 1:0] fm_total_size;
 
     reg [`FM_SIZE_WIDTH - 1:0] fm_size_out;
     reg [`PADDING_NUM_WIDTH - 1:0] padding_out;
@@ -54,6 +55,7 @@ module LayerParaScaleFloat16_tb();
 
 		.fm_size(fm_size),
 		.fm_depth(fm_depth),
+        .fm_total_size(fm_total_size),
 
         .fm_size_out(fm_size_out),
         .padding_out(padding_out),
@@ -408,6 +410,9 @@ module LayerParaScaleFloat16_tb();
         // change to fc
         #`clk_period
         layer_type <= 3;
+        layer_num  <= 3;
         pre_layer_type <= 2;
+        fm_size <= 4;
+        fm_total_size <= 16;
     end
 endmodule

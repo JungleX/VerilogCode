@@ -1,1 +1,1 @@
-						ram_array[addr_pool_read+`POOL_SIZE*SET_INDEX],
+									ram_array[addr_read+`POOL_SIZE*SET_INDEX],
