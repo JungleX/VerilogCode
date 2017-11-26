@@ -14,7 +14,7 @@ module WeightRamFloat16(
 
 	// fc read
 	input ena_fc_r, // 0: not read; 1: read
-	input [`FM_SIZE_WIDTH - 1:0] fm_size,
+	input [`FM_SIZE_WIDTH - 1:0] fm_total_size,
 
 	// read address
 	input [`WEIGHT_READ_ADDR_WIDTH - 1:0] addr_read,

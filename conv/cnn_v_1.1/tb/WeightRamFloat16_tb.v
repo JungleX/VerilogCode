@@ -16,7 +16,7 @@ module WeightRamFloat16_tb();
 	reg [`WEIGHT_READ_ADDR_WIDTH - 1:0] addr_read;
 
     reg ena_fc_r; // 0: not read; 1: read
-    reg [`FM_SIZE_WIDTH - 1:0] fm_size;
+    reg [`FM_SIZE_WIDTH - 1:0] fm_total_size;
 
 	wire [`PARA_Y*`DATA_WIDTH - 1:0] dout; // read a value each time
 
@@ -30,7 +30,7 @@ module WeightRamFloat16_tb();
 		.ena_r(ena_r),
 
         .ena_fc_r(ena_fc_r), // 0: not read; 1: read
-        .fm_size(fm_size),
+        .fm_total_size(fm_total_size),
 
 		.addr_read(addr_read),
 
@@ -76,25 +76,25 @@ module WeightRamFloat16_tb();
         #`clk_period
         ena_r <= 0;
         ena_fc_r <= 1;
-        fm_size <= 3;
+        fm_total_size <= 3;
         addr_read <= 0;
 
         #`clk_period
         ena_r <= 0;
         ena_fc_r <= 1;
-        fm_size <= 3;
+        fm_total_size <= 3;
         addr_read <= 1;
 
         #`clk_period
         ena_r <= 0;
         ena_fc_r <= 1;
-        fm_size <= 3;
+        fm_total_size <= 3;
         addr_read <= 2;
 
         #`clk_period
         ena_r <= 0;
         ena_fc_r <= 1;
-        fm_size <= 3;
+        fm_total_size <= 3;
         addr_read <= 3;
 
     end

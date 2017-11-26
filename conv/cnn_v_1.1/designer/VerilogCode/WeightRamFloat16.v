@@ -14,7 +14,7 @@ module WeightRamFloat16(
 
 	// fc read
 	input ena_fc_r, // 0: not read; 1: read
-	input [`FM_SIZE_WIDTH - 1:0] fm_size,
+	input [`FM_SIZE_WIDTH - 1:0] fm_total_size,
 
 	// read address
 	input [`WEIGHT_READ_ADDR_WIDTH - 1:0] addr_read,
@@ -72,9 +72,9 @@ module WeightRamFloat16(
 		else if(ena_fc_r == 1) begin // fc read
 			// ======== Begin: fc read data ========
 			dout <= {
-						ram_array[addr_read+fm_size*2],
-						ram_array[addr_read+fm_size*1],
-						ram_array[addr_read+fm_size*0]
+						ram_array[addr_read+fm_total_size*2],
+						ram_array[addr_read+fm_total_size*1],
+						ram_array[addr_read+fm_total_size*0]
 					};
 			// ======== End: fc read data ========
 		end
