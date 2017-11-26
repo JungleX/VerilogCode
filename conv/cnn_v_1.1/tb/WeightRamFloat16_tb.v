@@ -57,7 +57,7 @@ module WeightRamFloat16_tb();
     	// write and read
     	#`clk_period
     	ena_w <= 1;
-    	addr_write <= 1;
+    	addr_write <= `KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
     	din <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
 
         // read

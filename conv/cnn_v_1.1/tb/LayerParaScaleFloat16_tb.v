@@ -30,7 +30,7 @@ module LayerParaScaleFloat16_tb();
 	reg init_fm_data_done;
 
 	reg [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL*`DATA_WIDTH - 1:0] weight_data;
-	reg [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] write_weight_data_addr;
+	reg [`WEIGHT_WRITE_ADDR_WIDTH - 1:0] write_weight_data_addr;
 	reg weight_data_done; // weight data transmission, 0: not ready; 1: ready
 
     reg pool_type;
@@ -187,7 +187,7 @@ module LayerParaScaleFloat16_tb();
 
     	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
     	weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
-    	write_weight_data_addr <= 1;
+    	write_weight_data_addr <= `KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
     	weight_data_done <= 0;
 
     	#`clk_period
@@ -200,7 +200,7 @@ module LayerParaScaleFloat16_tb();
 
         weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4000};
         weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
-        write_weight_data_addr <= `DEPTH_MAX; // slice <= 0
+        write_weight_data_addr <= `WEIGHT_RAM_HALF; // slice <= 0
         weight_data_done <= 0;
 
     	#`clk_period
@@ -213,7 +213,7 @@ module LayerParaScaleFloat16_tb();
 
         weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
         weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
-        write_weight_data_addr <= `DEPTH_MAX+1; // slice <= 1
+        write_weight_data_addr <= `WEIGHT_RAM_HALF+`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX; // slice <= 1
         weight_data_done <= 0;
 
     	#`clk_period
@@ -372,7 +372,7 @@ module LayerParaScaleFloat16_tb();
         weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
         weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
         update_weight_count <= 2;
-        write_weight_data_addr <= update_weight_ram_addr + 1;
+        write_weight_data_addr <= update_weight_ram_addr + `KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
         weight_data_done <= 0;
         
         #`clk_period
@@ -380,17 +380,38 @@ module LayerParaScaleFloat16_tb();
         weight_data_done <= 1;
         // end of update kernel
 
-        #`clk_period
+        #(`clk_period*2)
 
         // update kernel for fc
         while(update_weight_ram != 1) begin
             #`clk_period
-            update_weight_count <= 0;
+            weight_data_done <= 1;
         end
 
         // update_weight_ram == 1
-        //todo
-        
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
+                    }; // 25*2=50
+        write_weight_data_addr <= update_weight_ram_addr;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 
+                        16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
+                        16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000,
+                        16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 
+                        16'h3c00, 16'h4000, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
+                    }; // 16*2-25=7
+        write_weight_data_addr <= update_weight_ram_addr + `KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data_done <= 1;
         // end of update kernel for fc
 
         #(`clk_period*2)

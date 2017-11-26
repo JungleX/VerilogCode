@@ -377,6 +377,6 @@ def replace(file_path, old_str, new_str):
 		print e 
 
 #ConvParaScaleFloat16([3, 5], 3, 3)
-FeatureMapRam(3, 2)
-#WeightRam(3, 5)
+#FeatureMapRam(3, 2)
+WeightRam(3, 5)
 #poolunit()

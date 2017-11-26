@@ -1,1 +1,1 @@
-			ram_array[addr_write*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX + SET_INDEX] <= din[`DATA_WIDTH*SET_INDEX_ADD_ONE - 1:`DATA_WIDTH*SET_INDEX];
+			ram_array[addr_write + SET_INDEX] <= din[`DATA_WIDTH*SET_INDEX_ADD_ONE - 1:`DATA_WIDTH*SET_INDEX];
