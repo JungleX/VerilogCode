@@ -100,7 +100,7 @@ module LayerParaScaleFloat16(
 	// ======== Begin: conv unit ========
 	reg conv_rst;
 
-	reg op_type;
+	reg conv_op_type;
 	reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] conv_input_data[`PARA_KERNEL - 1:0];
 	reg [`DATA_WIDTH - 1:0] conv_weight[`PARA_KERNEL - 1:0];
 
@@ -115,7 +115,7 @@ module LayerParaScaleFloat16(
 				.clk(clk),
 				.rst(conv_rst), // 0: reset; 1: none;
 
-				.op_type(op_type),
+				.op_type(conv_op_type),
 				.input_data(conv_input_data[conv_i]),
 				.weight(conv_weight[conv_i]),
 
@@ -214,7 +214,7 @@ module LayerParaScaleFloat16(
 				.ena_r(weight_ena_r),
 
 				.ena_fc_r(weight_ena_fc_r),
-				.fm_size(fm_size),
+				.fm_total_size(fm_total_size),
 
 				.addr_read(weight_addr_read[weight_ram_i]),
 
@@ -256,11 +256,14 @@ module LayerParaScaleFloat16(
     reg [`LAYER_NUM_WIDTH - 1:0] cur_layer_num;
     reg go_to_next_layer;
 
+    // debug regs
+    reg [4:0] test_0;
+
 	always @(posedge clk or negedge rst) begin
 		if (!rst) begin
 			// reset
 			conv_rst	<= 0;
-			op_type		<= 0;
+			conv_op_type<= 0;
 			pu_rst		<= 0;
 			layer_ready	<= 0;
 			clk_count	<= 0;
@@ -373,7 +376,7 @@ module LayerParaScaleFloat16(
 					case(layer_type)
 						1:// conv
 							begin
-								op_type	<= 0; // set conv unit type
+								conv_op_type	<= 0; // set conv unit type
 
 								// prepare output ram
 								if (zero_write_count == 0) begin // prepare zero padding
@@ -651,6 +654,14 @@ module LayerParaScaleFloat16(
 														cur_y		<= 0;
 
 														if ((kernel_num_count + `PARA_KERNEL) == kernel_num) begin // conv layer end, next layer
+															cur_kernel_swap		<= ~cur_kernel_swap; 
+															cur_kernel_slice	<= 0;
+
+															// update kernel
+															update_weight_ram		<= 1;
+															update_weight_ram_addr	<= cur_kernel_swap*`WEIGHT_RAM_HALF;
+															update_weight_wait_count<= 0;
+
 															go_to_next_layer <= 1;
 														end
 														else begin
@@ -663,7 +674,6 @@ module LayerParaScaleFloat16(
 															update_weight_ram_addr	<= cur_kernel_swap*`WEIGHT_RAM_HALF;
 															update_weight_wait_count<= 0;
 
-															//(~cur_fm_swap)*`FM_RAM_HALF + cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/PARA_X)*`PARA_Y 
 															cur_out_index[0]	<= ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 
 															cur_out_index[1]	<= ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
@@ -934,6 +944,8 @@ module LayerParaScaleFloat16(
 							end
 						3:// fc
 							begin
+								conv_op_type <= 1;
+
 								// enable fm ram fc read
 								fm_read_type		<= 2;
 								fm_ena_r[0]			<= 1;
@@ -1003,46 +1015,50 @@ module LayerParaScaleFloat16(
 								end
 
 								// fc operation
+								if (clk_count == 0) begin
+									if (go_to_next_layer == 0) begin
+										conv_rst <= 0;
+									end
+								end
+								else begin
+									conv_rst <= 1;
+								end
+
 								// read weight data
-								if (clk_count > 1 && clk_count <= (fm_total_size+1)) begin
-									conv_input_data[0][`DATA_WIDTH*`PARA_Y - 1:0] <= weight_dout[0];
-									conv_input_data[1][`DATA_WIDTH*`PARA_Y - 1:0] <= weight_dout[1];
+								if (clk_count > 0 && clk_count <= fm_total_size) begin
+									conv_input_data[0] <= {0, weight_dout[0]};
+									conv_input_data[1] <= {0, weight_dout[1]};
 								end
 
 								// read fm data
-								if (clk_count > 0 && clk_count <= fm_total_size) begin
+								if (clk_count > 1 && clk_count <= (fm_total_size+1)) begin
 									conv_weight[0] <= fm_dout[cur_fm_ram][`DATA_WIDTH - 1:0];
 									conv_weight[1] <= fm_dout[cur_fm_ram][`DATA_WIDTH - 1:0];
 								end
 
 								// set weight read address
-								if (clk_count == 1) begin
+								if (clk_count == 0) begin
 									weight_addr_read[0] <= cur_kernel_swap*`WEIGHT_RAM_HALF + cur_weight_index;
-									weight_addr_read[0] <= cur_kernel_swap*`WEIGHT_RAM_HALF + cur_weight_index;
+									weight_addr_read[1] <= cur_kernel_swap*`WEIGHT_RAM_HALF + cur_weight_index;
 								end
-								else if (clk_count > 1 && clk_count < (fm_total_size+1)) begin
+								else if (clk_count > 0 && clk_count < (fm_total_size+1)) begin
 									weight_addr_read[0] <= weight_addr_read[0] + 1;
 									weight_addr_read[1] <= weight_addr_read[1] + 1;
 								end
 
-								// set fc read address
-								if (clk_count == 0) begin // set init fc read address
+								// set fm read address
+								if (clk_count == 1) begin // set init fc read address
 									if (go_to_next_layer == 0) begin
-										conv_rst <= 0;
-
 										if (pre_layer_type == 2) begin // pre layer is conv/pool layer
+											test_0 <= 5;
 											fm_addr_read[cur_fm_ram]	<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
 										end
 										else if(pre_layer_type == 3) begin // pre layer is fc layer
 											fm_addr_read[0]	<= cur_fm_swap*`FM_RAM_HALF;
 										end
-
-										clk_count <= clk_count + 1;
 									end
 								end
-								else if (clk_count < fm_total_size) begin
-									conv_rst <= 1;
-
+								else if (clk_count > 1 && clk_count < (fm_total_size+1)) begin
 									if (pre_layer_type == 2) begin // pre layer is conv/pool layer
 										if ((cur_y+1) < fm_size) begin
 											cur_y <= cur_y + 1;
@@ -1073,11 +1089,12 @@ module LayerParaScaleFloat16(
 									else if (pre_layer_type == 3) begin // pre layer is fc layer
 										fm_addr_read[0]	<= fm_addr_read[0] + 1;
 									end
-
-									clk_count <= clk_count + 1;
 								end
 
 								// fc ready, write result to fm ram
+								if (clk_count <= (fm_total_size+1)) begin
+									clk_count <= clk_count + 1;
+								end
 								if (clk_count > (fm_total_size+1)) begin
 										// fc result ready
 										if (&conv_out_ready == 1) begin
@@ -1092,7 +1109,7 @@ module LayerParaScaleFloat16(
 												cur_fm_ram <= 0;
 											end
 											else if (pre_layer_type == 3) begin // pre layer is fc layer
-												/// nothing
+												// nothing
 											end
 
 											if ((kernel_num_count + `PARA_Y*`PARA_KERNEL) < kernel_num) begin // next para weight

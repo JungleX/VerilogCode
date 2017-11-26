@@ -50,6 +50,7 @@ module LayerParaScaleFloat16_tb();
 		.rst(rst),
 
 		.layer_type(layer_type), // 0: prepare init feature map data; 1:conv; 2:pool; 3:fc;
+        .pre_layer_type(pre_layer_type),
 
         .layer_num(layer_num),
 
@@ -392,28 +393,132 @@ module LayerParaScaleFloat16_tb();
         weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
                         16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
                         16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
                         16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
                     }; // 25*2=50
         write_weight_data_addr <= update_weight_ram_addr;
         weight_data_done <= 0;
 
         #`clk_period
-        weight_data <= {16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 
-                        16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
-                        16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000,
-                        16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 
-                        16'h3c00, 16'h4000, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
-                    }; // 16*2-25=7
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,  
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
+
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+                        
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; // 32-25=7 25-7=18
         write_weight_data_addr <= update_weight_ram_addr + `KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h3c00,
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
+
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
+
+                        16'h4000,
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; // 32-18=14 25-14=11
+        write_weight_data_addr <= update_weight_ram_addr + 2*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h0000, 16'h0000, 16'h0000, 16'h0000, 
+
+                        16'h4000,
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h0000, 16'h0000, 16'h0000, 16'h0000, 
+
+                        16'h3c00,
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; //32-11=21 25-21=4
+        write_weight_data_addr <= update_weight_ram_addr + 3*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
         weight_data_done <= 0;
 
         #`clk_period
         weight_data_done <= 1;
         // end of update kernel for fc
 
+       #(`clk_period*2)
+
+        // update kernel for fc
+        while(update_weight_ram != 1) begin
+            #`clk_period
+            weight_data_done <= 1;
+        end
+
+        // update_weight_ram == 1
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h4400, 
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200
+                    }; // 25*2=50
+        write_weight_data_addr <= update_weight_ram_addr;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,  
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
+
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+                        
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; // 32-25=7 25-7=18
+        write_weight_data_addr <= update_weight_ram_addr + `KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h3c00,
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
+
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
+
+                        16'h4000,
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; // 32-18=14 25-14=11
+        write_weight_data_addr <= update_weight_ram_addr + 2*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h0000, 16'h0000, 16'h0000, 16'h0000, 
+        
+                        16'h4200,
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h0000, 16'h0000, 16'h0000, 16'h0000, 
+
+                        16'h4400,
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; //32-11=21 25-21=4
+        write_weight_data_addr <= update_weight_ram_addr + 3*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data_done <= 1;
+        // end of update kernel for fc
+         
         #(`clk_period*2)
         layer_type <= 1;
 
@@ -441,10 +546,6 @@ module LayerParaScaleFloat16_tb();
             layer_type <= 2;
         end
 
-        // prepare fc weight
-        // just for test
-
-
         // change to fc
         #`clk_period
         layer_type <= 3;
@@ -453,6 +554,7 @@ module LayerParaScaleFloat16_tb();
         fm_size <= 4;
         fm_depth <= 2;
         fm_total_size <= 32;
-        kernel_num <= 14; // out put fm size, 1*1*kernel_num
+        kernel_size <= 32; // the total size of fm
+        kernel_num <= 12; // out put fm size, 1*1*kernel_num
     end
 endmodule
