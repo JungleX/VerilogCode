@@ -355,30 +355,43 @@ module LayerParaScaleFloat16_tb();
         kernel_size <= 3;
     	// PARA_X <= 3, PARA_Y <= 3, kernel size <= 3, feature map size <= 8 ============================================
 
-        // update a kernel
-        update_weight_count <= 0;
-        for (i=0; i<200; i=i+1) begin
+        // update kernel
+        while(update_weight_ram != 1) begin
             #`clk_period
-            if (update_weight_ram == 1) begin
-                if (update_weight_count == 0) begin
-                    weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4000};
-                    weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
-                    write_weight_data_addr <= update_weight_ram_addr;
-                    update_weight_count <= 1;
-                    weight_data_done <= 0;
-                end
-                else if (update_weight_count == 1) begin
-                    weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
-                    weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
-                    update_weight_count <= 2;
-                    write_weight_data_addr <= update_weight_ram_addr + 1;
-                    weight_data_done <= 0;
-                end
-                else if(update_weight_count == 2) begin
-                    weight_data_done <= 1;
-                end
-            end
+            update_weight_count <= 0;
         end
+
+        // update_weight_ram == 1
+        weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4000};
+        weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h3c00, 16'h4000, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
+        write_weight_data_addr <= update_weight_ram_addr;
+        update_weight_count <= 1;
+        weight_data_done <= 0;
+        
+        #`clk_period
+        weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h4200};
+        weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1] <= {16'h0000, 16'h4200, 16'h0000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200, 16'h4000, 16'h3c00};
+        update_weight_count <= 2;
+        write_weight_data_addr <= update_weight_ram_addr + 1;
+        weight_data_done <= 0;
+        
+        #`clk_period
+        update_weight_count <= 0;
+        weight_data_done <= 1;
+        // end of update kernel
+
+        #`clk_period
+
+        // update kernel for fc
+        while(update_weight_ram != 1) begin
+            #`clk_period
+            update_weight_count <= 0;
+        end
+
+        // update_weight_ram == 1
+        //todo
+        
+        // end of update kernel for fc
 
         #(`clk_period*2)
         layer_type <= 1;
@@ -407,12 +420,18 @@ module LayerParaScaleFloat16_tb();
             layer_type <= 2;
         end
 
+        // prepare fc weight
+        // just for test
+
+
         // change to fc
         #`clk_period
         layer_type <= 3;
         layer_num  <= 3;
         pre_layer_type <= 2;
         fm_size <= 4;
-        fm_total_size <= 16;
+        fm_depth <= 2;
+        fm_total_size <= 32;
+        kernel_num <= 14; // out put fm size, 1*1*kernel_num
     end
 endmodule
