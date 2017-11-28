@@ -261,40 +261,10 @@ module LayerParaScaleFloat16(
 
 			// ======== Begin: reset fm ram ========
 			// PARA_X
-			fm_ena_add_write[0]		<= 0;
-			fm_ena_zero_w[0]		<= 0;
-			fm_ena_w[0]				<= 0;
-			fm_ena_para_w[0]		<= 0;
-			fm_ena_r[0]				<= 0;
-
-			cur_out_index[0]	<= 0;
-
-			fm_ena_add_write[1]		<= 0;
-			fm_ena_zero_w[1]		<= 0;
-			fm_ena_w[1]				<= 0;
-			fm_ena_para_w[1]		<= 0;
-			fm_ena_r[1]				<= 0;
-
-			cur_out_index[1]	<= 0;
-
-			fm_ena_add_write[2]		<= 0;
-			fm_ena_zero_w[2]		<= 0;
-			fm_ena_w[2]				<= 0;
-			fm_ena_para_w[2]		<= 0;
-			fm_ena_r[2]				<= 0;
-
-			cur_out_index[2]	<= 0;
 			// ======== End: reset fm ram ========
 
 			// ======== Begin: reset weight ram ========
 			// PARA_KERNEL
-			weight_ena_w[0]		<= 0;
-			weight_ena_r[0] 	<= 0;
-			weight_ena_fc_r[0]	<= 0;
-
-			weight_ena_w[1]		<= 0;
-			weight_ena_r[1] 	<= 0;
-			weight_ena_fc_r[1]	<= 0;
 			// ======== End: reset weight ram ========
 
 			// reset layer status signal
@@ -351,29 +321,6 @@ module LayerParaScaleFloat16(
 					else begin
 						// ======== Begin: write fm ram ========
 						// PARA_X
-						fm_ena_add_write[0]	<= 0;
-						fm_ena_zero_w[0]	<= 0;
-						fm_ena_w[0]			<= 1;
-						fm_ena_para_w[0]	<= 0;
-						fm_ena_r[0]			<= 0;
-						fm_addr_write[0]	<= write_fm_data_addr;
-						fm_din[0]			<= init_fm_data[`PARA_Y*`DATA_WIDTH*1 - 1:`PARA_Y*`DATA_WIDTH*0];
-
-						fm_ena_add_write[1]	<= 0;
-						fm_ena_zero_w[1]	<= 0;
-						fm_ena_w[1]			<= 1;
-						fm_ena_para_w[1]	<= 0;
-						fm_ena_r[1]			<= 0; 
-						fm_addr_write[1]	<= write_fm_data_addr;
-						fm_din[1]			<= init_fm_data[`PARA_Y*`DATA_WIDTH*2 - 1:`PARA_Y*`DATA_WIDTH*1];
-
-						fm_ena_add_write[2]	<= 0;
-						fm_ena_zero_w[2]	<= 0;
-						fm_ena_w[2]			<= 1;
-						fm_ena_para_w[2]	<= 0;
-						fm_ena_r[2]			<= 0;
-						fm_addr_write[2]	<= write_fm_data_addr;
-						fm_din[2]			<= init_fm_data[`PARA_Y*`DATA_WIDTH*3 - 1:`PARA_Y*`DATA_WIDTH*2];
 						// ======== End: write fm ram ========
 
 						init_fm_ram_ready	<= 0;
@@ -386,17 +333,6 @@ module LayerParaScaleFloat16(
 					else begin
 						// ======== Begin: write weight ram ========
 						// PARA_KERNEL
-						weight_ena_w[0]		<= 1;
-						weight_ena_r[0] 	<= 0;
-						weight_ena_fc_r[0]	<= 0;
-						weight_addr_write[0]	<= write_weight_data_addr;
-						weight_din[0]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0]; 
-
-						weight_ena_w[1]		<= 1;
-						weight_ena_r[1] 	<= 0;
-						weight_ena_fc_r[1]	<= 0;
-						weight_addr_write[1]	<= write_weight_data_addr;
-						weight_din[1]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1];
 						// ======== End: write weight ram ========
 
 						init_weight_ram_ready <= 0;
@@ -425,13 +361,6 @@ module LayerParaScaleFloat16(
 						if (weight_data_done == 0) begin
 							// ======== Begin: write weight ram ========
 							// PARA_KERNEL
-							weight_ena_w[0] <= 1;
-							weight_addr_write[0]	<= write_weight_data_addr;
-							weight_din[0]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0]; 
-
-							weight_ena_w[1] <= 1; 
-							weight_addr_write[1]	<= write_weight_data_addr;
-							weight_din[1]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1];
 							// ======== End: write weight ram ========
 						end
 						else if(weight_data_done == 1) begin
@@ -457,35 +386,6 @@ module LayerParaScaleFloat16(
 								if (zero_write_count == 0) begin // prepare zero padding
 									// ======== Begin: set fm ram zero write ========
 									// PARA_X
-									fm_ena_add_write[0] <= 0;
-									fm_ena_zero_w[0] 	<= 1;
-									fm_ena_w[0] 		<= 0;
-									fm_ena_para_w[0] 	<= 0;
-
-									fm_zero_start_addr[0]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[0]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
-
-									cur_out_index[0]	<= ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
-
-									fm_ena_add_write[1] <= 0;
-									fm_ena_zero_w[1] 	<= 1;
-									fm_ena_w[1] 		<= 0;
-									fm_ena_para_w[1] 	<= 0;
-
-									fm_zero_start_addr[1]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[1]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
-
-									cur_out_index[1]	<= ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
-
-									fm_ena_add_write[2] <= 0;
-									fm_ena_zero_w[2] 	<= 1;
-									fm_ena_w[2] 		<= 0;
-									fm_ena_para_w[2] 	<= 0;
-
-									fm_zero_start_addr[2]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[2]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
-
-									cur_out_index[2]	<= ((padding_out-2+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 									// ======== End: set fm ram zero write ========
 
 									cur_write_start_ram	<= padding_out-(padding_out/`PARA_X)*`PARA_X;
@@ -501,30 +401,10 @@ module LayerParaScaleFloat16(
 										// start to read, next clk get read data
 										// ======== Begin: set fm ram read ========
 										// PARA_X
-										fm_read_type	<= 0;
-
-										fm_ena_r[0]			<= 1; 
-										fm_addr_read[0]		<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X); // [fm_size/`PARA_Y]=(fm_size+`PARA_Y-1)/`PARA_Y [8/3] = 3
-										fm_sub_addr_read[0]	<= 0;
-
-										fm_ena_r[1]			<= 1; 
-										fm_addr_read[1]		<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
-										fm_sub_addr_read[1]	<= 0;
-
-										fm_ena_r[2]			<= 1;
-										fm_addr_read[2]		<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
-										fm_sub_addr_read[2]	<= 0;
 										// ======== End: set fm ram read ========
 
 										// ======== Begin: set weight ram read ========
 										// PARA_KERNEL
-										weight_ena_r[0]		<= 1;
-										weight_ena_fc_r[0]	<= 0;
-										weight_addr_read[0]	<= cur_kernel_swap*`WEIGHT_RAM_HALF + cur_kernel_slice*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
-
-										weight_ena_r[1]		<= 1;
-										weight_ena_fc_r[1]	<= 0;
-										weight_addr_read[1]	<= cur_kernel_swap*`WEIGHT_RAM_HALF + cur_kernel_slice*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
 										// ======== End: set weight ram read ========
 
 										cur_fm_ram	<= 0;
@@ -541,11 +421,6 @@ module LayerParaScaleFloat16(
 									else if (clk_count <= (kernel_size*kernel_size + 1)) begin
 										// ======== Begin: set weight ram read ========
 										// PARA_KERNEL
-										weight_addr_read[0]	<= weight_addr_read[0] + 1;
-										conv_weight[0]		<= weight_dout[0][`DATA_WIDTH - 1:0];
-
-										weight_addr_read[1]	<= weight_addr_read[1] + 1;
-										conv_weight[1]		<= weight_dout[1][`DATA_WIDTH - 1:0]; 
 										// ======== End: set weight ram read ========
 									end
 
@@ -553,29 +428,6 @@ module LayerParaScaleFloat16(
 									if (clk_count == 1) begin
 										// ======== Begin: set fm ram read data ========
 										// PARA_KERNEL -> PARA_X
-										conv_input_data[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fm_dout[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
-										conv_input_data[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fm_dout[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
-										conv_input_data[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fm_dout[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
-
-										conv_input_data[0][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= fm_dout[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
-										conv_input_data[0][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= fm_dout[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
-										conv_input_data[0][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= fm_dout[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
-
-										conv_input_data[0][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= fm_dout[2][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
-										conv_input_data[0][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= fm_dout[2][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
-										conv_input_data[0][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= fm_dout[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
-
-										conv_input_data[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fm_dout[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
-										conv_input_data[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fm_dout[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
-										conv_input_data[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fm_dout[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
-
-										conv_input_data[1][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= fm_dout[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
-										conv_input_data[1][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= fm_dout[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
-										conv_input_data[1][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= fm_dout[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
-
-										conv_input_data[1][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= fm_dout[2][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
-										conv_input_data[1][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= fm_dout[2][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
-										conv_input_data[1][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= fm_dout[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
 										// ======== End: set fm ram read data ========
 
 										// ======== Begin: set fm ram read address ========
@@ -595,20 +447,10 @@ module LayerParaScaleFloat16(
 									else if (clk_count > 1 && clk_count <= kernel_size) begin
 										// ======== Begin: set fm ram read data ========
 										// PARA_KERNEL -> PARA_X
-										conv_input_data[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fm_dout[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
-										conv_input_data[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fm_dout[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
-										conv_input_data[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fm_dout[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
-
-										conv_input_data[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fm_dout[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
-										conv_input_data[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fm_dout[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
-										conv_input_data[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fm_dout[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
 										// ======== End: set fm ram read data ========
 
 										// ======== Begin: set fm ram read address ========
 										// PARA_X
-										fm_sub_addr_read[0]	<= fm_sub_addr_read[0] + 1;
-										fm_sub_addr_read[1]	<= fm_sub_addr_read[1] + 1;
-										fm_sub_addr_read[2]	<= fm_sub_addr_read[2] + 1;
 										// ======== End: set fm ram read address ========
 
 										if (clk_count == kernel_size) begin
@@ -623,13 +465,6 @@ module LayerParaScaleFloat16(
 									else if ((clk_count-(clk_count/kernel_size)*kernel_size) == 1 && clk_count <= (kernel_size*kernel_size)) begin
 										// ======== Begin: set fm ram read data ========
 										// PARA_KERNEL -> PARA_X
-										conv_input_data[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fm_dout[cur_fm_ram][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
-										conv_input_data[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fm_dout[cur_fm_ram][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
-										conv_input_data[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fm_dout[cur_fm_ram][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
-
-										conv_input_data[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fm_dout[cur_fm_ram][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
-										conv_input_data[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fm_dout[cur_fm_ram][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
-										conv_input_data[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fm_dout[cur_fm_ram][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
 										// ======== End: set fm ram read data ========
 
 										fm_addr_read[cur_fm_ram]		<= fm_addr_read[cur_fm_ram] + 1;
@@ -643,9 +478,6 @@ module LayerParaScaleFloat16(
 
 											// ======== Begin: set fm ram read address ========
 											// PARA_X
-											fm_sub_addr_read[0]	<= 0;
-											fm_sub_addr_read[1]	<= 0;
-											fm_sub_addr_read[2]	<= 0;
 											// ======== End: set fm ram read address ========
 
 											fm_addr_read[(cur_fm_ram+1) - ((cur_fm_ram+1)/`PARA_X)*`PARA_X] <= fm_addr_read[(cur_fm_ram+1) - ((cur_fm_ram+1)/`PARA_X)*`PARA_X] + (fm_size+`PARA_Y-1)/`PARA_Y - ((kernel_size-1)+`PARA_Y-1)/`PARA_Y;
@@ -653,15 +485,11 @@ module LayerParaScaleFloat16(
 										else begin
 											// ======== Begin: set fm ram read address ========
 											// PARA_X-1 ??? todo
-											fm_sub_addr_read[0]	<= fm_sub_addr_read[0] + 1;
-											fm_sub_addr_read[1]	<= fm_sub_addr_read[1] + 1;
 											// ======== End: set fm ram read address ========
 										end
 
 										// ======== Begin: set fm ram read data ========
 										// PARA_KERNEL
-										conv_input_data[0][`DATA_WIDTH - 1:0] <= fm_dout[cur_fm_ram][`DATA_WIDTH - 1:0];
-										conv_input_data[1][`DATA_WIDTH - 1:0] <= fm_dout[cur_fm_ram][`DATA_WIDTH - 1:0];
 										// ======== End: set fm ram read data ========
 
 										clk_count	<= clk_count + 1;
@@ -676,48 +504,7 @@ module LayerParaScaleFloat16(
 
 													// ======== Begin: set fm ram write ========
 													// PARA_X
-													fm_ena_add_write[0] <= 1;
-													fm_ena_zero_w[0] 	<= 0;
-											        fm_ena_w[0] 		<= 0;
-											        fm_ena_para_w[0] 	<= 1;
-											        fm_addr_para_write[0] <= fm_zero_start_addr[0] 
-											        						+ cur_out_slice*((fm_size_out+`PARA_X-1)/`PARA_X)*(((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y) 
-											        						+ cur_out_index[0]; 
-		        									fm_out_size[0] <= fm_size_out; 
-
-		        									fm_para_din[(cur_write_start_ram+0)-((cur_write_start_ram+0)/`PARA_X)*`PARA_X] <= {
-		        														conv_out_buffer[1][`PARA_Y*1*`DATA_WIDTH - 1:`PARA_Y*0*`DATA_WIDTH],
-		        														conv_out_buffer[0][`PARA_Y*1*`DATA_WIDTH - 1:`PARA_Y*0*`DATA_WIDTH]
-		        													}; 
-		        									
-		        									fm_ena_add_write[1] <= 1;
-											        fm_ena_zero_w[1] 	<= 0;
-											        fm_ena_w[1] 		<= 0;
-											        fm_ena_para_w[1] 	<= 1;
-											        fm_addr_para_write[1] <= fm_zero_start_addr[1] 
-											        						+ cur_out_slice*((fm_size_out+`PARA_X-1)/`PARA_X)*(((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y)  
-											        						+ cur_out_index[1];
-		        									fm_out_size[1] <= fm_size_out; 
-
-		        									fm_para_din[(cur_write_start_ram+1)-((cur_write_start_ram+1)/`PARA_X)*`PARA_X] <= {
-		        														conv_out_buffer[1][`PARA_Y*2*`DATA_WIDTH - 1:`PARA_Y*1*`DATA_WIDTH],
-		        														conv_out_buffer[0][`PARA_Y*2*`DATA_WIDTH - 1:`PARA_Y*1*`DATA_WIDTH]
-		        													};
-
-		        									fm_ena_add_write[2] <= 1;
-											        fm_ena_zero_w[2] 	<= 0;
-											        fm_ena_w[2] 		<= 0;
-											        fm_ena_para_w[2] 	<= 1;
-											        fm_addr_para_write[2] <= fm_zero_start_addr[2] 
-											        						+ cur_out_slice*((fm_size_out+`PARA_X-1)/`PARA_X)*(((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y)
-											        						+ cur_out_index[2];
-		        									fm_out_size[2] <= fm_size_out; 
-
-		        									fm_para_din[(cur_write_start_ram+2)-((cur_write_start_ram+2)/`PARA_X)*`PARA_X] <= {
-		        														conv_out_buffer[1][`PARA_Y*3*`DATA_WIDTH - 1:`PARA_Y*2*`DATA_WIDTH],
-		        														conv_out_buffer[0][`PARA_Y*3*`DATA_WIDTH - 1:`PARA_Y*2*`DATA_WIDTH]
-		        													};
-		        									// ======== End: set fm ram write ========
+													// ======== End: set fm ram write ========
 												end
 											end
 											
@@ -726,9 +513,6 @@ module LayerParaScaleFloat16(
 
 												// ======== Begin: set fm ram write ========
 												// PARA_X
-												cur_out_index[0] <= cur_out_index[0] + `PARA_Y;
-												cur_out_index[1] <= cur_out_index[1] + `PARA_Y;
-												cur_out_index[2] <= cur_out_index[2] + `PARA_Y;
 												// ======== End: set fm ram write ========
 											end
 											else begin
@@ -739,9 +523,6 @@ module LayerParaScaleFloat16(
 
 													// ======== Begin: set fm ram write ========
 													// PARA_X
-													cur_out_index[0] <= (((cur_out_index[0] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
-													cur_out_index[1] <= (((cur_out_index[1] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
-													cur_out_index[2] <= (((cur_out_index[2] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 													// ======== End: set fm ram write ========
 												end
 												else begin 
@@ -773,9 +554,6 @@ module LayerParaScaleFloat16(
 
 															// ======== Begin: set fm ram write ========
 															// PARA_X
-															cur_out_index[0]	<= ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
-															cur_out_index[1]	<= ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
-															cur_out_index[2]	<= ((padding_out-2+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 															// ======== End: set fm ram write ========
 
 															cur_out_slice 		<= cur_out_slice + `PARA_KERNEL;
@@ -788,9 +566,6 @@ module LayerParaScaleFloat16(
 
 														// ======== Begin: set fm ram write ========
 														// PARA_X
-														cur_out_index[0]	<= ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
-														cur_out_index[1]	<= ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
-														cur_out_index[2]	<= ((padding_out-2+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 														// ======== End: set fm ram write ========
 
 														cur_kernel_slice	<= cur_kernel_slice + 1; // next kernel slice
@@ -811,20 +586,6 @@ module LayerParaScaleFloat16(
 									if (&fm_write_ready == 1) begin
 										// ======== Begin: disable fm ram write ========
 										// PARA_X
-										fm_ena_add_write[0]	<= 0;
-										fm_ena_zero_w[0] 	<= 0;
-										fm_ena_w[0] 		<= 0;
-										fm_ena_para_w[0] 	<= 0;
-													        
-										fm_ena_add_write[1]	<= 0;
-										fm_ena_zero_w[1] 	<= 0;
-										fm_ena_w[1] 		<= 0;
-										fm_ena_para_w[1] 	<= 0;
-
-										fm_ena_add_write[2]	<= 0;
-										fm_ena_zero_w[2] 	<= 0;
-										fm_ena_w[2] 		<= 0;
-										fm_ena_para_w[2] 	<= 0;
 										// ======== End: disable fm ram write ========
 
 										write_ready_clk_count <= 0;
@@ -843,9 +604,6 @@ module LayerParaScaleFloat16(
 
 											// ======== Begin: reset fm ram write ========
 											// PARA_X
-											cur_out_index[0]	<= 0;
-											cur_out_index[1]	<= 0;
-											cur_out_index[2]	<= 0;
 											// ======== End: reset fm ram write ========
 
 											cur_out_slice		<= 0;
@@ -864,53 +622,16 @@ module LayerParaScaleFloat16(
 								fm_read_type	<= 1;
 								// ======== Begin: set fm ram read ========
 								// PARA_X
-								fm_ena_r[0]		<= 1;
-								fm_ena_r[1]		<= 1;
-								fm_ena_r[2]		<= 1;
 								// ======== End: set fm ram read ========
 
 								// ======== Begin: disable weight ram read ========
 								// PARA_KERNEL
-								weight_ena_r[0]		<= 0;
-								weight_ena_fc_r[0]	<= 0;
-
-								weight_ena_r[1]		<= 0;
-								weight_ena_fc_r[1]	<= 0;
 								// ======== End: disable weight ram read ========
 
 								// prepare output ram
 								if (zero_write_count == 0) begin // prepare zero padding
 									// ======== Begin: set fm ram zero write ========
 									// PARA_X
-									fm_ena_add_write[0]	<= 0;
-									fm_ena_zero_w[0] 	<= 1;
-									fm_ena_w[0] 		<= 0;
-									fm_ena_para_w[0] 	<= 0;
-
-									fm_zero_start_addr[0]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[0]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
-
-									cur_out_index[0]	<= ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
-
-									fm_ena_add_write[1]	<= 0;
-									fm_ena_zero_w[1] 	<= 1;
-									fm_ena_w[1] 		<= 0;
-									fm_ena_para_w[1] 	<= 0;
-
-									fm_zero_start_addr[1]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[1]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
-
-									cur_out_index[1]	<= ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
-
-									fm_ena_add_write[2]	<= 0;
-									fm_ena_zero_w[2] 	<= 1;
-									fm_ena_w[2] 		<= 0;
-									fm_ena_para_w[2] 	<= 0;
-
-									fm_zero_start_addr[2]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[2]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
-
-									cur_out_index[2]	<= ((padding_out-2+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 									// ======== End: set fm ram zero write ========
 
 									cur_write_start_ram	<= padding_out-(padding_out/`PARA_X)*`PARA_X;
@@ -959,20 +680,6 @@ module LayerParaScaleFloat16(
 											if (zero_write_count == 1) begin
 												// ======== Begin: set fm ram write ========
 												// PARA_X
-												fm_ena_add_write[0]	<= 0;
-												fm_ena_zero_w[0]	<= 0;
-												fm_ena_w[0]			<= 1;
-												fm_ena_para_w[0]	<= 0;
-												
-												fm_ena_add_write[1]	<= 0;
-												fm_ena_zero_w[1]	<= 0;
-												fm_ena_w[1]			<= 1;
-												fm_ena_para_w[1]	<= 0;
-												
-												fm_ena_add_write[2]	<= 0;
-												fm_ena_zero_w[2]	<= 0;
-												fm_ena_w[2]			<= 1;
-												fm_ena_para_w[2]	<= 0;
 												// ======== End: set fm ram write ========
 
 												fm_addr_write[cur_out_fm_ram] <= fm_zero_start_addr[cur_out_fm_ram] 
@@ -984,14 +691,6 @@ module LayerParaScaleFloat16(
 													case((fm_size-cur_y)/pool_win_size)
 														// ======== Begin: set fm ram write ========
 														// `PARA_Y-1
-														1:
-															begin
-																fm_din[cur_out_fm_ram] <= {0, pu_result[`DATA_WIDTH-1:0]};
-															end
-														2:
-															begin
-																fm_din[cur_out_fm_ram] <= {0, pu_result[`DATA_WIDTH*2-1:0]};
-															end
 														// ======== End: set fm ram write ========
 													endcase
 												end
@@ -1045,9 +744,6 @@ module LayerParaScaleFloat16(
 														// no padding
 														// ======== Begin: set fm ram write ========
 														// PARA_X
-														cur_out_index[0] 	<= ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y);
-														cur_out_index[1] 	<= ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y);
-														cur_out_index[2] 	<= ((padding_out-2+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y);
 														// ======== End: set fm ram write ========
 													end
 												end 
@@ -1071,26 +767,6 @@ module LayerParaScaleFloat16(
 
 									// ======== Begin: disable fm ram write ========
 									// PARA_X
-									fm_ena_add_write[0]	<= 0;
-									fm_ena_zero_w[0] 	<= 0;
-									fm_ena_w[0] 		<= 0;
-									fm_ena_para_w[0] 	<= 0;
-
-									cur_out_index[0]	<= 0;
-												        
-									fm_ena_add_write[1]	<= 0;
-									fm_ena_zero_w[1] 	<= 0;
-									fm_ena_w[1] 		<= 0;
-									fm_ena_para_w[1] 	<= 0;
-
-									cur_out_index[1]	<= 0;
-
-									fm_ena_add_write[2]	<= 0;
-									fm_ena_zero_w[2] 	<= 0;
-									fm_ena_w[2] 		<= 0;
-									fm_ena_para_w[2] 	<= 0;
-
-									cur_out_index[2]	<= 0;
 									// ======== End: disable fm ram write ========
 
 									cur_out_slice		<= 0;
@@ -1107,18 +783,10 @@ module LayerParaScaleFloat16(
 								fm_read_type		<= 2;
 								// ======== Begin: set fm ram read ========
 								// PARA_X
-								fm_ena_r[0]			<= 1;
-								fm_ena_r[1]			<= 1;
-								fm_ena_r[2]			<= 1;
 								// ======== End: set fm ram read ========
 
 								// ======== Begin: set weight ram read ========
 								// PARA_KERNEL
-								weight_ena_r[0]		<= 0;
-								weight_ena_fc_r[0]	<= 1;
-
-								weight_ena_r[1]		<= 0;
-								weight_ena_fc_r[1]	<= 1;
 								// ======== End: set weight ram read ========
 
 								// prepare output ram
@@ -1151,8 +819,6 @@ module LayerParaScaleFloat16(
 								if (clk_count > 0 && clk_count <= fm_total_size) begin
 									// ======== Begin: set conv input ========
 									// PARA_KERNEL
-									conv_input_data[0] <= {0, weight_dout[0]};
-									conv_input_data[1] <= {0, weight_dout[1]};
 									// ======== End: set conv input ========
 								end
 
@@ -1160,8 +826,6 @@ module LayerParaScaleFloat16(
 								if (clk_count > 1 && clk_count <= (fm_total_size+1)) begin
 									// ======== Begin: set conv input ========
 									// PARA_KERNEL
-									conv_weight[0] <= fm_dout[cur_fm_ram][`DATA_WIDTH - 1:0];
-									conv_weight[1] <= fm_dout[cur_fm_ram][`DATA_WIDTH - 1:0];
 									// ======== End: set conv input ========
 								end
 
@@ -1169,15 +833,11 @@ module LayerParaScaleFloat16(
 								if (clk_count == 0) begin
 									// ======== Begin: set weight read address ========
 									// PARA_KERNEL
-									weight_addr_read[0] <= cur_kernel_swap*`WEIGHT_RAM_HALF;
-									weight_addr_read[1] <= cur_kernel_swap*`WEIGHT_RAM_HALF;
 									// ======== End: set weight read address ========
 								end
 								else if (clk_count > 0 && clk_count < (fm_total_size+1)) begin
 									// ======== Begin: set weight read address ========
 									// PARA_KERNEL
-									weight_addr_read[0] <= weight_addr_read[0] + 1;
-									weight_addr_read[1] <= weight_addr_read[1] + 1;
 									// ======== End: set weight read address ========
 								end
 
@@ -1342,26 +1002,6 @@ module LayerParaScaleFloat16(
 
 								// ======== Begin: disable fm ram write ========
 								// PARA_X
-								fm_ena_add_write[0]		<= 0;
-								fm_ena_zero_w[0]		<= 0;
-								fm_ena_w[0]				<= 0;
-								fm_ena_para_w[0]		<= 0;
-
-								cur_out_index[0]		<= 0;
-
-								fm_ena_add_write[1]		<= 0;
-								fm_ena_zero_w[1]		<= 0;
-								fm_ena_w[1]				<= 0;
-								fm_ena_para_w[1]		<= 0;
-
-								cur_out_index[1]		<= 0;
-
-								fm_ena_add_write[2]		<= 0;
-								fm_ena_zero_w[2]		<= 0;
-								fm_ena_w[2]				<= 0;
-								fm_ena_para_w[2]		<= 0;
-
-								cur_out_index[2]		<= 0;
 								// ======== End: reset fm ram ========
 
 								// ======== Begin: reset weight ram ========

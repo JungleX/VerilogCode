@@ -419,14 +419,8 @@ def replace(file_path, old_str, new_str):
 	except Exception,e:  
 		print e 
 
-
-
-ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y)
+# ================================================================
+poolunit()
 FeatureMapRam(Para_Y, Para_kernel)
 WeightRam(Para_Y, KernelSizeMax)
-poolunit()
-
-#ConvParaScaleFloat16([3, 5], 3, 3)
-#FeatureMapRam(3, 2)
-#WeightRam(3, 5)
-#poolunit()
+ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y)
