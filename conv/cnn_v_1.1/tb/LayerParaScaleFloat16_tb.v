@@ -9,8 +9,8 @@ module LayerParaScaleFloat16_tb();
 	reg clk;
 	reg rst;
 
-	reg [1:0] layer_type;
-    reg [1:0] pre_layer_type;
+	reg [3:0] layer_type;
+    reg [3:0] pre_layer_type;
 
     reg [`LAYER_NUM_WIDTH - 1:0] layer_num;
 
@@ -548,7 +548,7 @@ module LayerParaScaleFloat16_tb();
 
         // change to fc
         #`clk_period
-        /*layer_type <= 3;
+        layer_type <= 3;
         layer_num  <= 3;
         pre_layer_type <= 2;
         fm_size <= 4;
@@ -557,15 +557,26 @@ module LayerParaScaleFloat16_tb();
         kernel_size <= 32; // the total size of fm
         kernel_num <= 12;  // out put fm size, 1*1*kernel_num
         fm_size_out <= 12;
-        */
-        layer_type <= 3;
+
+        // pre layer is fc
+        /*layer_type <= 3;
         layer_num  <= 3;
         pre_layer_type <= 3;
         fm_total_size <= 32;
         kernel_size <= 32; // the total size of fm
         kernel_num <= 12;  // out put fm size, 1*1*kernel_num
-        fm_size_out <= 12;
+        fm_size_out <= 12;*/
 
+        #(`clk_period*2)
+        layer_type <= 3;
 
+        while(layer_ready !=1) begin
+            #`clk_period
+            layer_type <= 3;
+        end
+
+        // finish, done
+        #`clk_period
+        layer_type <= 9;
     end
 endmodule
