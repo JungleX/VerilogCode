@@ -233,9 +233,6 @@ module LayerParaScaleFloat16(
     reg [`FM_SIZE_WIDTH - 1:0] cur_y;
     reg [`KERNEL_NUM_WIDTH - 1:0] cur_slice;
 
-    // just for fc
-    reg [`READ_ADDR_WIDTH - 1:0] cur_weight_index;
-
     // update kernel
     reg cur_kernel_swap; // 0 or 1; one is using, the other is updating
     reg [`KERNEL_NUM_WIDTH - 1:0] cur_kernel_slice;
@@ -283,8 +280,6 @@ module LayerParaScaleFloat16(
 			cur_x		<= 0;
 			cur_y		<= 0;
 			cur_slice	<= 0;
-
-			cur_weight_index <= 0;
 
 			cur_kernel_swap		<= 0;
 			cur_kernel_slice	<= 0;
@@ -958,6 +953,7 @@ module LayerParaScaleFloat16(
 
 								// prepare output ram
 								if (zero_write_count == 0) begin // prepare zero padding
+									// just need the first fm ram
 									fm_ena_zero_w[0] 	<= 1;
 									fm_ena_w[0] 		<= 0;
 									fm_ena_para_w[0] 	<= 0;
@@ -965,28 +961,8 @@ module LayerParaScaleFloat16(
 									fm_zero_start_addr[0]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
 									fm_zero_end_addr[0]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
 
-									cur_out_index[0]	<= ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
+									cur_out_index[0]	<= 0;
 
-									fm_ena_zero_w[1] 	<= 1;
-									fm_ena_w[1] 		<= 0;
-									fm_ena_para_w[1] 	<= 0;
-
-									fm_zero_start_addr[1]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[1]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
-
-									cur_out_index[1]	<= ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
-
-									fm_ena_zero_w[2] 	<= 1;
-									fm_ena_w[2] 		<= 0;
-									fm_ena_para_w[2] 	<= 0;
-
-									fm_zero_start_addr[2]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[2]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
-
-									cur_out_index[2]	<= ((padding_out-2+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
-
-									cur_write_start_ram	<= padding_out-(padding_out/`PARA_X)*`PARA_X;
-									cur_write_end_ram	<= fm_size_out-(fm_size_out/`PARA_X)*`PARA_X;
 									zero_write_count	<= 1;
 								end
 
@@ -1038,8 +1014,8 @@ module LayerParaScaleFloat16(
 
 								// set weight read address
 								if (clk_count == 0) begin
-									weight_addr_read[0] <= cur_kernel_swap*`WEIGHT_RAM_HALF + cur_weight_index;
-									weight_addr_read[1] <= cur_kernel_swap*`WEIGHT_RAM_HALF + cur_weight_index;
+									weight_addr_read[0] <= cur_kernel_swap*`WEIGHT_RAM_HALF;
+									weight_addr_read[1] <= cur_kernel_swap*`WEIGHT_RAM_HALF;
 								end
 								else if (clk_count > 0 && clk_count < (fm_total_size+1)) begin
 									weight_addr_read[0] <= weight_addr_read[0] + 1;
@@ -1101,7 +1077,6 @@ module LayerParaScaleFloat16(
 											clk_count <= 0;
 
 											if (pre_layer_type == 2) begin // pre layer is conv/pool layer
-												// todo
 												cur_x <= 0;
 												cur_y <= 0;
 												cur_slice <= 0;
@@ -1118,15 +1093,41 @@ module LayerParaScaleFloat16(
 
 												// update kernel
 												update_weight_ram		<= 1;
-												update_weight_ram_addr	<= cur_kernel_swap*`WEIGHT_RAM_HALF; // todo
+												update_weight_ram_addr	<= cur_kernel_swap*`WEIGHT_RAM_HALF; 
 												update_weight_wait_count<= 0;
 											end
 											else begin // next layer
+												cur_kernel_swap <= ~cur_kernel_swap;
+
+												// update kernel
+												update_weight_ram		<= 1;
+												update_weight_ram_addr	<= cur_kernel_swap*`WEIGHT_RAM_HALF; 
+												update_weight_wait_count<= 0;
+
 												go_to_next_layer <= 1;
 											end
 
-											// todo
-											// write rresult to fm ram
+											// write result to fm ram
+											if (zero_write_count == 1) begin
+												if (write_ready_clk_count == 0) begin
+													write_ready_clk_count <= 1;
+
+													fm_ena_zero_w[0]	<= 0;
+													fm_ena_w[0]			<= 0;
+													fm_ena_para_w[0]	<= 1;
+
+													fm_ena_add_write[0]		<= 0; // not add, just write the final result
+													fm_addr_para_write[0] 	<= fm_zero_start_addr[0] + cur_out_index[0];
+													fm_out_size[0]			<= fm_size_out;
+
+													fm_para_din[0] <= {
+																		conv_out_buffer[1][`PARA_Y*`DATA_WIDTH - 1:0],
+																		conv_out_buffer[0][`PARA_Y*`DATA_WIDTH - 1:0]
+																	};
+
+													cur_out_index[0] <= cur_out_index[0] + 1;
+												end
+											end
 
 										end
 										else begin
@@ -1137,17 +1138,15 @@ module LayerParaScaleFloat16(
 								if (go_to_next_layer == 1) begin
 									conv_rst <= 0;
 
-									cur_fm_swap <= ~cur_fm_swap;
+									kernel_num_count	<= 0;
+									cur_fm_swap 		<= ~cur_fm_swap;
 
 									cur_x		<= 0;
 									cur_y		<= 0;
 									cur_slice	<= 0;
 									cur_fm_ram	<= 0;
 
-									// just for fc
-									cur_weight_index	<= 0;
-
-									// todo
+									cur_out_index[0]	<= 0;
 
 									zero_write_count	<= 0;
 

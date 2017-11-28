@@ -1,0 +1,1 @@
+						para_din_buffer[SET_INDEX] <= para_din[`DATA_WIDTH*SET_INDEX_0_ADD_ONE - 1:`DATA_WIDTH*SET_INDEX_0];

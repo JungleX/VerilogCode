@@ -548,13 +548,24 @@ module LayerParaScaleFloat16_tb();
 
         // change to fc
         #`clk_period
-        layer_type <= 3;
+        /*layer_type <= 3;
         layer_num  <= 3;
         pre_layer_type <= 2;
         fm_size <= 4;
         fm_depth <= 2;
         fm_total_size <= 32;
         kernel_size <= 32; // the total size of fm
-        kernel_num <= 12; // out put fm size, 1*1*kernel_num
+        kernel_num <= 12;  // out put fm size, 1*1*kernel_num
+        fm_size_out <= 12;
+        */
+        layer_type <= 3;
+        layer_num  <= 3;
+        pre_layer_type <= 3;
+        fm_total_size <= 32;
+        kernel_size <= 32; // the total size of fm
+        kernel_num <= 12;  // out put fm size, 1*1*kernel_num
+        fm_size_out <= 12;
+
+
     end
 endmodule

@@ -247,6 +247,43 @@ def FeatureMapRam(Para_Y, Para_kernel):
 				inser_index_ram = inser_index_ram+1
 			file_ram_a4.close()
 
+		# para write, not add, for fc write
+		inser_index_ram = inser_index_ram + 16
+		for i in range(Para_Y):
+			file_ram = file('./Template/Template_FeatureMapRamFloat16_fm_para_not_add_0.v')
+
+			for line in file_ram:
+				line = line.replace('SET_INDEX_ADD_ONE', str(i+1))
+				line = line.replace('SET_INDEX', str(i))
+				a_ram.insert(inser_index_ram, line)
+				inser_index_ram = inser_index_ram+1
+			file_ram.close()
+
+		inser_index_ram = inser_index_ram + 3
+		for i in range(Para_kernel-1):
+			for j in range(Para_Y):
+				file_ram = file('./Template/Template_FeatureMapRamFloat16_fm_para_not_add_1.v')
+					
+				for line in file_ram:
+					line = line.replace('SET_INDEX_0_ADD_ONE', str((i+1)*Para_Y+j+1))
+					line = line.replace('SET_INDEX_0', str((i+1)*Para_Y+j))
+					line = line.replace('SET_INDEX', str(i*Para_Y+j))
+					a_ram.insert(inser_index_ram, line) 
+					inser_index_ram = inser_index_ram+1
+				file_ram.close()
+
+		inser_index_ram = inser_index_ram + 4
+		for i in range(Para_Y):
+			file_ram = file('./Template/Template_FeatureMapRamFloat16_fm_para_not_add_2.v')
+
+			for line in file_ram:
+				line = line.replace('SET_INDEX_ADD_ONE', str(i+1))
+				line = line.replace('SET_INDEX', str(i))
+				a_ram.insert(inser_index_ram, line)
+				inser_index_ram = inser_index_ram+1
+			file_ram.close()
+
+
 		# conv read out
 		inser_index_ram = inser_index_ram + 26
 		for i in range(Para_Y):
@@ -377,6 +414,6 @@ def replace(file_path, old_str, new_str):
 		print e 
 
 #ConvParaScaleFloat16([3, 5], 3, 3)
-#FeatureMapRam(3, 2)
-WeightRam(3, 5)
+FeatureMapRam(3, 2)
+#WeightRam(3, 5)
 #poolunit()

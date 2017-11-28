@@ -107,7 +107,7 @@ module FeatureMapRamFloat16(
 			end
 		end
 		else if(ena_para_w == 1) begin // para write
-			if (ena_add_write == 1) begin // add
+			if (ena_add_write == 1) begin // add, for conv layer
 				if (clk_count <(`PARA_KERNEL*2) && write_ready == 0) begin
 					write_ready <= 0;
 
@@ -136,18 +136,41 @@ module FeatureMapRamFloat16(
 						// ======== End: update feature map data add ========
 					end
 
-					clk_count <= clk_count + 1;
+					if (clk_count == (`PARA_KERNEL*2-1)) begin
+						write_ready	<= 1;
+						clk_count	<= 0;
+					end
+					else begin
+						clk_count <= clk_count + 1;
+					end
 				end
-				else begin
-					write_ready	<= 1;
+			end
+			else if(ena_add_write == 0) begin // not add, for fc layer
+				if (clk_count <`PARA_KERNEL && write_ready == 0) begin
+					if (clk_count == 0) begin
+						// ======== Begin: data write ========
+						// ======== End: data write ========
 
-					clk_count	<= 0;
+						// ======== Begin: data buffer ========
+						// ======== End: data buffer ========
+					end
+					else begin
+						// ======== Begin: data write ========
+						// ======== End: data write ========
+					end
+
+					if (clk_count == (`PARA_KERNEL-1)) begin
+						write_ready	<= 1;
+						clk_count	<= 0;
+					end
+					else begin
+						clk_count <= clk_count + 1;
+					end
 				end
 			end
 		end
 		else begin
 			write_ready	<= 0;
-
 			clk_count	<= 0;
 		end
 	end

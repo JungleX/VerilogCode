@@ -66,7 +66,7 @@ module FeatureMapRamFloat16_tb();
 
     	#(`clk_period/2)
 
-        // para write
+        // para write, for conv
         #`clk_period
         ena_zero_w <= 0;
         ena_w <= 0;
@@ -76,7 +76,6 @@ module FeatureMapRamFloat16_tb();
         fm_out_size <= 8; // 6+1*2=8
         para_din <= {16'h3c00, 16'h4000, 16'h3c00, 16'h3c00, 16'h4000, 16'h4200};
 
-        //#(`clk_period*2)
         #`clk_period
         ena_para_w <= 1;
 
@@ -111,6 +110,29 @@ module FeatureMapRamFloat16_tb();
         ena_para_w <= 0;
         ena_w <= 0;
         ena_zero_w <= 0;
+
+        // para write, for fc
+        #`clk_period
+        ena_zero_w <= 0;
+        ena_w <= 0;
+        ena_para_w <= 1;
+        ena_add_write <= 0;
+        fm_out_size <= 6; 
+        para_din <= {16'h3c00, 16'h4000, 16'h3c00, 16'h3c00, 16'h4000, 16'h4200};
+
+        #`clk_period
+        ena_para_w <= 1;
+
+        while(write_ready == 0) begin
+            #`clk_period
+            ena_para_w <= 1;
+        end
+
+        //#`clk_period
+        ena_para_w <= 0;
+        ena_w <= 0;
+        ena_zero_w <= 0;
+
     	// PARA_Y = 3 ============================================= 
 
         // PARA_Y = 3 CONV read =============================================

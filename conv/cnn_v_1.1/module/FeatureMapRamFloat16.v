@@ -116,7 +116,7 @@ module FeatureMapRamFloat16(
 			end
 		end
 		else if(ena_para_w == 1) begin // para write
-			if (ena_add_write == 1) begin // add
+			if (ena_add_write == 1) begin // add, for conv layer
 				if (clk_count <(`PARA_KERNEL*2) && write_ready == 0) begin
 					write_ready <= 0;
 
@@ -160,18 +160,50 @@ module FeatureMapRamFloat16(
 						// ======== End: update feature map data add ========
 					end
 
-					clk_count <= clk_count + 1;
+					if (clk_count == (`PARA_KERNEL*2-1)) begin
+						write_ready	<= 1;
+						clk_count	<= 0;
+					end
+					else begin
+						clk_count <= clk_count + 1;
+					end
 				end
-				else begin
-					write_ready	<= 1;
+			end
+			else if(ena_add_write == 0) begin // not add, for fc layer
+				if (clk_count <`PARA_KERNEL && write_ready == 0) begin
+					if (clk_count == 0) begin
+						// ======== Begin: data write ========
+						ram_array[addr_para_write + 0] <= para_din[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
+						ram_array[addr_para_write + 1] <= para_din[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
+						ram_array[addr_para_write + 2] <= para_din[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
+						// ======== End: data write ========
 
-					clk_count	<= 0;
+						// ======== Begin: data buffer ========
+						para_din_buffer[0] <= para_din[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3];
+						para_din_buffer[1] <= para_din[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4];
+						para_din_buffer[2] <= para_din[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5];
+						// ======== End: data buffer ========
+					end
+					else begin
+						// ======== Begin: data write ========
+						ram_array[addr_para_write + clk_count*`PARA_Y + 0] <= para_din_buffer[(clk_count-1)*`PARA_Y+0];
+						ram_array[addr_para_write + clk_count*`PARA_Y + 1] <= para_din_buffer[(clk_count-1)*`PARA_Y+1];
+						ram_array[addr_para_write + clk_count*`PARA_Y + 2] <= para_din_buffer[(clk_count-1)*`PARA_Y+2];
+						// ======== End: data write ========
+					end
+
+					if (clk_count == (`PARA_KERNEL-1)) begin
+						write_ready	<= 1;
+						clk_count	<= 0;
+					end
+					else begin
+						clk_count <= clk_count + 1;
+					end
 				end
 			end
 		end
 		else begin
 			write_ready	<= 0;
-
 			clk_count	<= 0;
 		end
 	end
