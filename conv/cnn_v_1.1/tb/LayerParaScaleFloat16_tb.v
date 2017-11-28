@@ -390,60 +390,103 @@ module LayerParaScaleFloat16_tb();
         end
 
         // update_weight_ram == 1
-        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
-                    }; // 25*2=50
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+                        
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
+                    }; // 9*2=18
         write_weight_data_addr <= update_weight_ram_addr;
         weight_data_done <= 0;
 
         #`clk_period
-        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,  
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+        weight_data <= {16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
 
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
-
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
-                        
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
-                    }; // 32-25=7 25-7=18
-        write_weight_data_addr <= update_weight_ram_addr + `KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 1*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
         weight_data_done <= 0;
 
         #`clk_period
-        weight_data <= {16'h3c00,
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
 
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
-
-                        16'h4000,
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
-
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
-                    }; // 32-18=14 25-14=11
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
+                    }; 
         write_weight_data_addr <= update_weight_ram_addr + 2*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
         weight_data_done <= 0;
 
         #`clk_period
-        weight_data <= {16'h0000, 16'h0000, 16'h0000, 16'h0000, 
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
 
-                        16'h4000,
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
 
-                        16'h0000, 16'h0000, 16'h0000, 16'h0000, 
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 3*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 4*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 5*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 6*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
 
                         16'h3c00,
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
-                    }; //32-11=21 25-21=4
-        write_weight_data_addr <= update_weight_ram_addr + 3*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h4000
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 7*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+         #`clk_period
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 8*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+         #`clk_period
+        weight_data <= {16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 9*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+         #`clk_period
+        weight_data <= {16'h0000, 16'h0000, 16'h0000,
+
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
+
+                        16'h0000, 16'h0000, 16'h0000,
+
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 10*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
         weight_data_done <= 0;
 
         #`clk_period
@@ -459,60 +502,103 @@ module LayerParaScaleFloat16_tb();
         end
 
         // update_weight_ram == 1
-        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h4400, 
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4200
-                    }; // 25*2=50
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+                        
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
+                    }; // 9*2=18
         write_weight_data_addr <= update_weight_ram_addr;
         weight_data_done <= 0;
 
         #`clk_period
-        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,  
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+        weight_data <= {16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
 
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
-
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
-                        
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
-                    }; // 32-25=7 25-7=18
-        write_weight_data_addr <= update_weight_ram_addr + `KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 1*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
         weight_data_done <= 0;
 
         #`clk_period
-        weight_data <= {16'h3c00,
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
 
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
-
-                        16'h4000,
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
-
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
-                    }; // 32-18=14 25-14=11
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
+                    }; 
         write_weight_data_addr <= update_weight_ram_addr + 2*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
         weight_data_done <= 0;
 
         #`clk_period
-        weight_data <= {16'h0000, 16'h0000, 16'h0000, 16'h0000, 
-        
-                        16'h4200,
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 
-                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
 
-                        16'h0000, 16'h0000, 16'h0000, 16'h0000, 
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
 
-                        16'h4400,
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
-                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
-                    }; //32-11=21 25-21=4
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; 
         write_weight_data_addr <= update_weight_ram_addr + 3*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 4*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 5*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 6*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+        #`clk_period
+        weight_data <= {16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+
+                        16'h3c00,
+
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h4000
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 7*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+         #`clk_period
+        weight_data <= {16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00,
+
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 8*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+         #`clk_period
+        weight_data <= {16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000,
+
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 9*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+        weight_data_done <= 0;
+
+         #`clk_period
+        weight_data <= {16'h0000, 16'h0000, 16'h0000,
+
+                        16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 
+
+                        16'h0000, 16'h0000, 16'h0000,
+                        
+                        16'h3c00, 16'h4000, 16'h3c00, 16'h4000, 16'h3c00, 16'h4000
+                    }; 
+        write_weight_data_addr <= update_weight_ram_addr + 10*`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
         weight_data_done <= 0;
 
         #`clk_period

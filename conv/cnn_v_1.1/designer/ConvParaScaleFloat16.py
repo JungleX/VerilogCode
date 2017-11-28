@@ -1,6 +1,12 @@
 import os
 import shutil
 
+Para_X = 3
+Para_Y = 3
+Para_kernel = 2
+KernelSizeList = [3]
+KernelSizeMax = 3
+
 def ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y):
 	destDir = './VerilogCode/'
 	if not os.path.isdir(destDir):
@@ -413,7 +419,14 @@ def replace(file_path, old_str, new_str):
 	except Exception,e:  
 		print e 
 
+
+
+ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y)
+FeatureMapRam(Para_Y, Para_kernel)
+WeightRam(Para_Y, KernelSizeMax)
+poolunit()
+
 #ConvParaScaleFloat16([3, 5], 3, 3)
-FeatureMapRam(3, 2)
+#FeatureMapRam(3, 2)
 #WeightRam(3, 5)
 #poolunit()

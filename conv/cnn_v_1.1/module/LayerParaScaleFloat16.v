@@ -367,6 +367,30 @@ module LayerParaScaleFloat16(
 					cur_layer_num 	<= layer_num;
 				end
 
+				// update kernel
+				if (update_weight_ram == 1) begin
+					if (update_weight_wait_count == 0) begin
+						update_weight_wait_count <= 1;
+					end
+					else if(update_weight_wait_count == 1) begin
+						if (weight_data_done == 0) begin
+							weight_ena_w <= 1; // write
+
+							// `PARA_KERNEL = 2
+							weight_addr_write[0]	<= write_weight_data_addr;
+							weight_din[0]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0]; 
+							weight_addr_write[1]	<= write_weight_data_addr;
+							weight_din[1]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1];
+						end
+						else if(weight_data_done == 1) begin
+							update_weight_ram <= 0;
+						end
+					end
+				end
+				else begin
+					weight_ena_w <= 0;
+				end
+
 				if (layer_ready == 0) begin // current layer is not ready, continue to run
 					case(layer_type)
 						1:// conv
@@ -407,30 +431,6 @@ module LayerParaScaleFloat16(
 									zero_write_count	<= 1;
 								end
 
-								// update kernel
-								if (update_weight_ram == 1) begin
-									if (update_weight_wait_count == 0) begin
-										update_weight_wait_count <= 1;
-									end
-									else if(update_weight_wait_count == 1) begin
-										if (weight_data_done == 0) begin
-											weight_ena_w <= 1; // write
-
-											// `PARA_KERNEL = 2
-											weight_addr_write[0]	<= write_weight_data_addr;
-											weight_din[0]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0]; 
-											weight_addr_write[1]	<= write_weight_data_addr;
-											weight_din[1]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1];
-										end
-										else if(weight_data_done == 1) begin
-											update_weight_ram <= 0;
-										end
-									end
-								end
-								else begin
-									weight_ena_w <= 0;
-								end
-								
 								// conv operation
 								if (clk_count == 0) begin
 									if (go_to_next_layer == 0) begin
@@ -964,30 +964,6 @@ module LayerParaScaleFloat16(
 									cur_out_index[0]	<= 0;
 
 									zero_write_count	<= 1;
-								end
-
-								// update weight
-								if (update_weight_ram == 1) begin
-									if (update_weight_wait_count == 0) begin
-										update_weight_wait_count <= 1;
-									end
-									else if(update_weight_wait_count == 1) begin
-										if (weight_data_done == 0) begin
-											weight_ena_w <= 1; // write
-
-											// `PARA_KERNEL = 2
-											weight_addr_write[0]	<= write_weight_data_addr;
-											weight_din[0]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*0]; 
-											weight_addr_write[1]	<= write_weight_data_addr;
-											weight_din[1]			<= weight_data[`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*2 - 1:`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`DATA_WIDTH*1];
-										end
-										else if(weight_data_done == 1) begin
-											update_weight_ram <= 0;
-										end
-									end
-								end
-								else begin
-									weight_ena_w <= 0;
 								end
 
 								// fc operation

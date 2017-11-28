@@ -4,7 +4,7 @@
 // kernel
 `define PARA_KERNEL			2 	// para kernel number
 `define KERNEL_NUM_WIDTH	10
-`define KERNEL_SIZE_MAX		5
+`define KERNEL_SIZE_MAX		3
 
 // conv
 `define PARA_X				3	// MAC group number
