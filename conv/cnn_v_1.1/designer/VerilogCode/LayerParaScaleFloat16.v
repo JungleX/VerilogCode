@@ -131,11 +131,14 @@ module LayerParaScaleFloat16(
     // ======== End: conv unit ========
 
     // ======== Begin: feature map ram ========
+    reg fm_rst; 
+
     reg fm_ena_add_write[`PARA_X - 1:0]; // 0: not add; 1: add
 
-    reg fm_ena_zero_w[`PARA_X - 1:0]; 
+    reg fm_ena_zero_w[`PARA_X - 1:0];
+    reg fm_ram_swap[`PARA_X - 1:0];
+    
     reg [`WRITE_ADDR_WIDTH - 1:0] fm_zero_start_addr[`PARA_X - 1:0];
-    reg [`WRITE_ADDR_WIDTH - 1:0] fm_zero_end_addr[`PARA_X - 1:0];
 
     reg fm_ena_w[`PARA_X - 1:0];
     reg [`WRITE_ADDR_WIDTH - 1:0] fm_addr_write[`PARA_X - 1:0];
@@ -160,12 +163,12 @@ module LayerParaScaleFloat16(
     	begin
 			FeatureMapRamFloat16 ram_fm(
 				.clk(clk),
+				.rst(fm_rst),
 
 				.ena_add_write(fm_ena_add_write[fm_ram_i]), 
 
 				.ena_zero_w(fm_ena_zero_w[fm_ram_i]),
-		        .zero_start_addr(fm_zero_start_addr[fm_ram_i]),
-		        .zero_end_addr(fm_zero_end_addr[fm_ram_i]),
+		        .ram_swap(fm_ram_swap[fm_ram_i]),
 
 				.ena_w(fm_ena_w[fm_ram_i]), 
 				.addr_write(fm_addr_write[fm_ram_i]),
@@ -258,6 +261,7 @@ module LayerParaScaleFloat16(
 			conv_rst	<= 0;
 			conv_op_type<= 0;
 			pu_rst		<= 0;
+			fm_rst		<= 0;
 
 			// ======== Begin: reset fm ram ========
 			// PARA_X
@@ -342,6 +346,8 @@ module LayerParaScaleFloat16(
 			zero_write_count	<= 0;
 		end
 		else begin
+			fm_rst <= 1;
+			
 			if (layer_type == 0) begin
 				if (layer_ready == 0) begin
 					// init feature map ram
@@ -462,7 +468,7 @@ module LayerParaScaleFloat16(
 									fm_ena_para_w[0] 	<= 0;
 
 									fm_zero_start_addr[0]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[0]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
+									fm_ram_swap[0] <= ~cur_fm_swap;
 
 									cur_out_index[0]	<= ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 
@@ -472,7 +478,7 @@ module LayerParaScaleFloat16(
 									fm_ena_para_w[1] 	<= 0;
 
 									fm_zero_start_addr[1]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[1]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
+									fm_ram_swap[1] <= ~cur_fm_swap;
 
 									cur_out_index[1]	<= ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 
@@ -482,7 +488,7 @@ module LayerParaScaleFloat16(
 									fm_ena_para_w[2] 	<= 0;
 
 									fm_zero_start_addr[2]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[2]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
+									fm_ram_swap[2] <= ~cur_fm_swap;
 
 									cur_out_index[2]	<= ((padding_out-2+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 									// ======== End: set fm ram zero write ========
@@ -882,7 +888,7 @@ module LayerParaScaleFloat16(
 									fm_ena_para_w[0] 	<= 0;
 
 									fm_zero_start_addr[0]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[0]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
+									fm_ram_swap[0] <= ~cur_fm_swap;
 
 									cur_out_index[0]	<= ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 
@@ -892,7 +898,7 @@ module LayerParaScaleFloat16(
 									fm_ena_para_w[1] 	<= 0;
 
 									fm_zero_start_addr[1]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[1]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
+									fm_ram_swap[1] <= ~cur_fm_swap;
 
 									cur_out_index[1]	<= ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 
@@ -902,7 +908,7 @@ module LayerParaScaleFloat16(
 									fm_ena_para_w[2] 	<= 0;
 
 									fm_zero_start_addr[2]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[2]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
+									fm_ram_swap[2] <= ~cur_fm_swap;
 
 									cur_out_index[2]	<= ((padding_out-2+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out;
 									// ======== End: set fm ram zero write ========
@@ -1124,7 +1130,7 @@ module LayerParaScaleFloat16(
 									fm_ena_para_w[0] 	<= 0;
 
 									fm_zero_start_addr[0]	<= ((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))*`FM_RAM_HALF;
-									fm_zero_end_addr[0]		<= (((cur_fm_swap+1)-(((cur_fm_swap+1)/2)*2))+1)*`FM_RAM_HALF - 1;
+									fm_ram_swap[0] <= ~cur_fm_swap;
 
 									cur_out_index[0]	<= 0;
 

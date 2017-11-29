@@ -25,7 +25,7 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 		a_layer = s_layer.split('\n')
 
 		# =================== Begin: rst ===================
-		inser_index_layer = 263
+		inser_index_layer = 267
 		for i in range(Para_X):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_rst_0.v')
 
@@ -57,7 +57,7 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 		# =================== End: rst ===================
 		
 		# =================== Begin: init layer ===================
-		inser_index_layer = inser_index_layer + 56
+		inser_index_layer = inser_index_layer + 58
 		for i in range(Para_X):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_init_0.v')
 
@@ -994,7 +994,7 @@ def replace(file_path, old_str, new_str):
 
 # ================================================================
 #poolunit()
-FeatureMapRam(Para_Y, Para_kernel)
+#FeatureMapRam(Para_Y, Para_kernel)
 #WeightRam(Para_Y, KernelSizeMax)
 #ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y)
-#LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel)
+LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel)
