@@ -1,0 +1,1 @@
+									weight_addr_read[SET_INDEX] <= cur_kernel_swap*`WEIGHT_RAM_HALF;

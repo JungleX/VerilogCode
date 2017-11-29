@@ -366,9 +366,6 @@ module LayerParaScaleFloat16(
 						else if(weight_data_done == 1) begin
 							// ======== Begin: write weight ram ========
 							// PARA_KERNEL
-							weight_ena_w[0] <= 1;
-
-							weight_ena_w[1] <= 1; 
 							// ======== End: write weight ram ========
 
 							update_weight_ram <= 0;
@@ -398,6 +395,7 @@ module LayerParaScaleFloat16(
 									if (go_to_next_layer == 0) begin
 										conv_rst	<= 0;
 
+										fm_read_type	<= 0;
 										// start to read, next clk get read data
 										// ======== Begin: set fm ram read ========
 										// PARA_X
@@ -427,19 +425,11 @@ module LayerParaScaleFloat16(
 									// feature map data
 									if (clk_count == 1) begin
 										// ======== Begin: set fm ram read data ========
-										// PARA_KERNEL -> PARA_X
+										// PARA_KERNEL -> PARA_X -> PARA_Y
 										// ======== End: set fm ram read data ========
 
 										// ======== Begin: set fm ram read address ========
 										// PARA_X
-										fm_addr_read[0]		<= fm_addr_read[0] + 1;
-										fm_sub_addr_read[0]	<= 0;
-
-										fm_addr_read[1]		<= fm_addr_read[1] + 1;
-										fm_sub_addr_read[1]	<= 0;
-
-										fm_addr_read[2]		<= fm_addr_read[2] + 1;
-										fm_sub_addr_read[2]	<= 0;
 										// ======== End: set fm ram read address ========
 
 										clk_count <= clk_count + 1;
@@ -464,7 +454,7 @@ module LayerParaScaleFloat16(
 									end
 									else if ((clk_count-(clk_count/kernel_size)*kernel_size) == 1 && clk_count <= (kernel_size*kernel_size)) begin
 										// ======== Begin: set fm ram read data ========
-										// PARA_KERNEL -> PARA_X
+										// PARA_KERNEL -> PARA_Y
 										// ======== End: set fm ram read data ========
 
 										fm_addr_read[cur_fm_ram]		<= fm_addr_read[cur_fm_ram] + 1;
@@ -483,9 +473,7 @@ module LayerParaScaleFloat16(
 											fm_addr_read[(cur_fm_ram+1) - ((cur_fm_ram+1)/`PARA_X)*`PARA_X] <= fm_addr_read[(cur_fm_ram+1) - ((cur_fm_ram+1)/`PARA_X)*`PARA_X] + (fm_size+`PARA_Y-1)/`PARA_Y - ((kernel_size-1)+`PARA_Y-1)/`PARA_Y;
 										end
 										else begin
-											// ======== Begin: set fm ram read address ========
-											// PARA_X-1 ??? todo
-											// ======== End: set fm ram read address ========
+											fm_sub_addr_read[cur_fm_ram]	<= fm_sub_addr_read[cur_fm_ram] + 1;
 										end
 
 										// ======== Begin: set fm ram read data ========
@@ -1006,9 +994,6 @@ module LayerParaScaleFloat16(
 
 								// ======== Begin: reset weight ram ========
 								// PARA_KERNEL
-								weight_ena_w[0]		<= 0;
-
-								weight_ena_w[1]		<= 0;
 								// ======== End: reset weight ram ========
 
 								// set layer status signal

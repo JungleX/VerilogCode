@@ -1,0 +1,1 @@
+									weight_addr_read[SET_INDEX] <= weight_addr_read[SET_INDEX] + 1;
