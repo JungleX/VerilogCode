@@ -52,6 +52,8 @@ begin
     fm_set_one <= {`PARA_X*`PARA_Y{16'h3c00}};
     weight_set_one <= {`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL{16'h3c00}};	
     update_ena <= 1'b1;
+	init_fm_data_done <= 1'b1;
+	weight_data_done <= 1'b1;
     fm_cnt <= 6'b0;
     wr_cnt <= 6'b0;
 end//provide all-1 arrays for featuremap and weightram
