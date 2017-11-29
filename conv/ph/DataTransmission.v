@@ -31,9 +31,6 @@ module DataTransmission(
     input update_weight_ram, // 0: not update; 1: update
     input [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr,
     
-    input init_fm_ram_ready, // 0: not ready; 1: ready
-    input init_weight_ram_ready, // 0: not ready; 1: ready
-    
     output reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] init_fm_data,
     output reg [`WRITE_ADDR_WIDTH - 1:0] write_fm_data_addr,
     output reg init_fm_data_done = 1'b0,
