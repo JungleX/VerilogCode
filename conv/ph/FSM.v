@@ -92,9 +92,8 @@ if (workstate) begin
 case (layer_num)
 3'b000:layer_type <= 2'b00;
 3'b001:layer_type <= 2'b01;
-3'b010:layer_type <= 2'b01;
-3'b011:layer_type <= 2'b10;
-3'b100:layer_type <= 2'b11;
+3'b010:layer_type <= 2'b10;
+3'b011:layer_type <= 2'b11;
 default:layer_type <= 2'b00; 
 endcase
 end
