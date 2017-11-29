@@ -159,18 +159,18 @@ LayerParaScaleFloat16 LPS(
 
 	// common configuration
 	.fm_size(8),
-	.fm_depth(3),
+	.fm_depth(2),
 
 	.fm_size_out(8), // include padding
 	.padding_out(1),
 
 	// conv
-	.kernel_num(2), // fm_depth_out
-	.kernel_size(4),
+	.kernel_num(6), // fm_depth_out
+	.kernel_size(3),
 
 	// pool
 	.pool_type(0), // 0: max pool; 1: avg pool
-	.pool_win_size(5), 
+	.pool_win_size(2), 
 
 	// activation
 	.activation(1), // 0: none; 1: ReLU. current just none or ReLU

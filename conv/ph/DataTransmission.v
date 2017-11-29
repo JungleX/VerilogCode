@@ -57,8 +57,7 @@ begin
     update_ena <= 1'b1;
     fm_cnt <= 6'b0;
     wr_cnt <= 6'b0;
-end
-//provide all-1 arrays for featuremap and weightram
+end//provide all-1 arrays for featuremap and weightram
 
 
 
@@ -72,11 +71,13 @@ always @(posedge clk) begin
     if (rst) begin
         init_fm_data <= 0;
         write_fm_data_addr <= 0;
-        init_fm_data_done <= 0;
+        init_fm_data_done <= 1;
+		
         weight_data <= 0;
         write_weight_data_addr <= 0;
-        weight_data_done <= 0;
-        update_ena <= 0;
+        weight_data_done <= 1;
+		
+        update_ena <= 1;
 		fm_cnt <= 0;
 		wr_cnt <= 0;
     end
@@ -88,18 +89,18 @@ end//reset
 
 reg cnt1 = 1'b1;
 reg cnt2 = 1'b1;
-always @(posedge clk) if (!cnt1) cnt1 <= 1'b1;
-always @(posedge clk) if (!cnt2) cnt2 <= 1'b1;
+always @(posedge clk) if (~cnt1) cnt1 <= 1'b1;
+always @(posedge clk) if (~cnt2) cnt2 <= 1'b1;
 always @(posedge clk) begin    
     if ((init) && (update_ena)) begin
         init_fm_data <= fm_set_one;
         write_fm_data_addr <= fm_cnt;
-		init_fm_data_done <= 1;
+        init_fm_data_done <= 0;
 		cnt1 <= 0;
 		
         weight_data <= weight_set_one;
         write_weight_data_addr <= wr_cnt;
-		weight_data_done <= 1;
+        weight_data_done <= 0;
 		cnt2 <= 0;				
 	end
 end//fm and wr data transmission initializing
@@ -108,37 +109,42 @@ end//fm and wr data transmission initializing
 
 
 
+reg clk_fm = 1'b0;
 always @(posedge clk) begin
-    if ((init_fm_ram_ready) && (cnt1) && (!update_ena)) init_fm_data_done <= 0;
-end//stop sending fm data to current fm addr
+    if ((~update_ena) && (~init_fm_data_done)) clk_fm <= ~clk_fm;//double period clk
+	else if (init_fm_data_done) clk_fm <= 0;
+end
 
 always @(posedge clk) begin
-    if ((init) && (!init_fm_data_done) && (!init_fm_ram_ready) && (!update_ena)) begin
-	    if (fm_cnt < 17) begin
-            fm_cnt <= fm_cnt + 1;	                              //not sure
+    if (clk_fm == 1) begin
+	    if(fm_cnt < 17) begin
+		    fm_cnt <= fm_cnt + 1;
 		    init_fm_data <= fm_set_one;
             write_fm_data_addr <= fm_cnt;
-		    init_fm_data_done <= 1;
-		    cnt1 <= 0;
 		end
-		else start <= 1;
-	end
+		else begin
+            init_fm_data_done <= 1;
+		    cnt1 <= 0;
+		    start <= 1;
+		    fm_cnt <= 0;
+            write_fm_data_addr <= fm_cnt;		
+		end
+    end
 end//send data to the next fm addr until addr reaches 17
 
-always @(posedge clk) if (!init) start <= 0;
+always @(posedge clk) if (~init) start <= 0;
 
 
-
-
+reg clk_wr = 1'b0;
+always @(posedge clk) begin
+    if ((~update_ena) && (~weight_data_done)) clk_wr <= ~clk_wr;//double period clk
+	else if (weight_data_done) clk_wr <= 0;
+end
 
 always @(posedge clk) begin
-    if ((init_weight_ram_ready) && (cnt2)) weight_data_done <= 0;
-end//stop sending weight data to current weight addr
-
-always @(posedge clk) begin
-    if ((init) && (!weight_data_done) && (!init_weight_ram_ready) && (!update_ena)) begin
-	    if (wr_cnt < 3) begin
-            wr_cnt <= wr_cnt + 1;	                              //not sure
+    if (clk_wr == 1) begin
+	    if(wr_cnt < 3) begin
+		    wr_cnt <= wr_cnt + 1;
 		    weight_data <= weight_set_one;
 			case (wr_cnt)
 			    0:write_weight_data_addr <= 0;
@@ -146,27 +152,33 @@ always @(posedge clk) begin
 				2:write_weight_data_addr <= `WEIGHT_RAM_HALF;
 				3:write_weight_data_addr <= `WEIGHT_RAM_HALF+`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
 			endcase
-		    weight_data_done <= 1;
-		    cnt2 <= 0;
 		end
-	end
+		else begin
+            weight_data_done <= 1;
+		    cnt2 <= 0;
+		    wr_cnt <= 0;
+            write_weight_data_addr <= wr_cnt;		
+		end
+    end
 end//send (init)data to the next weight addr until addr reaches 3
 
 
 
 
+reg upp;
+always @(posedge clk) upp <= ~update_weight_ram;
 
 always @(posedge clk) begin
     if ((update_weight_ram) && (update_ena)) begin
+	    weight_data_done <= 0;
         weight_data <= weight_set_one;
         write_weight_data_addr <= update_weight_ram_addr;
-        weight_data_done <= 1;
 		cnt2 <= 0;				
     end
 end//send (update)data to current update addr
 
 always @(posedge clk) begin
-    if((!update_weight_ram) && (update_ena) && (cnt2)) weight_data_done <= 0;
+    if((~upp)&& (update_ena) && (cnt2)) weight_data_done <= 1;
 end//stop sending weight data to current update addr
 
 
