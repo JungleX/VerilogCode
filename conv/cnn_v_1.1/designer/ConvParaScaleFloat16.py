@@ -732,7 +732,7 @@ def FeatureMapRam(Para_Y, Para_kernel):
 		file_ram.close()
 		a_ram = s_ram.split('\n')
 
-		inser_index_ram = 83
+		inser_index_ram = 91
 
 		for i in range(Para_Y):
 			file_ram_na = file('./Template/Template_FeatureMapRamFloat16_not_add.v')
@@ -994,7 +994,7 @@ def replace(file_path, old_str, new_str):
 
 # ================================================================
 #poolunit()
-#FeatureMapRam(Para_Y, Para_kernel)
+FeatureMapRam(Para_Y, Para_kernel)
 #WeightRam(Para_Y, KernelSizeMax)
 #ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y)
-LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel)
+#LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel)

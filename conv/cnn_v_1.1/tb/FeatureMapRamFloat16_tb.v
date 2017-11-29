@@ -7,12 +7,12 @@
 module FeatureMapRamFloat16_tb();
 
 	reg clk;
+    reg rst;
 	reg ena_w; 
 	reg ena_r;
 
     reg ena_zero_w; // 0: not write; 1: write
-    reg [`WRITE_ADDR_WIDTH - 1:0] zero_start_addr;
-    reg [`WRITE_ADDR_WIDTH - 1:0] zero_end_addr;
+    reg ram_swap;
 
 	reg ena_add_write; // 0: not add; 1: add
 	reg [`WRITE_ADDR_WIDTH - 1:0] addr_write;
@@ -32,12 +32,12 @@ module FeatureMapRamFloat16_tb();
 
 	FeatureMapRamFloat16 ram_fm(
 		.clk(clk),
+        .rst(rst),
 
         .ena_add_write(ena_add_write), // 0: not add; 1: add
 
         .ena_zero_w(ena_zero_w),
-        .zero_start_addr(zero_start_addr),
-        .zero_end_addr(zero_end_addr),
+        .ram_swap(ram_swap),
 
 		.ena_w(ena_w), // 0: read; 1: write
 		.addr_write(addr_write),
@@ -66,8 +66,13 @@ module FeatureMapRamFloat16_tb();
 
     	#(`clk_period/2)
 
+        #`clk_period
+        rst <= 0;
+
         // para write, for conv
         #`clk_period
+        rst <= 1;
+
         ena_zero_w <= 0;
         ena_w <= 0;
         ena_para_w <= 1;
@@ -169,5 +174,14 @@ module FeatureMapRamFloat16_tb();
         read_type   <= 2;
         addr_read  <= 10;
         // PARA_Y = 3 FC read =============================================
+
+        // zero write
+        #`clk_period
+        rst <= 1;
+        ena_zero_w <= 1;
+        ena_w <= 0;
+        ena_para_w <= 0;
+        ena_add_write <= 0;
+        ram_swap <= 0;
     end
 endmodule

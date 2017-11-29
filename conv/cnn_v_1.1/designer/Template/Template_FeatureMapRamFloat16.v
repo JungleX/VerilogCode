@@ -4,12 +4,12 @@
 
 module FeatureMapRamFloat16(
 	input clk,
+	input rst,
 
 	input ena_add_write, // 0: not add; 1: add 
 
 	input ena_zero_w, // 0: not write; 1: write
-	input [`WRITE_ADDR_WIDTH - 1:0] zero_start_addr,
-	input [`WRITE_ADDR_WIDTH - 1:0] zero_end_addr,
+	input ram_swap,
 
 	input ena_w, // 0: not write; 1: write
 	input [`WRITE_ADDR_WIDTH - 1:0] addr_write,
@@ -61,22 +61,30 @@ module FeatureMapRamFloat16(
 	endgenerate
 	integer i;
 
-	initial begin
-		dout = 0;
-		clk_count = 0;
-		write_ready <= 0;
-		for (i = 0; i < `FM_RAM_MAX; i = i + 1)
-		begin
-			ram_array[i] = 0;
+	always @(posedge clk or negedge rst) begin
+		if (!rst) begin
+			for (i = 0; i < `FM_RAM_MAX; i = i + 1)
+				begin
+					ram_array[i] = 0;
+				end
 		end
-	end
-
-	always @(posedge clk) begin
-		if (ena_zero_w == 1) begin
-			for (i = zero_start_addr; i < zero_end_addr; i = i + 1)
-			begin
-				ram_array[i] = 0;
-			end
+		else if (ena_zero_w == 1) begin
+			case(ram_swap)
+				0:
+					begin
+						for (i = 0; i < `FM_RAM_HALF; i = i + 1)
+						begin
+							ram_array[i] = 0;
+						end
+					end
+				1:
+					begin
+						for (i = `FM_RAM_HALF; i < `FM_RAM_MAX; i = i + 1)
+						begin
+							ram_array[i] = 0;
+						end
+					end
+			endcase
 		end
 		else if (ena_w == 1) begin // init write
 			if (ena_add_write == 0) begin // not add
