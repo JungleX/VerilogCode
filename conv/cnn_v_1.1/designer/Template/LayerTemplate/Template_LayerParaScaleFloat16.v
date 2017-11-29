@@ -65,12 +65,12 @@ module LayerParaScaleFloat16(
 				.clk(clk),
 				.rst(pu_rst), 
 
-				.cmp_data(pool_input_data[`DATA_WIDTH*(pool_i+1):`DATA_WIDTH*pool_i]),
+				.cmp_data(pool_input_data[`DATA_WIDTH*(pool_i+1) - 1:`DATA_WIDTH*pool_i]),
 
 				.data_num(data_num), // set the clk number, after clk_count clks, the output is ready
 
 				.result_ready(pu_out_ready[pool_i:pool_i]), 
-				.max_pool_result(pu_result[`DATA_WIDTH*(pool_i+1):`DATA_WIDTH*pool_i])
+				.max_pool_result(pu_result[`DATA_WIDTH*(pool_i+1) - 1:`DATA_WIDTH*pool_i])
 			);
 		end
 	endgenerate
