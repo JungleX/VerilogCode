@@ -40,21 +40,32 @@ IBUFDS #(
         );    
         
 reg workstate;
-reg [`LAYER_NUM_WIDTH - 1:0] layer_num = `LAYER_NUM_WIDTH'b0;
+reg [`LAYER_NUM_WIDTH - 1:0] layer_num;
 reg [1:0] layer_type; // 0: prepare init feature map and weight data; 1:conv; 2:pool; 3:fc;
-reg [1:0] pre_layer_type = 2'b00;
+reg [1:0] pre_layer_type;
 
 reg init = 1'b0;
 reg init_disable = 1'b1;
 reg init_cnt = 1'b1;
 wire start;
 
+initial
+begin
+    layer_num = `LAYER_NUM_WIDTH'b0;
+	layer_type = 2'b00;
+	pre_layer_type = 2'b00;
+	init = 1'b0;
+	init_disable = 1'b1;
+	init_cnt = 1'b1;
+end
+	
 always @(*) assign workstate = transmission_start & (!rst);
 always @(posedge clk) begin
     if (rst) begin
     init <= 0;
     init_disable <= 1;
     layer_num <= `LAYER_NUM_WIDTH'b0;
+	layer_type <= 2'b00;
     pre_layer_type <= 2'b00;
     end
 end                                                             //rst all
@@ -70,14 +81,10 @@ always @(posedge clk) begin
         init_cnt <= 0;
     end
 end
-
-always @(posedge clk) if (!init_cnt) init_cnt <= 1;
  
 always @(posedge clk) begin
-    if ((workstate) && (!start))begin
-        init <= 1'b1;
-        init_cnt <= 0;
-    end
+    if ((start) && (init_cnt) && (!init_disable))
+        init <= 1'b0;
 end
 
 always @(posedge clk) begin
@@ -97,8 +104,10 @@ end//define the layer type of each layer according to the structure of CNN.
 
 wire update_weight_ram; // 0: not update; 1: update
 wire [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr;
+
 wire init_fm_ram_ready; // 0: not ready; 1: ready
 wire init_weight_ram_ready;
+
 wire [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] init_fm_data;
 wire [`WRITE_ADDR_WIDTH - 1:0] write_fm_data_addr;
 wire init_fm_data_done;
@@ -149,22 +158,22 @@ LayerParaScaleFloat16 LPS(
 	.weight_data_done(weight_data_done), // weight data transmission, 0: not ready; 1: ready
 
 	// common configuration
-	input [`FM_SIZE_WIDTH - 1:0] fm_size,
-	input [`KERNEL_SIZE_WIDTH - 1:0] fm_depth,
+	.fm_size(8),
+	.fm_depth(3),
 
-	input [`FM_SIZE_WIDTH - 1:0] fm_size_out, // include padding
-	input [`PADDING_NUM_WIDTH - 1:0] padding_out,
+	.fm_size_out(8), // include padding
+	.padding_out(1),
 
 	// conv
-	input [`KERNEL_NUM_WIDTH - 1:0] kernel_num, // fm_depth_out
-	input [`KERNEL_SIZE_WIDTH - 1:0] kernel_size,
+	.kernel_num(2), // fm_depth_out
+	.kernel_size(4),
 
 	// pool
-	input pool_type, // 0: max pool; 1: avg pool
-	input [`POOL_SIZE_WIDTH - 1:0] pool_win_size, 
+	.pool_type(0), // 0: max pool; 1: avg pool
+	.pool_win_size(5), 
 
 	// activation
-	input [1:0] activation, // 0: none; 1: ReLU. current just none or ReLU
+	.activation(1), // 0: none; 1: ReLU. current just none or ReLU
 
 	.update_weight_ram(update_weight_ram), // 0: not update; 1: update
 	.update_weight_ram_addr(update_weight_ram_addr),
