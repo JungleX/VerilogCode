@@ -1,0 +1,1 @@
+							weight_ena_w[SET_INDEX] <= 0;

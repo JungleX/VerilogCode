@@ -1,0 +1,1 @@
+									conv_weight[SET_INDEX] <= fm_dout[cur_fm_ram][`DATA_WIDTH - 1:0];

@@ -1,0 +1,1 @@
+									conv_input_data[SET_INDEX] <= {0, weight_dout[SET_INDEX]};

@@ -1,0 +1,1 @@
+											cur_out_index[SET_INDEX]	<= 0;
