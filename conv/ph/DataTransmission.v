@@ -33,7 +33,7 @@ module DataTransmission(
     
     output reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] init_fm_data,
     output reg [`WRITE_ADDR_WIDTH - 1:0] write_fm_data_addr,
-    output reg init_fm_data_done = 1'b0,
+    output reg init_fm_data_done,
     
     output reg [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL*`DATA_WIDTH - 1:0] weight_data,
     output reg [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] write_weight_data_addr,
@@ -52,6 +52,8 @@ begin
     fm_set_one <= {`PARA_X*`PARA_Y{16'h3c00}};
     weight_set_one <= {`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL{16'h3c00}};	
     update_ena <= 1'b1;
+	init_fm_data_done <= 1'b1;
+	weight_data_done <= 1'b1;
     fm_cnt <= 6'b0;
     wr_cnt <= 6'b0;
 end//provide all-1 arrays for featuremap and weightram
