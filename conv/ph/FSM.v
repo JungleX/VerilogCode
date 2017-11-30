@@ -1,4 +1,6 @@
 `timescale 1ns / 1ps
+
+`include "CNN_Parameter.vh"
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -21,15 +23,17 @@
 
 
 module FSM(
-     input clk_p,
-     input clk_n,
+     //input clk_p,
+     //input clk_n,
+     input clk,
      input rst,
      input transmission_start
+     
     );
     
-wire clk;
+//wire clk;
 
-IBUFDS #(
+/*IBUFDS #(
         .DIFF_TERM("FALSE"),
         .IBUF_LOW_PWR("TRUE"),
         .IOSTANDARD("DEFAULT")
@@ -37,43 +41,67 @@ IBUFDS #(
         .O(clk),
         .I(clk_p),
         .IB(clk_n)
-        );    
-        
+        );    */
+
 reg workstate;
 reg [`LAYER_NUM_WIDTH - 1:0] layer_num;
-reg [1:0] layer_type; // 0: prepare init feature map and weight data; 1:conv; 2:pool; 3:fc;
-reg [1:0] pre_layer_type;
+reg [3:0] layer_type; // 0: prepare init feature map and weight data; 1:conv; 2:pool; 3:fc;
+reg [3:0] pre_layer_type;
+reg stop;
+wire update_weight_ram;// 0: not update; 1: update
+wire [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr;
+     
+wire [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] init_fm_data;
+wire [`WRITE_ADDR_WIDTH - 1:0] write_fm_data_addr;
+wire init_fm_data_done;
+     
+wire [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL*`DATA_WIDTH - 1:0] weight_data;
+wire [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] write_weight_data_addr;
+wire weight_data_done;
+     
+wire update_ena;
+wire cnt1;
+wire cnt2;
+wire upp;
+
+
 
 reg init = 1'b0;
 reg init_disable = 1'b1;
 reg init_cnt = 1'b1;
-wire start;
+
+wire init_fm_ram_ready; // 0: not ready; 1: ready
+wire init_weight_ram_ready;
+
+
 
 initial
 begin
-    layer_num = `LAYER_NUM_WIDTH'b0;
-	layer_type = 2'b00;
-	pre_layer_type = 2'b00;
+    layer_num = 0;
+	layer_type = 4'b0000;
+	pre_layer_type = 4'b0000;
 	init = 1'b0;
 	init_disable = 1'b1;
 	init_cnt = 1'b1;
 end
 	
-always @(*) assign workstate = transmission_start & (!rst);
+always @(*) assign workstate = transmission_start & (~rst) & (~stop);
+
+always @(posedge clk) if ((rst) || (~transmission_start)) stop  <= 0;
 always @(posedge clk) begin
-    if (rst) begin
+    if (rst || stop) begin
     init <= 0;
     init_disable <= 1;
-    layer_num <= `LAYER_NUM_WIDTH'b0;
-	layer_type <= 2'b00;
-    pre_layer_type <= 2'b00;
+    layer_num <= 0;
+	layer_type <= 4'b0000;
+    pre_layer_type <= 4'b0000;
     end
-end                                                             //rst all
+end                                                             //rst all or stop
 
 
 
 always @(posedge clk)
-    if (!init_cnt) init_cnt <= 1'b1;
+    if (~init_cnt) init_cnt <= 1'b1;
 always @(posedge clk) begin
     if ((workstate) && (init_disable)) begin
         init <= 1;
@@ -83,43 +111,42 @@ always @(posedge clk) begin
 end
  
 always @(posedge clk) begin
-    if ((start) && (init_cnt) && (!init_disable))
+    if ((init_fm_ram_ready) && (init_cnt) && (~init_disable))
         init <= 1'b0;
 end
 
 always @(posedge clk) begin
 if (workstate) begin
 case (layer_num)
-3'b000:layer_type <= 2'b00;
-3'b001:layer_type <= 2'b01;
-3'b010:layer_type <= 2'b10;
-3'b011:layer_type <= 2'b11;
-default:layer_type <= 2'b00; 
+0:begin layer_type <= 4'b0000; pre_layer_type <= 4'b0000; end
+1:begin layer_type <= 4'b0001; pre_layer_type <= 4'b0000; end
+2:begin layer_type <= 4'b0010; pre_layer_type <= 4'b0001; end
+3:begin layer_type <= 4'b0011; pre_layer_type <= 4'b0010; end
+4:begin layer_type <= 4'b1001; pre_layer_type <= 4'b0011; end
+default:begin layer_type <= 4'b0000; pre_layer_type <= 4'b0000; end
 endcase
 end
 end//define the layer type of each layer according to the structure of CNN.
 
+wire layer_ready;
+reg add_disable;
+always @(posedge clk) add_disable <= layer_ready;
+
+always @(posedge clk) begin
+    if ((layer_ready) && (~add_disable)) layer_num = layer_num + 1;
+end
+
+always @(posedge clk) begin
+    if (layer_type == 9) stop <= 1;
+end
 
 
-wire update_weight_ram; // 0: not update; 1: update
-wire [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr;
-
-wire init_fm_ram_ready; // 0: not ready; 1: ready
-wire init_weight_ram_ready;
-
-wire [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] init_fm_data;
-wire [`WRITE_ADDR_WIDTH - 1:0] write_fm_data_addr;
-wire init_fm_data_done;
-wire [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL*`DATA_WIDTH - 1:0] weight_data;
-wire [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] write_weight_data_addr;
-wire weight_data_done;
 
 DataTransmission DT(
     .clk(clk),
     .rst(rst),
     
     .init(init),
-    .start(start),
     
     .update_weight_ram(update_weight_ram), // 0: not update; 1: update
     .update_weight_ram_addr(update_weight_ram_addr),
@@ -143,9 +170,9 @@ LayerParaScaleFloat16 LPS(
 	.rst(rst),
 
 	.layer_type(layer_type), // 0: prepare init feature map and weight data; 1:conv; 2:pool; 3:fc;
-	input [1:0] pre_layer_type,
+	.pre_layer_type,
 
-	input [`LAYER_NUM_WIDTH - 1:0] layer_num,
+	.layer_num(layer_num),
 
 	// data init and data update
 	.init_fm_data(init_fm_data),
@@ -159,6 +186,7 @@ LayerParaScaleFloat16 LPS(
 	// common configuration
 	.fm_size(8),
 	.fm_depth(2),
+    .fm_total_size(32),
 
 	.fm_size_out(8), // include padding
 	.padding_out(1),
@@ -179,7 +207,7 @@ LayerParaScaleFloat16 LPS(
 
 	.init_fm_ram_ready(init_fm_ram_ready), // 0: not ready; 1: ready
 	.init_weight_ram_ready(init_weight_ram_read), // 0: not ready; 1: ready
-	output reg layer_ready
+	.layer_ready(layer_ready)
     );
 
     

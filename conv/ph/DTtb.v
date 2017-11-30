@@ -29,10 +29,12 @@ module DTtb();
     reg rst;
        
     reg init;
-    wire start;
     
     reg update_weight_ram;// 0: not update; 1: update
     reg [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr;
+    
+    reg init_fm_ram_ready; // 0: not ready; 1: ready
+    reg init_weight_ram_ready; 
     
     wire [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] init_fm_data;
     wire [`WRITE_ADDR_WIDTH - 1:0] write_fm_data_addr;
@@ -42,20 +44,17 @@ module DTtb();
     wire [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] write_weight_data_addr;
     wire weight_data_done; // weight data transmission, 0: not ready; 1: ready
     
-    wire update_ena;
-    wire cnt1;
-    wire cnt2;
-    wire upp;
-    
-    DataTransmission cnn(
+    DataTransmission cnn1(
        .clk(clk),
        .rst(rst),
        
        .init(init),
-       .start(start),
        
        .update_weight_ram(update_weight_ram), // 0: not update; 1: update
        .update_weight_ram_addr(update_weight_ram_addr),
+       
+       .init_fm_ram_ready(init_fm_ram_ready), // 0: not ready; 1: ready
+       .init_weight_ram_ready(init_weight_ram_ready),
        
        .init_fm_data(init_fm_data),
        .write_fm_data_addr(write_fm_data_addr),
@@ -63,12 +62,7 @@ module DTtb();
        
        .weight_data(weight_data),
        .write_weight_data_addr(write_weight_data_addr),
-       .weight_data_done(weight_data_done),
-       
-       .update_ena(update_ena),
-       .cnt1(cnt1),
-       .cnt2(cnt2),
-       .upp(upp)
+       .weight_data_done(weight_data_done)
     );
     
     

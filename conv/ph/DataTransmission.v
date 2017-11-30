@@ -26,10 +26,12 @@ module DataTransmission(
     input rst,
     
     input init,
-    output reg start,
     
     input update_weight_ram, // 0: not update; 1: update
     input [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr,
+    
+    input init_fm_ram_ready, // 0: not ready; 1: ready
+    input init_weight_ram_ready, // 0: not ready; 1: ready
     
     output reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] init_fm_data,
     output reg [`WRITE_ADDR_WIDTH - 1:0] write_fm_data_addr,
@@ -37,18 +39,17 @@ module DataTransmission(
     
     output reg [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL*`DATA_WIDTH - 1:0] weight_data,
     output reg [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] write_weight_data_addr,
-    output reg weight_data_done, // weight data transmission, 0: not ready; 1: ready
+    output reg weight_data_done // weight data transmission, 0: not ready; 1: ready
     
     
     //used for testbench,please set as non-output registers while running
-    output reg update_ena,
-    output reg cnt1 = 1'b1,
-    output reg cnt2 = 1'b1,
-    output reg upp
     );
     
 
-
+reg update_ena;
+reg cnt1 = 1'b1;
+reg cnt2 = 1'b1;
+reg upp;
 reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] fm_set_one;
 reg [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL*`DATA_WIDTH - 1:0] weight_set_one;
 reg [5:0] fm_cnt;
@@ -130,14 +131,12 @@ always @(posedge clk) begin
 		else begin
             init_fm_data_done <= 1;
 		    cnt1 <= 0;
-		    start <= 1;
 		    fm_cnt <= 0;
             write_fm_data_addr <= fm_cnt;		
 		end
     end
 end//send data to the next fm addr until addr reaches 17
 
-always @(posedge clk) if (~init) start <= 0;
 
 
 reg clk_wr = 1'b0;
