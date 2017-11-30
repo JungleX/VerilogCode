@@ -17,7 +17,7 @@ module LayerParaScaleFloat16(
 	input init_fm_data_done, // feature map data transmission, 0: not ready; 1: ready
 
 	input [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL*`DATA_WIDTH - 1:0] weight_data,
-	input [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] write_weight_data_addr,
+	input [`WEIGHT_WRITE_ADDR_WIDTH - 1:0] write_weight_data_addr,
 	input weight_data_done, // weight data transmission, 0: not ready; 1: ready
 
 	// common configuration
@@ -40,7 +40,7 @@ module LayerParaScaleFloat16(
 	input [1:0] activation, // 0: none; 1: ReLU. current just none or ReLU
 
 	output reg update_weight_ram, // 0: not update; 1: update
-	output reg [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr,
+	output reg [`WEIGHT_WRITE_ADDR_WIDTH - 1:0] update_weight_ram_addr,
 
 	output reg init_fm_ram_ready, // 0: not ready; 1: ready
 	output reg init_weight_ram_ready, // 0: not ready; 1: ready

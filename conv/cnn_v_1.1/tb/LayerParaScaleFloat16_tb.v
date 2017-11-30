@@ -39,7 +39,7 @@ module LayerParaScaleFloat16_tb();
     reg [1:0] activation;
 
 	wire update_weight_ram; // 0: not update; 1: update
-	wire [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] update_weight_ram_addr;
+	wire [`WEIGHT_WRITE_ADDR_WIDTH - 1:0] update_weight_ram_addr;
 
 	wire init_fm_ram_ready;
 	wire init_weight_ram_ready;
