@@ -37,14 +37,20 @@ module DataTransmission(
     
     output reg [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL*`DATA_WIDTH - 1:0] weight_data,
     output reg [`WEIGHT_WRITE_ADDR_WIDTH*`PARA_KERNEL - 1:0] write_weight_data_addr,
-    output reg weight_data_done // weight data transmission, 0: not ready; 1: ready
+    output reg weight_data_done, // weight data transmission, 0: not ready; 1: ready
+    
+    
+    //used for testbench,please set as non-output registers while running
+    output reg update_ena,
+    output reg cnt1 = 1'b1,
+    output reg cnt2 = 1'b1,
+    output reg upp
     );
     
 
 
 reg [`PARA_X*`PARA_Y*`DATA_WIDTH - 1:0] fm_set_one;
 reg [`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL*`DATA_WIDTH - 1:0] weight_set_one;
-reg update_ena;
 reg [5:0] fm_cnt;
 reg [5:0] wr_cnt;
 initial
@@ -56,6 +62,7 @@ begin
 	weight_data_done <= 1'b1;
     fm_cnt <= 6'b0;
     wr_cnt <= 6'b0;
+    upp <= 1'b1;
 end//provide all-1 arrays for featuremap and weightram
 
 
@@ -86,8 +93,7 @@ end//reset
 
 
 
-reg cnt1 = 1'b1;
-reg cnt2 = 1'b1;
+
 always @(posedge clk) if (~cnt1) cnt1 <= 1'b1;
 always @(posedge clk) if (~cnt2) cnt2 <= 1'b1;
 always @(posedge clk) begin    
@@ -116,7 +122,7 @@ end
 
 always @(posedge clk) begin
     if (clk_fm == 1) begin
-	    if(fm_cnt < 17) begin
+	    if(fm_cnt < 18) begin
 		    fm_cnt <= fm_cnt + 1;
 		    init_fm_data <= fm_set_one;
             write_fm_data_addr <= fm_cnt;
@@ -142,7 +148,7 @@ end
 
 always @(posedge clk) begin
     if (clk_wr == 1) begin
-	    if(wr_cnt < 3) begin
+	    if(wr_cnt < 4) begin
 		    wr_cnt <= wr_cnt + 1;
 		    weight_data <= weight_set_one;
 			case (wr_cnt)
@@ -164,11 +170,12 @@ end//send (init)data to the next weight addr until addr reaches 3
 
 
 
-reg upp;
-always @(posedge clk) upp <= ~update_weight_ram;
+always @(posedge clk) 
+if (~update_weight_ram) upp <= 1;
+else if (update_weight_ram) upp <= 0;
 
 always @(posedge clk) begin
-    if ((update_weight_ram) && (update_ena)) begin
+    if ((update_weight_ram) && (update_ena) && (upp)) begin
 	    weight_data_done <= 0;
         weight_data <= weight_set_one;
         write_weight_data_addr <= update_weight_ram_addr;
