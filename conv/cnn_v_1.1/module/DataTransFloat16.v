@@ -41,6 +41,9 @@ module DataTransFloat16(
 
 	reg [`LAYER_NUM_WIDTH - 1:0] cur_layer_num;
 
+	reg [`WEIGHT_READ_ADDR_WIDTH - 1:0] init_weight_half;
+	reg init_weight_swap;
+
     reg rst_delay;
 	always @(posedge clk) 
     	rst_delay <= rst;
@@ -49,12 +52,18 @@ module DataTransFloat16(
 	always @(posedge clk) 
     	update_weight_ram_delay <= update_weight_ram;	
 
+    // debug reg
+    reg [`WEIGHT_READ_ADDR_WIDTH - 1:0] test;
+
 	always @(posedge clk or negedge rst) begin
 		if (!rst) begin
 			weight_left				<= 0;
 			write_fm_num_left		<= 0;
 			write_weight_num_left	<= 0;
 			next_write_weight_num_left <= 0;
+
+			init_weight_half	<= 0;
+			init_weight_swap	<= 0;
 
 			init_fm_data_done	<= 0;
 			weight_data_done	<= 0;
@@ -75,6 +84,7 @@ module DataTransFloat16(
 
 					weight_data_done 		<= 0;
 					write_weight_num_left	<= write_weight_num - 1;
+					init_weight_half		<= write_weight_num/2;
 
 					weight_data				<= weight_set_one; // just for current test, todo later
 					write_weight_data_addr	<= 0;
@@ -100,8 +110,17 @@ module DataTransFloat16(
 						weight_data_done 		<= 0;
 						write_weight_num_left	<= write_weight_num_left - 1;
 
+						if ((write_weight_num_left - 1) == init_weight_half) begin
+							init_weight_swap <= 1;
+						end
+
 						weight_data				<= weight_set_one; // just for current test, todo later
-						write_weight_data_addr	<= write_weight_data_addr + `KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+						if ((init_weight_swap == 1) && (write_weight_num_left == init_weight_half)) begin
+							write_weight_data_addr	<= `WEIGHT_RAM_HALF;
+						end
+						else begin
+							write_weight_data_addr	<= write_weight_data_addr + `KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX;
+						end
 					end
 				end
 			end
