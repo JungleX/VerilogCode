@@ -133,7 +133,17 @@ reg add_disable;
 always @(posedge clk) add_disable <= layer_ready;
 
 always @(posedge clk) begin
-    if ((layer_ready) && (~add_disable)) layer_num = layer_num + 1;
+    if ((layer_ready) && (~add_disable)) begin
+        layer_num <= layer_num + 1;
+        case (layer_num + 1)
+        0:begin layer_type <= 4'b0000; pre_layer_type <= 4'b0000; end
+        1:begin layer_type <= 4'b0001; pre_layer_type <= 4'b0000; end
+        2:begin layer_type <= 4'b0010; pre_layer_type <= 4'b0001; end
+        3:begin layer_type <= 4'b0011; pre_layer_type <= 4'b0010; end
+        4:begin layer_type <= 4'b1001; pre_layer_type <= 4'b0011; end
+        default:begin layer_type <= 4'b0000; pre_layer_type <= 4'b0000; end
+        endcase
+    end
 end
 
 always @(posedge clk) begin
@@ -167,7 +177,7 @@ DataTransmission DT(
     
 LayerParaScaleFloat16 LPS(
 	.clk(clk),
-	.rst(rst),
+	.rst(!rst),
 
 	.layer_type(layer_type), // 0: prepare init feature map and weight data; 1:conv; 2:pool; 3:fc;
 	.pre_layer_type,

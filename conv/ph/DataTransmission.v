@@ -58,9 +58,9 @@ initial
 begin
     fm_set_one <= {`PARA_X*`PARA_Y{16'h3c00}};
     weight_set_one <= {`KERNEL_SIZE_MAX*`KERNEL_SIZE_MAX*`PARA_KERNEL{16'h3c00}};	
-    update_ena <= 1'b1;
-	init_fm_data_done <= 1'b1;
-	weight_data_done <= 1'b1;
+    update_ena <= 1;
+	init_fm_data_done <= 1'b0;
+	weight_data_done <= 1'b0;
     fm_cnt <= 6'b0;
     wr_cnt <= 6'b0;
     upp <= 1'b1;
@@ -68,7 +68,7 @@ end//provide all-1 arrays for featuremap and weightram
 
 
 
-always @(posedge clk) update_ena <= !init;
+always @(posedge clk) if(init == 1) update_ena <= 0; else update_ena <= 1;
 
 
 
@@ -78,11 +78,11 @@ always @(posedge clk) begin
     if (rst) begin
         init_fm_data <= 0;
         write_fm_data_addr <= 0;
-        init_fm_data_done <= 1;
+        init_fm_data_done <= 0;
 		
         weight_data <= 0;
         write_weight_data_addr <= 0;
-        weight_data_done <= 1;
+        weight_data_done <= 0;
 		
         update_ena <= 1;
 		fm_cnt <= 0;
@@ -183,7 +183,7 @@ always @(posedge clk) begin
 end//send (update)data to current update addr
 
 always @(posedge clk) begin
-    if((~upp)&& (update_ena) && (cnt2)) weight_data_done <= 1;
+    if((upp == 0)&& (update_ena) && (cnt2)) weight_data_done <= 1;
 end//stop sending weight data to current update addr
 
 
