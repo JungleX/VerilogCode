@@ -5,11 +5,12 @@
 module CNNFSM(
     input clk_p,
     input clk_n,
-    input rst,
+    
     //input clk,
+    input rst,
     input transmission_start,
     
-    output reg stop,
+    output reg flash,
     output reg [7:0] led 
     );
 
@@ -154,6 +155,7 @@ module CNNFSM(
 	reg workstate;
 	reg [23:0] clk_cnt;
 	reg [26:0] output_cnt;
+	reg stop;
 
 	always @(transmission_start or rst or stop) 
     	workstate <= transmission_start & (rst) & (~stop);
@@ -180,11 +182,16 @@ module CNNFSM(
         2'b10:led <= clk_cnt[15:8];
         2'b11:led <= clk_cnt[7:0];
         endcase
+    
+    always @(posedge clk)
+        if (workstate && !stop) flash <= 1;
+        else flash <= 0;
 
 	always @(posedge clk or negedge rst) begin
 		if (!rst) begin
 			lp_rst <= 0;
 			dt_rst <= 0;
+			flash <= 0;
 
 			stop		<= 0;
 
