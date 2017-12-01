@@ -4,15 +4,18 @@
 
 module CNNFSM(
     //input clk_p,
-     //input clk_n,
-    input clk,
+    //input clk_n,
     input rst,
-    input transmission_start
+    input clk,
+    input transmission_start,
+    
+    output reg stop,
+    output reg [7:0] led 
     );
 
-/*	wire clk;
+	//wire clk;
 
-	IBUFDS #(
+    /*IBUFDS #(
         .DIFF_TERM("FALSE"),
         .IBUF_LOW_PWR("TRUE"),
         .IOSTANDARD("DEFAULT")
@@ -20,9 +23,8 @@ module CNNFSM(
         .O(clk),
         .I(clk_p),
         .IB(clk_n)
-    );    
-
-	reg clk;*/
+    );
+*/
 	reg lp_rst;
 
 	reg [3:0] layer_type; // 0: prepare init feature map and weight data; 1:conv; 2:pool; 3:fc; 9: finish, done
@@ -150,7 +152,9 @@ module CNNFSM(
 	// ======== End: data ========
 
 	reg workstate;
-	reg stop;
+	reg [23:0] clk_cnt;
+	//reg [26:0] output_cnt;
+	reg [8:0] output_cnt;
 
 	always @(transmission_start or rst or stop) 
     	workstate <= transmission_start & (rst) & (~stop);
@@ -160,6 +164,24 @@ module CNNFSM(
     	layer_delay <= layer_ready;
 
     reg init_done;
+    
+    always @(posedge clk)
+        if (layer_type == 9) stop <= 1;
+        
+    always @(posedge clk)
+        if (workstate && !stop) clk_cnt <= clk_cnt + 1;
+        
+    always @(posedge clk)
+        if (stop) output_cnt <= output_cnt + 1;
+        
+    always @(posedge clk)
+        //case (output_cnt[26:25])
+        case (output_cnt[8:7])
+        2'b00:led <= 8'b0;
+        2'b01:led <= clk_cnt[23:16];
+        2'b10:led <= clk_cnt[15:8];
+        2'b11:led <= clk_cnt[7:0];
+        endcase
 
 	always @(posedge clk or negedge rst) begin
 		if (!rst) begin
@@ -176,6 +198,9 @@ module CNNFSM(
 			write_weight_num	<= 0;
 			next_write_weight_num <= 0;
 			kernel_num_count	<= 0;
+			
+			clk_cnt <= 0;
+			output_cnt <= 0;
 		end
 		else begin
 			if (workstate) begin
@@ -244,8 +269,6 @@ module CNNFSM(
 			            4:
 			            	begin
 			            		layer_type	<= 9; // done
-
-			            		stop		<= 0;
 			            	end
 			        endcase
 				end

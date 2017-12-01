@@ -13,12 +13,18 @@ module CNNFSM_tb();
     reg rst;
     reg transmission_start;
      
+    wire stop;
+    wire [7:0] led;
+
 	CNNFSM fsm(
 	     //input clk_p,
 	     //input clk_n,
 	    .clk(clk),
 	    .rst(rst),
-	    .transmission_start(transmission_start)
+	    .transmission_start(transmission_start),
+
+        .stop(stop),
+        .led(led)
 	    );
 
 	initial 
