@@ -44,7 +44,9 @@ module LayerParaScaleFloat16(
 
 	output reg init_fm_ram_ready, // 0: not ready; 1: ready
 	output reg init_weight_ram_ready, // 0: not ready; 1: ready
-	output reg layer_ready
+	output reg layer_ready,
+
+	output reg [`DATA_WIDTH - 1:0] test_data // for debug
     );
 
 	// ======== Begin: pool unit ========
@@ -1411,6 +1413,12 @@ module LayerParaScaleFloat16(
 
 								// reset zero prepare status
 								zero_write_count	<= 0;
+
+								// for debug
+								fm_ena_r[0] <= 1;
+								fm_read_type <= 2;
+								fm_addr_read[0] <= 1070433;
+								test_data <= fm_dout[0][`DATA_WIDTH-1:0];
 							end
 					endcase
 				end

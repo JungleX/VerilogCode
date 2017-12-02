@@ -67,6 +67,7 @@ module CNNFSM(
 	wire init_weight_ram_ready; // 0: not ready; 1: ready
 	wire layer_ready;
 
+	wire [`DATA_WIDTH - 1:0] test_data; // for debug
 	// ======== Begin: layer ========
 	LayerParaScaleFloat16 LP(
 		.clk(clk),
@@ -110,7 +111,9 @@ module CNNFSM(
 
 		.init_fm_ram_ready(init_fm_ram_ready), // 0: not ready; 1: ready
 		.init_weight_ram_ready(init_weight_ram_ready), // 0: not ready; 1: ready
-		.layer_ready(layer_ready)
+		.layer_ready(layer_ready),
+
+		.test_data(test_data)
     );
 	// ======== End: layer ========
 

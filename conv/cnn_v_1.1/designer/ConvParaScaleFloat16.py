@@ -25,7 +25,7 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 		a_layer = s_layer.split('\n')
 
 		# =================== Begin: rst ===================
-		inser_index_layer = 271
+		inser_index_layer = 273
 		for i in range(Para_X):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_rst_0.v')
 
