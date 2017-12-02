@@ -17,15 +17,15 @@
 `define COM_RET_WIDTH			8	// compare unit result width, input: 16 bits float, output: 8 bits float
 
 // feature map ram
-`define FM_RAM_MAX				2140844 // FM_RAM_HALF * 2, 1070422 * 2 =
-`define FM_RAM_HALF				1070422	// the first layer, 224*224*64	= 3211264, 3211264 / PARA_X, PARA_X, 3211264 / 3 = 1070422
+`define FM_RAM_MAX				480//2140844 // FM_RAM_HALF * 2, 1070422 * 2 =
+`define FM_RAM_HALF				240//1070422	// the first layer, 224*224*64	= 3211264, 3211264 / PARA_X, PARA_X, 3211264 / 3 = 1070422
 `define READ_ADDR_WIDTH			22	// fm ram read address width, max value: 2140844
 `define WRITE_ADDR_WIDTH		22	// fm ram write address width, max value: 2140844
 `define RAM_NUM_WIDTH			4	// fm ram num width, max value: PARA_X, 3
 
 // weight ram
-`define WEIGHT_RAM_MAX			24576 // WEIGHT_RAM_HALF * 2, 12288 * 2 = 24576
-`define WEIGHT_RAM_HALF			12288 // 4096 * PARA_Y, 4096 * 3 = 12288
+`define WEIGHT_RAM_MAX			300//24576 // WEIGHT_RAM_HALF * 2, 12288 * 2 = 24576
+`define WEIGHT_RAM_HALF			150//12288 // 4096 * PARA_Y, 4096 * 3 = 12288
 `define WEIGHT_READ_ADDR_WIDTH	15	// weight ram read address, max value: 24576
 `define WEIGHT_WRITE_ADDR_WIDTH	15	// weight ram write address, max value: 24576
 

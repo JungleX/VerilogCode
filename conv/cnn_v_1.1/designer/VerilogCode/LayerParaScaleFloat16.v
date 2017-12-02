@@ -1417,7 +1417,7 @@ module LayerParaScaleFloat16(
 								// for debug
 								fm_ena_r[0] <= 1;
 								fm_read_type <= 2;
-								fm_addr_read[0] <= 1070433;
+								fm_addr_read[0] <= `FM_RAM_HALF+11;
 								test_data <= fm_dout[0][`DATA_WIDTH-1:0];
 							end
 					endcase
