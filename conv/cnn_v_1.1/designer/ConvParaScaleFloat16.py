@@ -993,8 +993,8 @@ def replace(file_path, old_str, new_str):
 		print e 
 
 # ================================================================
-#poolunit()
-#FeatureMapRam(Para_Y, Para_kernel)
-#WeightRam(Para_Y, KernelSizeMax)
-#ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y)
+poolunit()
+FeatureMapRam(Para_Y, Para_kernel)
+WeightRam(Para_Y, KernelSizeMax)
+ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y)
 LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel)

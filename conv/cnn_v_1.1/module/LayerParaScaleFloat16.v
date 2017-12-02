@@ -22,7 +22,7 @@ module LayerParaScaleFloat16(
 
 	// common configuration
 	input [`FM_SIZE_WIDTH - 1:0] fm_size,
-	input [`KERNEL_SIZE_WIDTH - 1:0] fm_depth,
+	input [`KERNEL_NUM_WIDTH - 1:0] fm_depth,
 	input [`FM_SIZE_WIDTH - 1:0] fm_total_size,
 
 	input [`FM_SIZE_WIDTH - 1:0] fm_size_out, // include padding
