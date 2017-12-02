@@ -45,22 +45,6 @@ module WeightRamFloat16(
 			ram_array[addr_write + 6] <= din[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6];
 			ram_array[addr_write + 7] <= din[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7];
 			ram_array[addr_write + 8] <= din[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8];
-			ram_array[addr_write + 9] <= din[`DATA_WIDTH*10 - 1:`DATA_WIDTH*9];
-			ram_array[addr_write + 10] <= din[`DATA_WIDTH*11 - 1:`DATA_WIDTH*10];
-			ram_array[addr_write + 11] <= din[`DATA_WIDTH*12 - 1:`DATA_WIDTH*11];
-			ram_array[addr_write + 12] <= din[`DATA_WIDTH*13 - 1:`DATA_WIDTH*12];
-			ram_array[addr_write + 13] <= din[`DATA_WIDTH*14 - 1:`DATA_WIDTH*13];
-			ram_array[addr_write + 14] <= din[`DATA_WIDTH*15 - 1:`DATA_WIDTH*14];
-			ram_array[addr_write + 15] <= din[`DATA_WIDTH*16 - 1:`DATA_WIDTH*15];
-			ram_array[addr_write + 16] <= din[`DATA_WIDTH*17 - 1:`DATA_WIDTH*16];
-			ram_array[addr_write + 17] <= din[`DATA_WIDTH*18 - 1:`DATA_WIDTH*17];
-			ram_array[addr_write + 18] <= din[`DATA_WIDTH*19 - 1:`DATA_WIDTH*18];
-			ram_array[addr_write + 19] <= din[`DATA_WIDTH*20 - 1:`DATA_WIDTH*19];
-			ram_array[addr_write + 20] <= din[`DATA_WIDTH*21 - 1:`DATA_WIDTH*20];
-			ram_array[addr_write + 21] <= din[`DATA_WIDTH*22 - 1:`DATA_WIDTH*21];
-			ram_array[addr_write + 22] <= din[`DATA_WIDTH*23 - 1:`DATA_WIDTH*22];
-			ram_array[addr_write + 23] <= din[`DATA_WIDTH*24 - 1:`DATA_WIDTH*23];
-			ram_array[addr_write + 24] <= din[`DATA_WIDTH*25 - 1:`DATA_WIDTH*24];
 			// ======== Begin: write data ========
 		end
 	end
