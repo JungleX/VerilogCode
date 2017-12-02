@@ -263,6 +263,10 @@ module LayerParaScaleFloat16(
 			pu_rst		<= 0;
 			fm_rst		<= 0;
 
+			// reset init signal
+			init_fm_ram_ready		<= 0;
+			init_weight_ram_ready	<= 0;
+
 			// ======== Begin: reset fm ram ========
 			// PARA_X
 			// ======== End: reset fm ram ========
