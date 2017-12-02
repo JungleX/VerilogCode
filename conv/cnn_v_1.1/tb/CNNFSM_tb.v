@@ -45,6 +45,18 @@ module CNNFSM_tb();
 	    
 	    #`clk_period
 	    transmission_start <= 1;
+	    
+	    #(`clk_period*1000)
+	    rst <= 0;
+                transmission_start <= 0;
+        
+                #`clk_period
+                rst <= 1;
+                transmission_start <= 0;
+                
+                #(`clk_period*20)
+                transmission_start <= 1;
+	    
     end
 
 endmodule

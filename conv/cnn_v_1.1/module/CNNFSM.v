@@ -13,9 +13,9 @@ module CNNFSM(
     output reg [7:0] led 
     );
 
-	//wire clk;
+	/*wire clk;
 
-    /*IBUFDS #(
+    IBUFDS #(
         .DIFF_TERM("FALSE"),
         .IBUF_LOW_PWR("TRUE"),
         .IOSTANDARD("DEFAULT")
@@ -23,8 +23,8 @@ module CNNFSM(
         .O(clk),
         .I(clk_p),
         .IB(clk_n)
-    );
-*/
+    );*/
+
 	reg lp_rst;
 
 	reg [3:0] layer_type; // 0: prepare init feature map and weight data; 1:conv; 2:pool; 3:fc; 9: finish, done
@@ -43,7 +43,7 @@ module CNNFSM(
 
 	// common configuration
 	reg [`FM_SIZE_WIDTH - 1:0] fm_size;
-	reg [`KERNEL_SIZE_WIDTH - 1:0] fm_depth;
+	reg [`KERNEL_NUM_WIDTH - 1:0] fm_depth;
 	reg [`FM_SIZE_WIDTH - 1:0] fm_total_size;
 
 	reg [`FM_SIZE_WIDTH - 1:0] fm_size_out; // include padding
@@ -153,11 +153,22 @@ module CNNFSM(
 
 	reg workstate;
 	reg [23:0] clk_cnt;
-	//reg [26:0] output_cnt;
-	reg [8:0] output_cnt;
+	reg [26:0] output_cnt;
+	//reg [8:0] output_cnt;
 
-	always @(transmission_start or rst or stop) 
-    	workstate <= transmission_start & (rst) & (~stop);
+	/*always @(transmission_start or rst or stop) 
+    	workstate <= transmission_start & (rst) & (~stop);*/
+    	
+    always @(posedge clk or negedge rst) begin
+    if (rst) workstate <= transmission_start;
+    else if (!rst) workstate <= 0;
+    end
+    
+    /*always @(posedge clk or negedge rst) begin
+    if (!rst) stop <= 1'b0;
+    else stop <= stop_cnt[30];
+    end*/
+    
 
     reg layer_delay;
 	always @(posedge clk) 
@@ -165,18 +176,23 @@ module CNNFSM(
 
     reg init_done;
     
-    always @(posedge clk)
-        if (layer_type == 9) stop <= 1;
+    always @(posedge clk or negedge rst) begin
+        if (!rst) stop <= 1'b0;
+        else if (layer_type == 9) stop <= 1;
+    end
+                
+    always @(posedge clk or negedge rst) begin
+        if (!rst) clk_cnt <= 0;
+        else if (workstate && !stop) clk_cnt <= clk_cnt + 1;
+    end
+        
+    always @(posedge clk or negedge rst)
+    if (!rst) output_cnt <= 0;
+    else if(stop) output_cnt <= output_cnt + 1;
         
     always @(posedge clk)
-        if (workstate && !stop) clk_cnt <= clk_cnt + 1;
-        
-    always @(posedge clk)
-        if (stop) output_cnt <= output_cnt + 1;
-        
-    always @(posedge clk)
-        //case (output_cnt[26:25])
-        case (output_cnt[8:7])
+        case (output_cnt[26:25])
+        //case (output_cnt[8:7])
         2'b00:led <= 8'b0;
         2'b01:led <= clk_cnt[23:16];
         2'b10:led <= clk_cnt[15:8];
@@ -188,8 +204,6 @@ module CNNFSM(
 			lp_rst <= 0;
 			dt_rst <= 0;
 
-			stop		<= 0;
-
 			layer_type	<= 0;
 			layer_num	<= 0;
 
@@ -199,8 +213,6 @@ module CNNFSM(
 			next_write_weight_num <= 0;
 			kernel_num_count	<= 0;
 			
-			clk_cnt <= 0;
-			output_cnt <= 0;
 		end
 		else begin
 			if (workstate) begin
