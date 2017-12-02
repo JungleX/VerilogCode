@@ -12,17 +12,18 @@ module CNNFSM_tb();
 	reg clk;
     reg rst;
     reg transmission_start;
-    
-    wire flash;
-    wire [7:0] led;
      
+    wire stop;
+    wire [7:0] led;
+
 	CNNFSM fsm(
 	     //input clk_p,
 	     //input clk_n,
 	    .clk(clk),
 	    .rst(rst),
 	    .transmission_start(transmission_start),
-	    .flash(flash),
+
+        .stop(stop),
         .led(led)
 	    );
 
@@ -44,6 +45,18 @@ module CNNFSM_tb();
 	    
 	    #`clk_period
 	    transmission_start <= 1;
+	    
+	    #(`clk_period*1000)
+	    rst <= 0;
+                transmission_start <= 0;
+        
+                #`clk_period
+                rst <= 1;
+                transmission_start <= 0;
+                
+                #(`clk_period*20)
+                transmission_start <= 1;
+	    
     end
 
 endmodule
