@@ -15,7 +15,7 @@ module LayerParaScaleFloat16_tb();
     reg [`LAYER_NUM_WIDTH - 1:0] layer_num;
 
 	reg [`FM_SIZE_WIDTH - 1:0] fm_size;
-	reg [`KERNEL_SIZE_WIDTH - 1:0] fm_depth;
+	reg [`KERNEL_NUM_WIDTH - 1:0] fm_depth;
     reg [`FM_SIZE_WIDTH - 1:0] fm_total_size;
 
     reg [`FM_SIZE_WIDTH - 1:0] fm_size_out;
