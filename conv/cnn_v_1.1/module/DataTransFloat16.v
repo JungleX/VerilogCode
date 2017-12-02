@@ -38,6 +38,7 @@ module DataTransFloat16(
 	reg [`WEIGHT_READ_ADDR_WIDTH - 1:0] weight_left;
 	reg [`WEIGHT_READ_ADDR_WIDTH - 1:0] write_weight_num_left;
 	reg [`WEIGHT_READ_ADDR_WIDTH - 1:0] next_write_weight_num_left;
+	reg next_write_weight_swap;
 
 	reg [`LAYER_NUM_WIDTH - 1:0] cur_layer_num;
 
@@ -61,6 +62,7 @@ module DataTransFloat16(
 			write_fm_num_left		<= 0;
 			write_weight_num_left	<= 0;
 			next_write_weight_num_left <= 0;
+			next_write_weight_swap	<= 0;
 
 			init_weight_half	<= 0;
 			init_weight_swap	<= 0;
@@ -129,12 +131,15 @@ module DataTransFloat16(
 				if (cur_layer_num != layer_num) begin // new layer is coming
 					cur_layer_num <= layer_num;
 
-					weight_left				<= kernel_num_count;
+					if (next_write_weight_num_left == 0) begin
+						next_write_weight_swap 	<= 0;
+						weight_left				<= kernel_num_count;
+					end
 				end
 
 				if (update_weight_ram == 1) begin
 					if (~update_weight_ram_delay) begin // new update weight request
-						weight_data_done		<= 0;
+						weight_data_done		= 0; // =
 						write_weight_data_addr	<= update_weight_ram_addr;
 
 						write_weight_num_left	= write_weight_num; // =
@@ -146,31 +151,42 @@ module DataTransFloat16(
 						end
 					end
 
-					if (weight_left != 0) begin
-						if (write_weight_num_left == 0) begin
-							weight_data_done		<= 1;
+					if (weight_data_done != 1) begin
+						if (weight_left != 0) begin
+							if (write_weight_num_left == 0) begin
+								weight_data_done		<= 1;
 
-							if (weight_left - `PARA_KERNEL > 0) begin
-								weight_left	<= weight_left - `PARA_KERNEL;
+								if (weight_left - `PARA_KERNEL > 0) begin
+									weight_left	<= weight_left - `PARA_KERNEL;
+								end
+								else begin
+									weight_left <= 0;
+								end
 							end
 							else begin
-								weight_left <= 0;
+								write_weight_num_left	<= write_weight_num_left - 1;
+
+								weight_data				<= weight_set_one; // just for current test, todo later
 							end
 						end
-						else begin
-							write_weight_num_left	<= write_weight_num_left - 1;
+						else begin // update next layer weight
+							if (next_write_weight_num_left == 0) begin
+								weight_data_done		<= 1;
 
-							weight_data				<= weight_set_one; // just for current test, todo later
-						end
-					end
-					else begin // update next layer weight
-						if (next_write_weight_num_left == 0) begin
-							weight_data_done		<= 1;
-						end
-						else begin
-							next_write_weight_num_left	<= next_write_weight_num_left - 1;
+								if (next_write_weight_swap == 0) begin // the first time to write next layer weight
+									
+								end
+								else begin // the second time to write next layer weight
+									weight_left				<= kernel_num_count;
+								end
 
-							weight_data					<= weight_set_one; // just for current test, todo later
+								next_write_weight_swap <= ~next_write_weight_swap;
+							end
+							else begin
+								next_write_weight_num_left	<= next_write_weight_num_left - 1;
+
+								weight_data					<= weight_set_one; // just for current test, todo later
+							end
 						end
 					end
 				end
