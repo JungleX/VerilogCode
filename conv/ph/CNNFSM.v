@@ -43,7 +43,7 @@ module CNNFSM(
 
 	// common configuration
 	reg [`FM_SIZE_WIDTH - 1:0] fm_size;
-	reg [`KERNEL_SIZE_WIDTH - 1:0] fm_depth;
+	reg [`KERNEL_NUM_WIDTH - 1:0] fm_depth;
 	reg [`FM_SIZE_WIDTH - 1:0] fm_total_size;
 
 	reg [`FM_SIZE_WIDTH - 1:0] fm_size_out; // include padding
@@ -66,6 +66,8 @@ module CNNFSM(
 	wire init_fm_ram_ready; // 0: not ready; 1: ready
 	wire init_weight_ram_ready; // 0: not ready; 1: ready
 	wire layer_ready;
+	
+	wire [`DATA_WIDTH - 1:0] test_data ;
 
 	// ======== Begin: layer ========
 	LayerParaScaleFloat16 LP(
@@ -110,7 +112,9 @@ module CNNFSM(
 
 		.init_fm_ram_ready(init_fm_ram_ready), // 0: not ready; 1: ready
 		.init_weight_ram_ready(init_weight_ram_ready), // 0: not ready; 1: ready
-		.layer_ready(layer_ready)
+		.layer_ready(layer_ready),
+		
+		.test_data(test_data)
     );
 	// ======== End: layer ========
 
@@ -194,9 +198,9 @@ module CNNFSM(
         case (output_cnt[26:25])
         //case (output_cnt[8:7])
         2'b00:led <= 8'b0;
-        2'b01:led <= clk_cnt[23:16];
-        2'b10:led <= clk_cnt[15:8];
-        2'b11:led <= clk_cnt[7:0];
+        2'b01:led <= test_data[15:8];
+        2'b10:led <= test_data[7:0];
+        2'b11:led <= 8'b0;
         endcase
 
 	always @(posedge clk or negedge rst) begin
