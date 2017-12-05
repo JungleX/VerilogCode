@@ -226,11 +226,18 @@ module CNNFSM(
 			        lp_rst			<= 1;
 			        
 			        dt_rst			<= 1;
-			        write_fm_num	<= 18; // fm size: 8, slice: 2; 3 fm ram; each ram save [8/3] = 3 line; each line write [8/3] = 3 times; 3*3=9, 9*2=18
-			        write_weight_num<= 12; // each weight ram, save 2 kernel; slice/depth: 2; write 3 each time; 3*3*2 * 2 / 3 = 12
+			        
+			        //write_fm_num	<= 12; // fm size: 8, depth: 2; [8/3] * [8/(2*3)] * 2 = 3 * 2 * 2 = 12
+			        //write_weight_num<= 12; // kernel_size: 3; depth: 2; 3 * 3 * 2 * 2 / 3 = 12
+
+			        // write_fm_num = [fm_size / `PARA_X] * [fm_size / (`POOL_SIZE * `PARA_Y)] * depth
+			        // each ram save [fm_size / `PARA_X] line, each line write [fm_size / (`POOL_SIZE * `PARA_Y)] times
+			        write_fm_num	<= ((28+`PARA_X-1)/`PARA_X) * ((28+(2*`PARA_Y)-1)/(2*`PARA_Y)) * 512; //25600; // fm size: 28, depth: 512; [28/3] * [28/(2*3)] * 512 = 10 * 5 * 512 = 25600
+			        // write_weight_num = kernel_size * kernel_size * depth * 2 / `PARA_Y
+			        write_weight_num<= (9216+`PARA_Y-1)/`PARA_Y; //3072; // kernel_size: 3; depth: 512; 3 * 3 * 512 * 2 / 3 = 3072; 3*3*512*2 = 9216
 				end
 
-				/*if ((layer_ready) && (~layer_delay)) begin // pre layer is ready, go to new layer
+				if ((layer_ready) && (~layer_delay)) begin // pre layer is ready, go to new layer
 					init_done	<= 1;
 
 					layer_num <= layer_num + 1;
@@ -240,17 +247,17 @@ module CNNFSM(
 			            		layer_type	<= 1; // conv
 			        			activation	<= 1;
 
-			        			fm_size		<= 8;
-						        fm_depth	<= 2;
-						        fm_size_out <= 8;
+			        			fm_size		<= 28;
+						        fm_depth	<= 4;  // 512 todo
+						        fm_size_out <= 28; // including padding
 						        padding_out <= 1;
 
-						        kernel_num  <= 6;
+						        kernel_num  <= 8; // 512 todo
 						        kernel_size <= 3;
 
-						        kernel_num_count <= 2; // 6 - 4 = 2, 2 kernel wait to update
-						        write_weight_num <= 2; // update 1 kernel; slice: 2; write a slice each time; 2;
-						        next_write_weight_num <= 11; // fc fm size: 4; slice: 2; 4*4*2*PARA_Y/(KERNEL_SIZE_MAX*KERNEL_SIZE_MAX); [4*4*2*3/(3*3)]=11
+						        kernel_num_count <= 8 - `PARA_KERNEL*2; // 8 - `PARA_KERNEL*2 = 4 // 512 - `PARA_KERNEL*2 = 508 todo
+						        write_weight_num <= (36+`PARA_Y-1)/`PARA_Y; // 3*3 * 4 = 36 // (4608+`PARA_Y-1)/`PARA_Y; 3*3 * 512 = 4608
+						        next_write_weight_num <= (72+`PARA_Y-1)/`PARA_Y; //  3*3 * 8 = 72 // (4608+`PARA_Y-1)/`PARA_Y; 3*3 * 512 = 4608
 			            	end
 			            2:
 			            	begin 
@@ -259,34 +266,64 @@ module CNNFSM(
 
 						        pool_win_size	<= `POOL_SIZE;
 
-						        fm_size 		<= 8;
-						        fm_size_out 	<= 4;
+						        fm_size 		<= 28; 
+						        fm_size_out 	<= 14;
+						        fm_depth		<= 8; // 512 todo
 						        padding_out 	<= 0; 
 			            	end
-			            3:
+			            3: 
+			            	begin 
+			            		layer_type	<= 1; // conv
+			        			activation	<= 1;
+
+			        			fm_size		<= 14;
+						        fm_depth	<= 8;  // 512 todo
+						        fm_size_out <= 14; // including padding
+						        padding_out <= 1;
+
+						        kernel_num  <= 8; // 512 todo
+						        kernel_size <= 3;
+
+						        kernel_num_count <= 8 - `PARA_KERNEL*2; // 8 - `PARA_KERNEL*2 = 4 // 512 - `PARA_KERNEL*2 = 508 todo
+						        write_weight_num <= (72+`PARA_Y-1)/`PARA_Y; //  3*3 * 8 = 72 // (4608+`PARA_Y-1)/`PARA_Y; 3*3 * 512 = 4608
+						        next_write_weight_num <= 392; //  7*7 * 8  = 392 // 7*7* 512 = 25088 // weight_total / `PARA_Y, fc: weight_total = fm_total * PARA_Y, so fm_total * PARA_Y / PARA_Y = fm_total
+			            	end
+			            4:
+			            	begin 
+			            		layer_type		<= 2; // pool
+			        			pool_type		<= 0;
+
+						        pool_win_size	<= `POOL_SIZE;
+
+						        fm_size 		<= 14; 
+						        fm_size_out 	<= 7;
+						        fm_depth		<= 8; // 512 todo
+						        padding_out 	<= 0; 
+			            	end
+			            5:
 			            	begin
 			            		layer_type		<= 3; // fc
 						        pre_layer_type	<= 2;
 
-						        fm_size			<= 4;
-						        fm_depth		<= 2;
-						        fm_total_size	<= 32;
+						        fm_size			<= 7;
+						        fm_depth		<= 8; // 512 todo
+						        fm_total_size	<= 392;// 7*7 * 8 = 392 // 7*7 * 512 = 25088
 
-						        kernel_num		<= 12; // out put fm size, 1*1*kernel_num
-						        kernel_size		<= 32; // the total size of fm
+						        kernel_num		<= 16; // out put fm size, 1*1*kernel_num // 4096
+						        kernel_size		<= 392; // the total size of fm
 						        
-						        fm_size_out 	<= 12;
+						        fm_size_out 	<= 16; // 4096
 
-						        kernel_num_count <= 6; // 12 - PARA_Y*PARA_KERNEL; 12 - 3*2 = 6; 2 kernel wait to update
-						        write_weight_num <= 11; // fc fm size: 4; slice: 2; 4*4*2*PARA_Y/(KERNEL_SIZE_MAX*KERNEL_SIZE_MAX); [4*4*2*3/(3*3)]=11
+						        kernel_num_count <= 16 - `PARA_Y*`PARA_KERNEL*2; // 4096 - `PARA_Y*`PARA_KERNEL*2
+						        write_weight_num <= (392+`PARA_Y-1)/`PARA_Y; //  7*7 * 8 = 392 // (25088+`PARA_Y-1)/`PARA_Y; 7*7* 512 = 25088
 						        next_write_weight_num <= 0; // next layer is done
 			            	end
-			            4:
+			            6:
 			            	begin
 			            		layer_type	<= 9; // done
 			            	end
 			        endcase
-				end*/
+				end
 			end
 		end
 	end
