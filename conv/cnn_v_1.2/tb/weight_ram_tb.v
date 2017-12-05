@@ -8,7 +8,7 @@ module weight_ram_tb();
 	reg clk;
 
 	reg [`WEIGHT_ADDRA_WIDTH - 1:0] wr_addra;
-    reg [`PARA_Y*`DATA_WIDTH - 1:0] wr_dina; // diff
+    reg [`PARA_Y*`DATA_WIDTH - 1:0] wr_dina; 
     reg wr_ena;
     reg wr_wea;
 
@@ -37,6 +37,8 @@ module weight_ram_tb();
 
     initial begin
     	#0
+
+    	#(`clk_period/2)
     	// write
     	wr_addra	<= 0;
     	wr_dina		<= 16'h3c00;
@@ -45,8 +47,6 @@ module weight_ram_tb();
 
     	// disable port b, the read port
     	wr_enb	<= 0;
-
-    	#(`clk_period/2)
 
     	#`clk_period
     	// write
