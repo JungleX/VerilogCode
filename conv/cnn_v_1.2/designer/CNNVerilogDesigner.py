@@ -754,7 +754,7 @@ def replace(file_path, old_str, new_str):
 		print e 
 
 # ================================================================
-#poolunit()
-MultAddUnit()
+PoolUnit()
+#MultAddUnit()
 #ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y)
 #LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel)
