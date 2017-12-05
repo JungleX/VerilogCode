@@ -19,13 +19,19 @@ PARA_Y = 9
 	写端口：
 		每次写 PARA_Y*DATA_WIDTH bits 的数据
 			即：3*16 = 48
-		深度：4096*PARA_Y*DATA_WIDTH*2 / PARA_Y*DATA_WIDTH bits
-			即：4096*3*16*2 / 48 = 8192 上取整
+
+		总深度（地址）：
+			4096*PARA_Y*DATA_WIDTH / PARA_Y*DATA_WIDTH * 2
+			4096*3*16 / 48 * 2 = 8192
+		半深度（地址）：
+			4096*PARA_Y*DATA_WIDTH / PARA_Y*DATA_WIDTH
+			4096*3*16 / 48 = 4096
+
 	读端口：
 		每次读取 PARA_Y*DATA_WIDTH bits 的数据
 			即：3*16 = 48
 		深度【自动】：8192
-
+	
 	weight ram 存储空间：
 		16 位基本数据位宽，至少需要 8 个 BRAM
 		18 * 1024 * 8 * PARA_Y > 4096 * PARA_Y * 16 * 2
@@ -40,12 +46,17 @@ PARA_Y = 9
 		每次写 POOL_SIZE*PARA_Y*DATA_WIDTH bits 的数据
 			为了读取时可以满足 POOL_SIZE*PARA_Y*DATA_WIDTH bits 的读取带宽
 			即：2*3*16 = 96
-		深度：DATANUM_PR / POOL_SIZE*PARA_Y*DATA_WIDTH 
-			即：2140843 / 96 = 22301 上取整 （PARA_X = 3）
+
+		总深度（地址）：
+			224*224*4 * DATA_WIDTH / PARA_X / POOL_SIZE*PARA_Y*DATA_WIDTH * 2
+			224*224*4 * 16 / 3 / 96 * 2 = 22302
+		半深度（地址）：
+			224*224*4 * DATA_WIDTH / PARA_X / POOL_SIZE*PARA_Y*DATA_WIDTH
+			224*224*4 * 16 / 3 / 96 = 11151 
 
 	feature ram
-		总数据量的两倍，存储最大值：		DATANUM = 224*224*4 * 16 * 2
-		每个 feature map 的存储最大值：	DATANUM_PR = DATANUM / PARA_X
+		总数据量的两倍，存储最大值：		DATANUM = 224*224*4 * 16
+		每个 feature map 的存储最大值：	DATANUM_PR = DATANUM / PARA_X * 2
 		数据带宽：					FMRRW  = PARA_Y * DATA_WIDTH
 		所需 BRAM 个数（根据数据带宽）：	FMBRN_RW = PARA_Y * DATA_WIDTH / 2
 		所需 BRAM 个数（根据存储空间）：	18K：FMBRN_SP_18 = DATANUM_PR / (18*1024)
@@ -53,16 +64,16 @@ PARA_Y = 9
 		实际所需 BRAM 个数：			FMBRN = max(FMBRN_RW, FMBRN_SP)
 
 		例：
-			DATANUM 	= 224*224*4 * 16 * 2 = 6422528
-			DATANUM_PR 	= 12845056 / 3 = 2140843
+			DATANUM 	= 224*224*4 * 16 = 3211264
+			DATANUM_PR 	= 3211264 / 3 * 2 = 2140843
 			FMRRW 		= 2 * 3 * 16 = 96
 			FMBRN_RW 	= 96 / 2 = 48
 			FMBRN_SP_18 = 2140843 / (18*1024) = 116
 			FMBRN_SP_36 = 2140843 / (36*1024) = 58
 
-			IDE 给出最少方案：	2kx9：	18K 11 个，36K 55 个
+			IDE 给出最少方案：	
 							1kx18： 	36K 66 个
-			FMBRN		= max(48, (11,55)) = (11,55)
+			FMBRN		= max(48, 66) = 66
 
 
 简化，weight 用 18K，feature map 用 36K
