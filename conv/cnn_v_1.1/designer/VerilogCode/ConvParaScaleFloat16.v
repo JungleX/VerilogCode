@@ -174,39 +174,1271 @@ module ConvParaScaleFloat16(
 								// ======== Begin: result buffer ========
 								if (activation == 0) begin // none
 									result_buffer	<= {
-														result_temp[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6],
-														result_temp[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7],
-														result_temp[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8],
+														result_temp[`DATA_WIDTH*172 - 1:`DATA_WIDTH*171],
+														result_temp[`DATA_WIDTH*173 - 1:`DATA_WIDTH*172],
+														result_temp[`DATA_WIDTH*174 - 1:`DATA_WIDTH*173],
+														result_temp[`DATA_WIDTH*175 - 1:`DATA_WIDTH*174],
+														result_temp[`DATA_WIDTH*176 - 1:`DATA_WIDTH*175],
+														result_temp[`DATA_WIDTH*177 - 1:`DATA_WIDTH*176],
+														result_temp[`DATA_WIDTH*178 - 1:`DATA_WIDTH*177],
+														result_temp[`DATA_WIDTH*179 - 1:`DATA_WIDTH*178],
+														result_temp[`DATA_WIDTH*180 - 1:`DATA_WIDTH*179],
 
-														result_temp[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3],
-														result_temp[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4],
-														result_temp[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5],
+														result_temp[`DATA_WIDTH*163 - 1:`DATA_WIDTH*162],
+														result_temp[`DATA_WIDTH*164 - 1:`DATA_WIDTH*163],
+														result_temp[`DATA_WIDTH*165 - 1:`DATA_WIDTH*164],
+														result_temp[`DATA_WIDTH*166 - 1:`DATA_WIDTH*165],
+														result_temp[`DATA_WIDTH*167 - 1:`DATA_WIDTH*166],
+														result_temp[`DATA_WIDTH*168 - 1:`DATA_WIDTH*167],
+														result_temp[`DATA_WIDTH*169 - 1:`DATA_WIDTH*168],
+														result_temp[`DATA_WIDTH*170 - 1:`DATA_WIDTH*169],
+														result_temp[`DATA_WIDTH*171 - 1:`DATA_WIDTH*170],
+
+														result_temp[`DATA_WIDTH*154 - 1:`DATA_WIDTH*153],
+														result_temp[`DATA_WIDTH*155 - 1:`DATA_WIDTH*154],
+														result_temp[`DATA_WIDTH*156 - 1:`DATA_WIDTH*155],
+														result_temp[`DATA_WIDTH*157 - 1:`DATA_WIDTH*156],
+														result_temp[`DATA_WIDTH*158 - 1:`DATA_WIDTH*157],
+														result_temp[`DATA_WIDTH*159 - 1:`DATA_WIDTH*158],
+														result_temp[`DATA_WIDTH*160 - 1:`DATA_WIDTH*159],
+														result_temp[`DATA_WIDTH*161 - 1:`DATA_WIDTH*160],
+														result_temp[`DATA_WIDTH*162 - 1:`DATA_WIDTH*161],
+
+														result_temp[`DATA_WIDTH*145 - 1:`DATA_WIDTH*144],
+														result_temp[`DATA_WIDTH*146 - 1:`DATA_WIDTH*145],
+														result_temp[`DATA_WIDTH*147 - 1:`DATA_WIDTH*146],
+														result_temp[`DATA_WIDTH*148 - 1:`DATA_WIDTH*147],
+														result_temp[`DATA_WIDTH*149 - 1:`DATA_WIDTH*148],
+														result_temp[`DATA_WIDTH*150 - 1:`DATA_WIDTH*149],
+														result_temp[`DATA_WIDTH*151 - 1:`DATA_WIDTH*150],
+														result_temp[`DATA_WIDTH*152 - 1:`DATA_WIDTH*151],
+														result_temp[`DATA_WIDTH*153 - 1:`DATA_WIDTH*152],
+
+														result_temp[`DATA_WIDTH*136 - 1:`DATA_WIDTH*135],
+														result_temp[`DATA_WIDTH*137 - 1:`DATA_WIDTH*136],
+														result_temp[`DATA_WIDTH*138 - 1:`DATA_WIDTH*137],
+														result_temp[`DATA_WIDTH*139 - 1:`DATA_WIDTH*138],
+														result_temp[`DATA_WIDTH*140 - 1:`DATA_WIDTH*139],
+														result_temp[`DATA_WIDTH*141 - 1:`DATA_WIDTH*140],
+														result_temp[`DATA_WIDTH*142 - 1:`DATA_WIDTH*141],
+														result_temp[`DATA_WIDTH*143 - 1:`DATA_WIDTH*142],
+														result_temp[`DATA_WIDTH*144 - 1:`DATA_WIDTH*143],
+
+														result_temp[`DATA_WIDTH*127 - 1:`DATA_WIDTH*126],
+														result_temp[`DATA_WIDTH*128 - 1:`DATA_WIDTH*127],
+														result_temp[`DATA_WIDTH*129 - 1:`DATA_WIDTH*128],
+														result_temp[`DATA_WIDTH*130 - 1:`DATA_WIDTH*129],
+														result_temp[`DATA_WIDTH*131 - 1:`DATA_WIDTH*130],
+														result_temp[`DATA_WIDTH*132 - 1:`DATA_WIDTH*131],
+														result_temp[`DATA_WIDTH*133 - 1:`DATA_WIDTH*132],
+														result_temp[`DATA_WIDTH*134 - 1:`DATA_WIDTH*133],
+														result_temp[`DATA_WIDTH*135 - 1:`DATA_WIDTH*134],
+
+														result_temp[`DATA_WIDTH*118 - 1:`DATA_WIDTH*117],
+														result_temp[`DATA_WIDTH*119 - 1:`DATA_WIDTH*118],
+														result_temp[`DATA_WIDTH*120 - 1:`DATA_WIDTH*119],
+														result_temp[`DATA_WIDTH*121 - 1:`DATA_WIDTH*120],
+														result_temp[`DATA_WIDTH*122 - 1:`DATA_WIDTH*121],
+														result_temp[`DATA_WIDTH*123 - 1:`DATA_WIDTH*122],
+														result_temp[`DATA_WIDTH*124 - 1:`DATA_WIDTH*123],
+														result_temp[`DATA_WIDTH*125 - 1:`DATA_WIDTH*124],
+														result_temp[`DATA_WIDTH*126 - 1:`DATA_WIDTH*125],
+
+														result_temp[`DATA_WIDTH*109 - 1:`DATA_WIDTH*108],
+														result_temp[`DATA_WIDTH*110 - 1:`DATA_WIDTH*109],
+														result_temp[`DATA_WIDTH*111 - 1:`DATA_WIDTH*110],
+														result_temp[`DATA_WIDTH*112 - 1:`DATA_WIDTH*111],
+														result_temp[`DATA_WIDTH*113 - 1:`DATA_WIDTH*112],
+														result_temp[`DATA_WIDTH*114 - 1:`DATA_WIDTH*113],
+														result_temp[`DATA_WIDTH*115 - 1:`DATA_WIDTH*114],
+														result_temp[`DATA_WIDTH*116 - 1:`DATA_WIDTH*115],
+														result_temp[`DATA_WIDTH*117 - 1:`DATA_WIDTH*116],
+
+														result_temp[`DATA_WIDTH*100 - 1:`DATA_WIDTH*99],
+														result_temp[`DATA_WIDTH*101 - 1:`DATA_WIDTH*100],
+														result_temp[`DATA_WIDTH*102 - 1:`DATA_WIDTH*101],
+														result_temp[`DATA_WIDTH*103 - 1:`DATA_WIDTH*102],
+														result_temp[`DATA_WIDTH*104 - 1:`DATA_WIDTH*103],
+														result_temp[`DATA_WIDTH*105 - 1:`DATA_WIDTH*104],
+														result_temp[`DATA_WIDTH*106 - 1:`DATA_WIDTH*105],
+														result_temp[`DATA_WIDTH*107 - 1:`DATA_WIDTH*106],
+														result_temp[`DATA_WIDTH*108 - 1:`DATA_WIDTH*107],
+
+														result_temp[`DATA_WIDTH*91 - 1:`DATA_WIDTH*90],
+														result_temp[`DATA_WIDTH*92 - 1:`DATA_WIDTH*91],
+														result_temp[`DATA_WIDTH*93 - 1:`DATA_WIDTH*92],
+														result_temp[`DATA_WIDTH*94 - 1:`DATA_WIDTH*93],
+														result_temp[`DATA_WIDTH*95 - 1:`DATA_WIDTH*94],
+														result_temp[`DATA_WIDTH*96 - 1:`DATA_WIDTH*95],
+														result_temp[`DATA_WIDTH*97 - 1:`DATA_WIDTH*96],
+														result_temp[`DATA_WIDTH*98 - 1:`DATA_WIDTH*97],
+														result_temp[`DATA_WIDTH*99 - 1:`DATA_WIDTH*98],
+
+														result_temp[`DATA_WIDTH*82 - 1:`DATA_WIDTH*81],
+														result_temp[`DATA_WIDTH*83 - 1:`DATA_WIDTH*82],
+														result_temp[`DATA_WIDTH*84 - 1:`DATA_WIDTH*83],
+														result_temp[`DATA_WIDTH*85 - 1:`DATA_WIDTH*84],
+														result_temp[`DATA_WIDTH*86 - 1:`DATA_WIDTH*85],
+														result_temp[`DATA_WIDTH*87 - 1:`DATA_WIDTH*86],
+														result_temp[`DATA_WIDTH*88 - 1:`DATA_WIDTH*87],
+														result_temp[`DATA_WIDTH*89 - 1:`DATA_WIDTH*88],
+														result_temp[`DATA_WIDTH*90 - 1:`DATA_WIDTH*89],
+
+														result_temp[`DATA_WIDTH*73 - 1:`DATA_WIDTH*72],
+														result_temp[`DATA_WIDTH*74 - 1:`DATA_WIDTH*73],
+														result_temp[`DATA_WIDTH*75 - 1:`DATA_WIDTH*74],
+														result_temp[`DATA_WIDTH*76 - 1:`DATA_WIDTH*75],
+														result_temp[`DATA_WIDTH*77 - 1:`DATA_WIDTH*76],
+														result_temp[`DATA_WIDTH*78 - 1:`DATA_WIDTH*77],
+														result_temp[`DATA_WIDTH*79 - 1:`DATA_WIDTH*78],
+														result_temp[`DATA_WIDTH*80 - 1:`DATA_WIDTH*79],
+														result_temp[`DATA_WIDTH*81 - 1:`DATA_WIDTH*80],
+
+														result_temp[`DATA_WIDTH*64 - 1:`DATA_WIDTH*63],
+														result_temp[`DATA_WIDTH*65 - 1:`DATA_WIDTH*64],
+														result_temp[`DATA_WIDTH*66 - 1:`DATA_WIDTH*65],
+														result_temp[`DATA_WIDTH*67 - 1:`DATA_WIDTH*66],
+														result_temp[`DATA_WIDTH*68 - 1:`DATA_WIDTH*67],
+														result_temp[`DATA_WIDTH*69 - 1:`DATA_WIDTH*68],
+														result_temp[`DATA_WIDTH*70 - 1:`DATA_WIDTH*69],
+														result_temp[`DATA_WIDTH*71 - 1:`DATA_WIDTH*70],
+														result_temp[`DATA_WIDTH*72 - 1:`DATA_WIDTH*71],
+
+														result_temp[`DATA_WIDTH*55 - 1:`DATA_WIDTH*54],
+														result_temp[`DATA_WIDTH*56 - 1:`DATA_WIDTH*55],
+														result_temp[`DATA_WIDTH*57 - 1:`DATA_WIDTH*56],
+														result_temp[`DATA_WIDTH*58 - 1:`DATA_WIDTH*57],
+														result_temp[`DATA_WIDTH*59 - 1:`DATA_WIDTH*58],
+														result_temp[`DATA_WIDTH*60 - 1:`DATA_WIDTH*59],
+														result_temp[`DATA_WIDTH*61 - 1:`DATA_WIDTH*60],
+														result_temp[`DATA_WIDTH*62 - 1:`DATA_WIDTH*61],
+														result_temp[`DATA_WIDTH*63 - 1:`DATA_WIDTH*62],
+
+														result_temp[`DATA_WIDTH*46 - 1:`DATA_WIDTH*45],
+														result_temp[`DATA_WIDTH*47 - 1:`DATA_WIDTH*46],
+														result_temp[`DATA_WIDTH*48 - 1:`DATA_WIDTH*47],
+														result_temp[`DATA_WIDTH*49 - 1:`DATA_WIDTH*48],
+														result_temp[`DATA_WIDTH*50 - 1:`DATA_WIDTH*49],
+														result_temp[`DATA_WIDTH*51 - 1:`DATA_WIDTH*50],
+														result_temp[`DATA_WIDTH*52 - 1:`DATA_WIDTH*51],
+														result_temp[`DATA_WIDTH*53 - 1:`DATA_WIDTH*52],
+														result_temp[`DATA_WIDTH*54 - 1:`DATA_WIDTH*53],
+
+														result_temp[`DATA_WIDTH*37 - 1:`DATA_WIDTH*36],
+														result_temp[`DATA_WIDTH*38 - 1:`DATA_WIDTH*37],
+														result_temp[`DATA_WIDTH*39 - 1:`DATA_WIDTH*38],
+														result_temp[`DATA_WIDTH*40 - 1:`DATA_WIDTH*39],
+														result_temp[`DATA_WIDTH*41 - 1:`DATA_WIDTH*40],
+														result_temp[`DATA_WIDTH*42 - 1:`DATA_WIDTH*41],
+														result_temp[`DATA_WIDTH*43 - 1:`DATA_WIDTH*42],
+														result_temp[`DATA_WIDTH*44 - 1:`DATA_WIDTH*43],
+														result_temp[`DATA_WIDTH*45 - 1:`DATA_WIDTH*44],
+
+														result_temp[`DATA_WIDTH*28 - 1:`DATA_WIDTH*27],
+														result_temp[`DATA_WIDTH*29 - 1:`DATA_WIDTH*28],
+														result_temp[`DATA_WIDTH*30 - 1:`DATA_WIDTH*29],
+														result_temp[`DATA_WIDTH*31 - 1:`DATA_WIDTH*30],
+														result_temp[`DATA_WIDTH*32 - 1:`DATA_WIDTH*31],
+														result_temp[`DATA_WIDTH*33 - 1:`DATA_WIDTH*32],
+														result_temp[`DATA_WIDTH*34 - 1:`DATA_WIDTH*33],
+														result_temp[`DATA_WIDTH*35 - 1:`DATA_WIDTH*34],
+														result_temp[`DATA_WIDTH*36 - 1:`DATA_WIDTH*35],
+
+														result_temp[`DATA_WIDTH*19 - 1:`DATA_WIDTH*18],
+														result_temp[`DATA_WIDTH*20 - 1:`DATA_WIDTH*19],
+														result_temp[`DATA_WIDTH*21 - 1:`DATA_WIDTH*20],
+														result_temp[`DATA_WIDTH*22 - 1:`DATA_WIDTH*21],
+														result_temp[`DATA_WIDTH*23 - 1:`DATA_WIDTH*22],
+														result_temp[`DATA_WIDTH*24 - 1:`DATA_WIDTH*23],
+														result_temp[`DATA_WIDTH*25 - 1:`DATA_WIDTH*24],
+														result_temp[`DATA_WIDTH*26 - 1:`DATA_WIDTH*25],
+														result_temp[`DATA_WIDTH*27 - 1:`DATA_WIDTH*26],
+
+														result_temp[`DATA_WIDTH*10 - 1:`DATA_WIDTH*9],
+														result_temp[`DATA_WIDTH*11 - 1:`DATA_WIDTH*10],
+														result_temp[`DATA_WIDTH*12 - 1:`DATA_WIDTH*11],
+														result_temp[`DATA_WIDTH*13 - 1:`DATA_WIDTH*12],
+														result_temp[`DATA_WIDTH*14 - 1:`DATA_WIDTH*13],
+														result_temp[`DATA_WIDTH*15 - 1:`DATA_WIDTH*14],
+														result_temp[`DATA_WIDTH*16 - 1:`DATA_WIDTH*15],
+														result_temp[`DATA_WIDTH*17 - 1:`DATA_WIDTH*16],
+														result_temp[`DATA_WIDTH*18 - 1:`DATA_WIDTH*17],
 
 														result_temp[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0],
 														result_temp[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1],
-														result_temp[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]
+														result_temp[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2],
+														result_temp[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3],
+														result_temp[`DATA_WIDTH*5 - 1:`DATA_WIDTH*4],
+														result_temp[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5],
+														result_temp[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6],
+														result_temp[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7],
+														result_temp[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]
 													};
 								end
 								else if (activation == 1) begin // ReLU
-									if (result_temp[`DATA_WIDTH*7 - 1:`DATA_WIDTH*7 - 1] == 1) begin
+									if (result_temp[`DATA_WIDTH*172 - 1:`DATA_WIDTH*172 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*180 - 1:`DATA_WIDTH*179] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*180 - 1:`DATA_WIDTH*179] <= result_temp[`DATA_WIDTH*172 - 1:`DATA_WIDTH*171];
+									end
+									if (result_temp[`DATA_WIDTH*173 - 1:`DATA_WIDTH*173 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*179 - 1:`DATA_WIDTH*178] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*179 - 1:`DATA_WIDTH*178] <= result_temp[`DATA_WIDTH*173 - 1:`DATA_WIDTH*172];
+									end
+									if (result_temp[`DATA_WIDTH*174 - 1:`DATA_WIDTH*174 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*178 - 1:`DATA_WIDTH*177] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*178 - 1:`DATA_WIDTH*177] <= result_temp[`DATA_WIDTH*174 - 1:`DATA_WIDTH*173];
+									end
+									if (result_temp[`DATA_WIDTH*175 - 1:`DATA_WIDTH*175 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*177 - 1:`DATA_WIDTH*176] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*177 - 1:`DATA_WIDTH*176] <= result_temp[`DATA_WIDTH*175 - 1:`DATA_WIDTH*174];
+									end
+									if (result_temp[`DATA_WIDTH*176 - 1:`DATA_WIDTH*176 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*176 - 1:`DATA_WIDTH*175] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*176 - 1:`DATA_WIDTH*175] <= result_temp[`DATA_WIDTH*176 - 1:`DATA_WIDTH*175];
+									end
+									if (result_temp[`DATA_WIDTH*177 - 1:`DATA_WIDTH*177 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*175 - 1:`DATA_WIDTH*174] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*175 - 1:`DATA_WIDTH*174] <= result_temp[`DATA_WIDTH*177 - 1:`DATA_WIDTH*176];
+									end
+									if (result_temp[`DATA_WIDTH*178 - 1:`DATA_WIDTH*178 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*174 - 1:`DATA_WIDTH*173] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*174 - 1:`DATA_WIDTH*173] <= result_temp[`DATA_WIDTH*178 - 1:`DATA_WIDTH*177];
+									end
+									if (result_temp[`DATA_WIDTH*179 - 1:`DATA_WIDTH*179 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*173 - 1:`DATA_WIDTH*172] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*173 - 1:`DATA_WIDTH*172] <= result_temp[`DATA_WIDTH*179 - 1:`DATA_WIDTH*178];
+									end
+									if (result_temp[`DATA_WIDTH*180 - 1:`DATA_WIDTH*180 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*172 - 1:`DATA_WIDTH*171] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*172 - 1:`DATA_WIDTH*171] <= result_temp[`DATA_WIDTH*180 - 1:`DATA_WIDTH*179];
+									end
+
+									if (result_temp[`DATA_WIDTH*163 - 1:`DATA_WIDTH*163 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*171 - 1:`DATA_WIDTH*170] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*171 - 1:`DATA_WIDTH*170] <= result_temp[`DATA_WIDTH*163 - 1:`DATA_WIDTH*162];
+									end
+									if (result_temp[`DATA_WIDTH*164 - 1:`DATA_WIDTH*164 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*170 - 1:`DATA_WIDTH*169] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*170 - 1:`DATA_WIDTH*169] <= result_temp[`DATA_WIDTH*164 - 1:`DATA_WIDTH*163];
+									end
+									if (result_temp[`DATA_WIDTH*165 - 1:`DATA_WIDTH*165 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*169 - 1:`DATA_WIDTH*168] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*169 - 1:`DATA_WIDTH*168] <= result_temp[`DATA_WIDTH*165 - 1:`DATA_WIDTH*164];
+									end
+									if (result_temp[`DATA_WIDTH*166 - 1:`DATA_WIDTH*166 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*168 - 1:`DATA_WIDTH*167] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*168 - 1:`DATA_WIDTH*167] <= result_temp[`DATA_WIDTH*166 - 1:`DATA_WIDTH*165];
+									end
+									if (result_temp[`DATA_WIDTH*167 - 1:`DATA_WIDTH*167 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*167 - 1:`DATA_WIDTH*166] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*167 - 1:`DATA_WIDTH*166] <= result_temp[`DATA_WIDTH*167 - 1:`DATA_WIDTH*166];
+									end
+									if (result_temp[`DATA_WIDTH*168 - 1:`DATA_WIDTH*168 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*166 - 1:`DATA_WIDTH*165] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*166 - 1:`DATA_WIDTH*165] <= result_temp[`DATA_WIDTH*168 - 1:`DATA_WIDTH*167];
+									end
+									if (result_temp[`DATA_WIDTH*169 - 1:`DATA_WIDTH*169 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*165 - 1:`DATA_WIDTH*164] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*165 - 1:`DATA_WIDTH*164] <= result_temp[`DATA_WIDTH*169 - 1:`DATA_WIDTH*168];
+									end
+									if (result_temp[`DATA_WIDTH*170 - 1:`DATA_WIDTH*170 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*164 - 1:`DATA_WIDTH*163] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*164 - 1:`DATA_WIDTH*163] <= result_temp[`DATA_WIDTH*170 - 1:`DATA_WIDTH*169];
+									end
+									if (result_temp[`DATA_WIDTH*171 - 1:`DATA_WIDTH*171 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*163 - 1:`DATA_WIDTH*162] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*163 - 1:`DATA_WIDTH*162] <= result_temp[`DATA_WIDTH*171 - 1:`DATA_WIDTH*170];
+									end
+
+									if (result_temp[`DATA_WIDTH*154 - 1:`DATA_WIDTH*154 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*162 - 1:`DATA_WIDTH*161] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*162 - 1:`DATA_WIDTH*161] <= result_temp[`DATA_WIDTH*154 - 1:`DATA_WIDTH*153];
+									end
+									if (result_temp[`DATA_WIDTH*155 - 1:`DATA_WIDTH*155 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*161 - 1:`DATA_WIDTH*160] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*161 - 1:`DATA_WIDTH*160] <= result_temp[`DATA_WIDTH*155 - 1:`DATA_WIDTH*154];
+									end
+									if (result_temp[`DATA_WIDTH*156 - 1:`DATA_WIDTH*156 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*160 - 1:`DATA_WIDTH*159] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*160 - 1:`DATA_WIDTH*159] <= result_temp[`DATA_WIDTH*156 - 1:`DATA_WIDTH*155];
+									end
+									if (result_temp[`DATA_WIDTH*157 - 1:`DATA_WIDTH*157 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*159 - 1:`DATA_WIDTH*158] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*159 - 1:`DATA_WIDTH*158] <= result_temp[`DATA_WIDTH*157 - 1:`DATA_WIDTH*156];
+									end
+									if (result_temp[`DATA_WIDTH*158 - 1:`DATA_WIDTH*158 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*158 - 1:`DATA_WIDTH*157] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*158 - 1:`DATA_WIDTH*157] <= result_temp[`DATA_WIDTH*158 - 1:`DATA_WIDTH*157];
+									end
+									if (result_temp[`DATA_WIDTH*159 - 1:`DATA_WIDTH*159 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*157 - 1:`DATA_WIDTH*156] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*157 - 1:`DATA_WIDTH*156] <= result_temp[`DATA_WIDTH*159 - 1:`DATA_WIDTH*158];
+									end
+									if (result_temp[`DATA_WIDTH*160 - 1:`DATA_WIDTH*160 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*156 - 1:`DATA_WIDTH*155] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*156 - 1:`DATA_WIDTH*155] <= result_temp[`DATA_WIDTH*160 - 1:`DATA_WIDTH*159];
+									end
+									if (result_temp[`DATA_WIDTH*161 - 1:`DATA_WIDTH*161 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*155 - 1:`DATA_WIDTH*154] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*155 - 1:`DATA_WIDTH*154] <= result_temp[`DATA_WIDTH*161 - 1:`DATA_WIDTH*160];
+									end
+									if (result_temp[`DATA_WIDTH*162 - 1:`DATA_WIDTH*162 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*154 - 1:`DATA_WIDTH*153] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*154 - 1:`DATA_WIDTH*153] <= result_temp[`DATA_WIDTH*162 - 1:`DATA_WIDTH*161];
+									end
+
+									if (result_temp[`DATA_WIDTH*145 - 1:`DATA_WIDTH*145 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*153 - 1:`DATA_WIDTH*152] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*153 - 1:`DATA_WIDTH*152] <= result_temp[`DATA_WIDTH*145 - 1:`DATA_WIDTH*144];
+									end
+									if (result_temp[`DATA_WIDTH*146 - 1:`DATA_WIDTH*146 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*152 - 1:`DATA_WIDTH*151] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*152 - 1:`DATA_WIDTH*151] <= result_temp[`DATA_WIDTH*146 - 1:`DATA_WIDTH*145];
+									end
+									if (result_temp[`DATA_WIDTH*147 - 1:`DATA_WIDTH*147 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*151 - 1:`DATA_WIDTH*150] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*151 - 1:`DATA_WIDTH*150] <= result_temp[`DATA_WIDTH*147 - 1:`DATA_WIDTH*146];
+									end
+									if (result_temp[`DATA_WIDTH*148 - 1:`DATA_WIDTH*148 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*150 - 1:`DATA_WIDTH*149] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*150 - 1:`DATA_WIDTH*149] <= result_temp[`DATA_WIDTH*148 - 1:`DATA_WIDTH*147];
+									end
+									if (result_temp[`DATA_WIDTH*149 - 1:`DATA_WIDTH*149 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*149 - 1:`DATA_WIDTH*148] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*149 - 1:`DATA_WIDTH*148] <= result_temp[`DATA_WIDTH*149 - 1:`DATA_WIDTH*148];
+									end
+									if (result_temp[`DATA_WIDTH*150 - 1:`DATA_WIDTH*150 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*148 - 1:`DATA_WIDTH*147] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*148 - 1:`DATA_WIDTH*147] <= result_temp[`DATA_WIDTH*150 - 1:`DATA_WIDTH*149];
+									end
+									if (result_temp[`DATA_WIDTH*151 - 1:`DATA_WIDTH*151 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*147 - 1:`DATA_WIDTH*146] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*147 - 1:`DATA_WIDTH*146] <= result_temp[`DATA_WIDTH*151 - 1:`DATA_WIDTH*150];
+									end
+									if (result_temp[`DATA_WIDTH*152 - 1:`DATA_WIDTH*152 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*146 - 1:`DATA_WIDTH*145] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*146 - 1:`DATA_WIDTH*145] <= result_temp[`DATA_WIDTH*152 - 1:`DATA_WIDTH*151];
+									end
+									if (result_temp[`DATA_WIDTH*153 - 1:`DATA_WIDTH*153 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*145 - 1:`DATA_WIDTH*144] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*145 - 1:`DATA_WIDTH*144] <= result_temp[`DATA_WIDTH*153 - 1:`DATA_WIDTH*152];
+									end
+
+									if (result_temp[`DATA_WIDTH*136 - 1:`DATA_WIDTH*136 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*144 - 1:`DATA_WIDTH*143] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*144 - 1:`DATA_WIDTH*143] <= result_temp[`DATA_WIDTH*136 - 1:`DATA_WIDTH*135];
+									end
+									if (result_temp[`DATA_WIDTH*137 - 1:`DATA_WIDTH*137 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*143 - 1:`DATA_WIDTH*142] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*143 - 1:`DATA_WIDTH*142] <= result_temp[`DATA_WIDTH*137 - 1:`DATA_WIDTH*136];
+									end
+									if (result_temp[`DATA_WIDTH*138 - 1:`DATA_WIDTH*138 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*142 - 1:`DATA_WIDTH*141] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*142 - 1:`DATA_WIDTH*141] <= result_temp[`DATA_WIDTH*138 - 1:`DATA_WIDTH*137];
+									end
+									if (result_temp[`DATA_WIDTH*139 - 1:`DATA_WIDTH*139 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*141 - 1:`DATA_WIDTH*140] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*141 - 1:`DATA_WIDTH*140] <= result_temp[`DATA_WIDTH*139 - 1:`DATA_WIDTH*138];
+									end
+									if (result_temp[`DATA_WIDTH*140 - 1:`DATA_WIDTH*140 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*140 - 1:`DATA_WIDTH*139] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*140 - 1:`DATA_WIDTH*139] <= result_temp[`DATA_WIDTH*140 - 1:`DATA_WIDTH*139];
+									end
+									if (result_temp[`DATA_WIDTH*141 - 1:`DATA_WIDTH*141 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*139 - 1:`DATA_WIDTH*138] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*139 - 1:`DATA_WIDTH*138] <= result_temp[`DATA_WIDTH*141 - 1:`DATA_WIDTH*140];
+									end
+									if (result_temp[`DATA_WIDTH*142 - 1:`DATA_WIDTH*142 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*138 - 1:`DATA_WIDTH*137] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*138 - 1:`DATA_WIDTH*137] <= result_temp[`DATA_WIDTH*142 - 1:`DATA_WIDTH*141];
+									end
+									if (result_temp[`DATA_WIDTH*143 - 1:`DATA_WIDTH*143 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*137 - 1:`DATA_WIDTH*136] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*137 - 1:`DATA_WIDTH*136] <= result_temp[`DATA_WIDTH*143 - 1:`DATA_WIDTH*142];
+									end
+									if (result_temp[`DATA_WIDTH*144 - 1:`DATA_WIDTH*144 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*136 - 1:`DATA_WIDTH*135] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*136 - 1:`DATA_WIDTH*135] <= result_temp[`DATA_WIDTH*144 - 1:`DATA_WIDTH*143];
+									end
+
+									if (result_temp[`DATA_WIDTH*127 - 1:`DATA_WIDTH*127 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*135 - 1:`DATA_WIDTH*134] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*135 - 1:`DATA_WIDTH*134] <= result_temp[`DATA_WIDTH*127 - 1:`DATA_WIDTH*126];
+									end
+									if (result_temp[`DATA_WIDTH*128 - 1:`DATA_WIDTH*128 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*134 - 1:`DATA_WIDTH*133] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*134 - 1:`DATA_WIDTH*133] <= result_temp[`DATA_WIDTH*128 - 1:`DATA_WIDTH*127];
+									end
+									if (result_temp[`DATA_WIDTH*129 - 1:`DATA_WIDTH*129 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*133 - 1:`DATA_WIDTH*132] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*133 - 1:`DATA_WIDTH*132] <= result_temp[`DATA_WIDTH*129 - 1:`DATA_WIDTH*128];
+									end
+									if (result_temp[`DATA_WIDTH*130 - 1:`DATA_WIDTH*130 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*132 - 1:`DATA_WIDTH*131] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*132 - 1:`DATA_WIDTH*131] <= result_temp[`DATA_WIDTH*130 - 1:`DATA_WIDTH*129];
+									end
+									if (result_temp[`DATA_WIDTH*131 - 1:`DATA_WIDTH*131 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*131 - 1:`DATA_WIDTH*130] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*131 - 1:`DATA_WIDTH*130] <= result_temp[`DATA_WIDTH*131 - 1:`DATA_WIDTH*130];
+									end
+									if (result_temp[`DATA_WIDTH*132 - 1:`DATA_WIDTH*132 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*130 - 1:`DATA_WIDTH*129] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*130 - 1:`DATA_WIDTH*129] <= result_temp[`DATA_WIDTH*132 - 1:`DATA_WIDTH*131];
+									end
+									if (result_temp[`DATA_WIDTH*133 - 1:`DATA_WIDTH*133 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*129 - 1:`DATA_WIDTH*128] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*129 - 1:`DATA_WIDTH*128] <= result_temp[`DATA_WIDTH*133 - 1:`DATA_WIDTH*132];
+									end
+									if (result_temp[`DATA_WIDTH*134 - 1:`DATA_WIDTH*134 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*128 - 1:`DATA_WIDTH*127] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*128 - 1:`DATA_WIDTH*127] <= result_temp[`DATA_WIDTH*134 - 1:`DATA_WIDTH*133];
+									end
+									if (result_temp[`DATA_WIDTH*135 - 1:`DATA_WIDTH*135 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*127 - 1:`DATA_WIDTH*126] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*127 - 1:`DATA_WIDTH*126] <= result_temp[`DATA_WIDTH*135 - 1:`DATA_WIDTH*134];
+									end
+
+									if (result_temp[`DATA_WIDTH*118 - 1:`DATA_WIDTH*118 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*126 - 1:`DATA_WIDTH*125] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*126 - 1:`DATA_WIDTH*125] <= result_temp[`DATA_WIDTH*118 - 1:`DATA_WIDTH*117];
+									end
+									if (result_temp[`DATA_WIDTH*119 - 1:`DATA_WIDTH*119 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*125 - 1:`DATA_WIDTH*124] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*125 - 1:`DATA_WIDTH*124] <= result_temp[`DATA_WIDTH*119 - 1:`DATA_WIDTH*118];
+									end
+									if (result_temp[`DATA_WIDTH*120 - 1:`DATA_WIDTH*120 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*124 - 1:`DATA_WIDTH*123] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*124 - 1:`DATA_WIDTH*123] <= result_temp[`DATA_WIDTH*120 - 1:`DATA_WIDTH*119];
+									end
+									if (result_temp[`DATA_WIDTH*121 - 1:`DATA_WIDTH*121 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*123 - 1:`DATA_WIDTH*122] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*123 - 1:`DATA_WIDTH*122] <= result_temp[`DATA_WIDTH*121 - 1:`DATA_WIDTH*120];
+									end
+									if (result_temp[`DATA_WIDTH*122 - 1:`DATA_WIDTH*122 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*122 - 1:`DATA_WIDTH*121] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*122 - 1:`DATA_WIDTH*121] <= result_temp[`DATA_WIDTH*122 - 1:`DATA_WIDTH*121];
+									end
+									if (result_temp[`DATA_WIDTH*123 - 1:`DATA_WIDTH*123 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*121 - 1:`DATA_WIDTH*120] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*121 - 1:`DATA_WIDTH*120] <= result_temp[`DATA_WIDTH*123 - 1:`DATA_WIDTH*122];
+									end
+									if (result_temp[`DATA_WIDTH*124 - 1:`DATA_WIDTH*124 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*120 - 1:`DATA_WIDTH*119] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*120 - 1:`DATA_WIDTH*119] <= result_temp[`DATA_WIDTH*124 - 1:`DATA_WIDTH*123];
+									end
+									if (result_temp[`DATA_WIDTH*125 - 1:`DATA_WIDTH*125 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*119 - 1:`DATA_WIDTH*118] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*119 - 1:`DATA_WIDTH*118] <= result_temp[`DATA_WIDTH*125 - 1:`DATA_WIDTH*124];
+									end
+									if (result_temp[`DATA_WIDTH*126 - 1:`DATA_WIDTH*126 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*118 - 1:`DATA_WIDTH*117] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*118 - 1:`DATA_WIDTH*117] <= result_temp[`DATA_WIDTH*126 - 1:`DATA_WIDTH*125];
+									end
+
+									if (result_temp[`DATA_WIDTH*109 - 1:`DATA_WIDTH*109 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*117 - 1:`DATA_WIDTH*116] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*117 - 1:`DATA_WIDTH*116] <= result_temp[`DATA_WIDTH*109 - 1:`DATA_WIDTH*108];
+									end
+									if (result_temp[`DATA_WIDTH*110 - 1:`DATA_WIDTH*110 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*116 - 1:`DATA_WIDTH*115] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*116 - 1:`DATA_WIDTH*115] <= result_temp[`DATA_WIDTH*110 - 1:`DATA_WIDTH*109];
+									end
+									if (result_temp[`DATA_WIDTH*111 - 1:`DATA_WIDTH*111 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*115 - 1:`DATA_WIDTH*114] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*115 - 1:`DATA_WIDTH*114] <= result_temp[`DATA_WIDTH*111 - 1:`DATA_WIDTH*110];
+									end
+									if (result_temp[`DATA_WIDTH*112 - 1:`DATA_WIDTH*112 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*114 - 1:`DATA_WIDTH*113] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*114 - 1:`DATA_WIDTH*113] <= result_temp[`DATA_WIDTH*112 - 1:`DATA_WIDTH*111];
+									end
+									if (result_temp[`DATA_WIDTH*113 - 1:`DATA_WIDTH*113 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*113 - 1:`DATA_WIDTH*112] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*113 - 1:`DATA_WIDTH*112] <= result_temp[`DATA_WIDTH*113 - 1:`DATA_WIDTH*112];
+									end
+									if (result_temp[`DATA_WIDTH*114 - 1:`DATA_WIDTH*114 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*112 - 1:`DATA_WIDTH*111] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*112 - 1:`DATA_WIDTH*111] <= result_temp[`DATA_WIDTH*114 - 1:`DATA_WIDTH*113];
+									end
+									if (result_temp[`DATA_WIDTH*115 - 1:`DATA_WIDTH*115 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*111 - 1:`DATA_WIDTH*110] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*111 - 1:`DATA_WIDTH*110] <= result_temp[`DATA_WIDTH*115 - 1:`DATA_WIDTH*114];
+									end
+									if (result_temp[`DATA_WIDTH*116 - 1:`DATA_WIDTH*116 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*110 - 1:`DATA_WIDTH*109] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*110 - 1:`DATA_WIDTH*109] <= result_temp[`DATA_WIDTH*116 - 1:`DATA_WIDTH*115];
+									end
+									if (result_temp[`DATA_WIDTH*117 - 1:`DATA_WIDTH*117 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*109 - 1:`DATA_WIDTH*108] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*109 - 1:`DATA_WIDTH*108] <= result_temp[`DATA_WIDTH*117 - 1:`DATA_WIDTH*116];
+									end
+
+									if (result_temp[`DATA_WIDTH*100 - 1:`DATA_WIDTH*100 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*108 - 1:`DATA_WIDTH*107] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*108 - 1:`DATA_WIDTH*107] <= result_temp[`DATA_WIDTH*100 - 1:`DATA_WIDTH*99];
+									end
+									if (result_temp[`DATA_WIDTH*101 - 1:`DATA_WIDTH*101 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*107 - 1:`DATA_WIDTH*106] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*107 - 1:`DATA_WIDTH*106] <= result_temp[`DATA_WIDTH*101 - 1:`DATA_WIDTH*100];
+									end
+									if (result_temp[`DATA_WIDTH*102 - 1:`DATA_WIDTH*102 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*106 - 1:`DATA_WIDTH*105] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*106 - 1:`DATA_WIDTH*105] <= result_temp[`DATA_WIDTH*102 - 1:`DATA_WIDTH*101];
+									end
+									if (result_temp[`DATA_WIDTH*103 - 1:`DATA_WIDTH*103 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*105 - 1:`DATA_WIDTH*104] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*105 - 1:`DATA_WIDTH*104] <= result_temp[`DATA_WIDTH*103 - 1:`DATA_WIDTH*102];
+									end
+									if (result_temp[`DATA_WIDTH*104 - 1:`DATA_WIDTH*104 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*104 - 1:`DATA_WIDTH*103] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*104 - 1:`DATA_WIDTH*103] <= result_temp[`DATA_WIDTH*104 - 1:`DATA_WIDTH*103];
+									end
+									if (result_temp[`DATA_WIDTH*105 - 1:`DATA_WIDTH*105 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*103 - 1:`DATA_WIDTH*102] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*103 - 1:`DATA_WIDTH*102] <= result_temp[`DATA_WIDTH*105 - 1:`DATA_WIDTH*104];
+									end
+									if (result_temp[`DATA_WIDTH*106 - 1:`DATA_WIDTH*106 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*102 - 1:`DATA_WIDTH*101] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*102 - 1:`DATA_WIDTH*101] <= result_temp[`DATA_WIDTH*106 - 1:`DATA_WIDTH*105];
+									end
+									if (result_temp[`DATA_WIDTH*107 - 1:`DATA_WIDTH*107 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*101 - 1:`DATA_WIDTH*100] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*101 - 1:`DATA_WIDTH*100] <= result_temp[`DATA_WIDTH*107 - 1:`DATA_WIDTH*106];
+									end
+									if (result_temp[`DATA_WIDTH*108 - 1:`DATA_WIDTH*108 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*100 - 1:`DATA_WIDTH*99] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*100 - 1:`DATA_WIDTH*99] <= result_temp[`DATA_WIDTH*108 - 1:`DATA_WIDTH*107];
+									end
+
+									if (result_temp[`DATA_WIDTH*91 - 1:`DATA_WIDTH*91 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*99 - 1:`DATA_WIDTH*98] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*99 - 1:`DATA_WIDTH*98] <= result_temp[`DATA_WIDTH*91 - 1:`DATA_WIDTH*90];
+									end
+									if (result_temp[`DATA_WIDTH*92 - 1:`DATA_WIDTH*92 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*98 - 1:`DATA_WIDTH*97] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*98 - 1:`DATA_WIDTH*97] <= result_temp[`DATA_WIDTH*92 - 1:`DATA_WIDTH*91];
+									end
+									if (result_temp[`DATA_WIDTH*93 - 1:`DATA_WIDTH*93 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*97 - 1:`DATA_WIDTH*96] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*97 - 1:`DATA_WIDTH*96] <= result_temp[`DATA_WIDTH*93 - 1:`DATA_WIDTH*92];
+									end
+									if (result_temp[`DATA_WIDTH*94 - 1:`DATA_WIDTH*94 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*96 - 1:`DATA_WIDTH*95] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*96 - 1:`DATA_WIDTH*95] <= result_temp[`DATA_WIDTH*94 - 1:`DATA_WIDTH*93];
+									end
+									if (result_temp[`DATA_WIDTH*95 - 1:`DATA_WIDTH*95 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*95 - 1:`DATA_WIDTH*94] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*95 - 1:`DATA_WIDTH*94] <= result_temp[`DATA_WIDTH*95 - 1:`DATA_WIDTH*94];
+									end
+									if (result_temp[`DATA_WIDTH*96 - 1:`DATA_WIDTH*96 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*94 - 1:`DATA_WIDTH*93] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*94 - 1:`DATA_WIDTH*93] <= result_temp[`DATA_WIDTH*96 - 1:`DATA_WIDTH*95];
+									end
+									if (result_temp[`DATA_WIDTH*97 - 1:`DATA_WIDTH*97 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*93 - 1:`DATA_WIDTH*92] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*93 - 1:`DATA_WIDTH*92] <= result_temp[`DATA_WIDTH*97 - 1:`DATA_WIDTH*96];
+									end
+									if (result_temp[`DATA_WIDTH*98 - 1:`DATA_WIDTH*98 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*92 - 1:`DATA_WIDTH*91] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*92 - 1:`DATA_WIDTH*91] <= result_temp[`DATA_WIDTH*98 - 1:`DATA_WIDTH*97];
+									end
+									if (result_temp[`DATA_WIDTH*99 - 1:`DATA_WIDTH*99 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*91 - 1:`DATA_WIDTH*90] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*91 - 1:`DATA_WIDTH*90] <= result_temp[`DATA_WIDTH*99 - 1:`DATA_WIDTH*98];
+									end
+
+									if (result_temp[`DATA_WIDTH*82 - 1:`DATA_WIDTH*82 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*90 - 1:`DATA_WIDTH*89] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*90 - 1:`DATA_WIDTH*89] <= result_temp[`DATA_WIDTH*82 - 1:`DATA_WIDTH*81];
+									end
+									if (result_temp[`DATA_WIDTH*83 - 1:`DATA_WIDTH*83 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*89 - 1:`DATA_WIDTH*88] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*89 - 1:`DATA_WIDTH*88] <= result_temp[`DATA_WIDTH*83 - 1:`DATA_WIDTH*82];
+									end
+									if (result_temp[`DATA_WIDTH*84 - 1:`DATA_WIDTH*84 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*88 - 1:`DATA_WIDTH*87] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*88 - 1:`DATA_WIDTH*87] <= result_temp[`DATA_WIDTH*84 - 1:`DATA_WIDTH*83];
+									end
+									if (result_temp[`DATA_WIDTH*85 - 1:`DATA_WIDTH*85 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*87 - 1:`DATA_WIDTH*86] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*87 - 1:`DATA_WIDTH*86] <= result_temp[`DATA_WIDTH*85 - 1:`DATA_WIDTH*84];
+									end
+									if (result_temp[`DATA_WIDTH*86 - 1:`DATA_WIDTH*86 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*86 - 1:`DATA_WIDTH*85] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*86 - 1:`DATA_WIDTH*85] <= result_temp[`DATA_WIDTH*86 - 1:`DATA_WIDTH*85];
+									end
+									if (result_temp[`DATA_WIDTH*87 - 1:`DATA_WIDTH*87 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*85 - 1:`DATA_WIDTH*84] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*85 - 1:`DATA_WIDTH*84] <= result_temp[`DATA_WIDTH*87 - 1:`DATA_WIDTH*86];
+									end
+									if (result_temp[`DATA_WIDTH*88 - 1:`DATA_WIDTH*88 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*84 - 1:`DATA_WIDTH*83] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*84 - 1:`DATA_WIDTH*83] <= result_temp[`DATA_WIDTH*88 - 1:`DATA_WIDTH*87];
+									end
+									if (result_temp[`DATA_WIDTH*89 - 1:`DATA_WIDTH*89 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*83 - 1:`DATA_WIDTH*82] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*83 - 1:`DATA_WIDTH*82] <= result_temp[`DATA_WIDTH*89 - 1:`DATA_WIDTH*88];
+									end
+									if (result_temp[`DATA_WIDTH*90 - 1:`DATA_WIDTH*90 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*82 - 1:`DATA_WIDTH*81] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*82 - 1:`DATA_WIDTH*81] <= result_temp[`DATA_WIDTH*90 - 1:`DATA_WIDTH*89];
+									end
+
+									if (result_temp[`DATA_WIDTH*73 - 1:`DATA_WIDTH*73 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*81 - 1:`DATA_WIDTH*80] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*81 - 1:`DATA_WIDTH*80] <= result_temp[`DATA_WIDTH*73 - 1:`DATA_WIDTH*72];
+									end
+									if (result_temp[`DATA_WIDTH*74 - 1:`DATA_WIDTH*74 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*80 - 1:`DATA_WIDTH*79] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*80 - 1:`DATA_WIDTH*79] <= result_temp[`DATA_WIDTH*74 - 1:`DATA_WIDTH*73];
+									end
+									if (result_temp[`DATA_WIDTH*75 - 1:`DATA_WIDTH*75 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*79 - 1:`DATA_WIDTH*78] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*79 - 1:`DATA_WIDTH*78] <= result_temp[`DATA_WIDTH*75 - 1:`DATA_WIDTH*74];
+									end
+									if (result_temp[`DATA_WIDTH*76 - 1:`DATA_WIDTH*76 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*78 - 1:`DATA_WIDTH*77] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*78 - 1:`DATA_WIDTH*77] <= result_temp[`DATA_WIDTH*76 - 1:`DATA_WIDTH*75];
+									end
+									if (result_temp[`DATA_WIDTH*77 - 1:`DATA_WIDTH*77 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*77 - 1:`DATA_WIDTH*76] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*77 - 1:`DATA_WIDTH*76] <= result_temp[`DATA_WIDTH*77 - 1:`DATA_WIDTH*76];
+									end
+									if (result_temp[`DATA_WIDTH*78 - 1:`DATA_WIDTH*78 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*76 - 1:`DATA_WIDTH*75] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*76 - 1:`DATA_WIDTH*75] <= result_temp[`DATA_WIDTH*78 - 1:`DATA_WIDTH*77];
+									end
+									if (result_temp[`DATA_WIDTH*79 - 1:`DATA_WIDTH*79 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*75 - 1:`DATA_WIDTH*74] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*75 - 1:`DATA_WIDTH*74] <= result_temp[`DATA_WIDTH*79 - 1:`DATA_WIDTH*78];
+									end
+									if (result_temp[`DATA_WIDTH*80 - 1:`DATA_WIDTH*80 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*74 - 1:`DATA_WIDTH*73] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*74 - 1:`DATA_WIDTH*73] <= result_temp[`DATA_WIDTH*80 - 1:`DATA_WIDTH*79];
+									end
+									if (result_temp[`DATA_WIDTH*81 - 1:`DATA_WIDTH*81 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*73 - 1:`DATA_WIDTH*72] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*73 - 1:`DATA_WIDTH*72] <= result_temp[`DATA_WIDTH*81 - 1:`DATA_WIDTH*80];
+									end
+
+									if (result_temp[`DATA_WIDTH*64 - 1:`DATA_WIDTH*64 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*72 - 1:`DATA_WIDTH*71] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*72 - 1:`DATA_WIDTH*71] <= result_temp[`DATA_WIDTH*64 - 1:`DATA_WIDTH*63];
+									end
+									if (result_temp[`DATA_WIDTH*65 - 1:`DATA_WIDTH*65 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*71 - 1:`DATA_WIDTH*70] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*71 - 1:`DATA_WIDTH*70] <= result_temp[`DATA_WIDTH*65 - 1:`DATA_WIDTH*64];
+									end
+									if (result_temp[`DATA_WIDTH*66 - 1:`DATA_WIDTH*66 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*70 - 1:`DATA_WIDTH*69] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*70 - 1:`DATA_WIDTH*69] <= result_temp[`DATA_WIDTH*66 - 1:`DATA_WIDTH*65];
+									end
+									if (result_temp[`DATA_WIDTH*67 - 1:`DATA_WIDTH*67 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*69 - 1:`DATA_WIDTH*68] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*69 - 1:`DATA_WIDTH*68] <= result_temp[`DATA_WIDTH*67 - 1:`DATA_WIDTH*66];
+									end
+									if (result_temp[`DATA_WIDTH*68 - 1:`DATA_WIDTH*68 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*68 - 1:`DATA_WIDTH*67] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*68 - 1:`DATA_WIDTH*67] <= result_temp[`DATA_WIDTH*68 - 1:`DATA_WIDTH*67];
+									end
+									if (result_temp[`DATA_WIDTH*69 - 1:`DATA_WIDTH*69 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*67 - 1:`DATA_WIDTH*66] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*67 - 1:`DATA_WIDTH*66] <= result_temp[`DATA_WIDTH*69 - 1:`DATA_WIDTH*68];
+									end
+									if (result_temp[`DATA_WIDTH*70 - 1:`DATA_WIDTH*70 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*66 - 1:`DATA_WIDTH*65] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*66 - 1:`DATA_WIDTH*65] <= result_temp[`DATA_WIDTH*70 - 1:`DATA_WIDTH*69];
+									end
+									if (result_temp[`DATA_WIDTH*71 - 1:`DATA_WIDTH*71 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*65 - 1:`DATA_WIDTH*64] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*65 - 1:`DATA_WIDTH*64] <= result_temp[`DATA_WIDTH*71 - 1:`DATA_WIDTH*70];
+									end
+									if (result_temp[`DATA_WIDTH*72 - 1:`DATA_WIDTH*72 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*64 - 1:`DATA_WIDTH*63] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*64 - 1:`DATA_WIDTH*63] <= result_temp[`DATA_WIDTH*72 - 1:`DATA_WIDTH*71];
+									end
+
+									if (result_temp[`DATA_WIDTH*55 - 1:`DATA_WIDTH*55 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*63 - 1:`DATA_WIDTH*62] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*63 - 1:`DATA_WIDTH*62] <= result_temp[`DATA_WIDTH*55 - 1:`DATA_WIDTH*54];
+									end
+									if (result_temp[`DATA_WIDTH*56 - 1:`DATA_WIDTH*56 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*62 - 1:`DATA_WIDTH*61] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*62 - 1:`DATA_WIDTH*61] <= result_temp[`DATA_WIDTH*56 - 1:`DATA_WIDTH*55];
+									end
+									if (result_temp[`DATA_WIDTH*57 - 1:`DATA_WIDTH*57 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*61 - 1:`DATA_WIDTH*60] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*61 - 1:`DATA_WIDTH*60] <= result_temp[`DATA_WIDTH*57 - 1:`DATA_WIDTH*56];
+									end
+									if (result_temp[`DATA_WIDTH*58 - 1:`DATA_WIDTH*58 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*60 - 1:`DATA_WIDTH*59] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*60 - 1:`DATA_WIDTH*59] <= result_temp[`DATA_WIDTH*58 - 1:`DATA_WIDTH*57];
+									end
+									if (result_temp[`DATA_WIDTH*59 - 1:`DATA_WIDTH*59 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*59 - 1:`DATA_WIDTH*58] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*59 - 1:`DATA_WIDTH*58] <= result_temp[`DATA_WIDTH*59 - 1:`DATA_WIDTH*58];
+									end
+									if (result_temp[`DATA_WIDTH*60 - 1:`DATA_WIDTH*60 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*58 - 1:`DATA_WIDTH*57] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*58 - 1:`DATA_WIDTH*57] <= result_temp[`DATA_WIDTH*60 - 1:`DATA_WIDTH*59];
+									end
+									if (result_temp[`DATA_WIDTH*61 - 1:`DATA_WIDTH*61 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*57 - 1:`DATA_WIDTH*56] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*57 - 1:`DATA_WIDTH*56] <= result_temp[`DATA_WIDTH*61 - 1:`DATA_WIDTH*60];
+									end
+									if (result_temp[`DATA_WIDTH*62 - 1:`DATA_WIDTH*62 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*56 - 1:`DATA_WIDTH*55] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*56 - 1:`DATA_WIDTH*55] <= result_temp[`DATA_WIDTH*62 - 1:`DATA_WIDTH*61];
+									end
+									if (result_temp[`DATA_WIDTH*63 - 1:`DATA_WIDTH*63 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*55 - 1:`DATA_WIDTH*54] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*55 - 1:`DATA_WIDTH*54] <= result_temp[`DATA_WIDTH*63 - 1:`DATA_WIDTH*62];
+									end
+
+									if (result_temp[`DATA_WIDTH*46 - 1:`DATA_WIDTH*46 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*54 - 1:`DATA_WIDTH*53] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*54 - 1:`DATA_WIDTH*53] <= result_temp[`DATA_WIDTH*46 - 1:`DATA_WIDTH*45];
+									end
+									if (result_temp[`DATA_WIDTH*47 - 1:`DATA_WIDTH*47 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*53 - 1:`DATA_WIDTH*52] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*53 - 1:`DATA_WIDTH*52] <= result_temp[`DATA_WIDTH*47 - 1:`DATA_WIDTH*46];
+									end
+									if (result_temp[`DATA_WIDTH*48 - 1:`DATA_WIDTH*48 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*52 - 1:`DATA_WIDTH*51] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*52 - 1:`DATA_WIDTH*51] <= result_temp[`DATA_WIDTH*48 - 1:`DATA_WIDTH*47];
+									end
+									if (result_temp[`DATA_WIDTH*49 - 1:`DATA_WIDTH*49 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*51 - 1:`DATA_WIDTH*50] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*51 - 1:`DATA_WIDTH*50] <= result_temp[`DATA_WIDTH*49 - 1:`DATA_WIDTH*48];
+									end
+									if (result_temp[`DATA_WIDTH*50 - 1:`DATA_WIDTH*50 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*50 - 1:`DATA_WIDTH*49] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*50 - 1:`DATA_WIDTH*49] <= result_temp[`DATA_WIDTH*50 - 1:`DATA_WIDTH*49];
+									end
+									if (result_temp[`DATA_WIDTH*51 - 1:`DATA_WIDTH*51 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*49 - 1:`DATA_WIDTH*48] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*49 - 1:`DATA_WIDTH*48] <= result_temp[`DATA_WIDTH*51 - 1:`DATA_WIDTH*50];
+									end
+									if (result_temp[`DATA_WIDTH*52 - 1:`DATA_WIDTH*52 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*48 - 1:`DATA_WIDTH*47] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*48 - 1:`DATA_WIDTH*47] <= result_temp[`DATA_WIDTH*52 - 1:`DATA_WIDTH*51];
+									end
+									if (result_temp[`DATA_WIDTH*53 - 1:`DATA_WIDTH*53 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*47 - 1:`DATA_WIDTH*46] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*47 - 1:`DATA_WIDTH*46] <= result_temp[`DATA_WIDTH*53 - 1:`DATA_WIDTH*52];
+									end
+									if (result_temp[`DATA_WIDTH*54 - 1:`DATA_WIDTH*54 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*46 - 1:`DATA_WIDTH*45] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*46 - 1:`DATA_WIDTH*45] <= result_temp[`DATA_WIDTH*54 - 1:`DATA_WIDTH*53];
+									end
+
+									if (result_temp[`DATA_WIDTH*37 - 1:`DATA_WIDTH*37 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*45 - 1:`DATA_WIDTH*44] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*45 - 1:`DATA_WIDTH*44] <= result_temp[`DATA_WIDTH*37 - 1:`DATA_WIDTH*36];
+									end
+									if (result_temp[`DATA_WIDTH*38 - 1:`DATA_WIDTH*38 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*44 - 1:`DATA_WIDTH*43] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*44 - 1:`DATA_WIDTH*43] <= result_temp[`DATA_WIDTH*38 - 1:`DATA_WIDTH*37];
+									end
+									if (result_temp[`DATA_WIDTH*39 - 1:`DATA_WIDTH*39 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*43 - 1:`DATA_WIDTH*42] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*43 - 1:`DATA_WIDTH*42] <= result_temp[`DATA_WIDTH*39 - 1:`DATA_WIDTH*38];
+									end
+									if (result_temp[`DATA_WIDTH*40 - 1:`DATA_WIDTH*40 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*42 - 1:`DATA_WIDTH*41] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*42 - 1:`DATA_WIDTH*41] <= result_temp[`DATA_WIDTH*40 - 1:`DATA_WIDTH*39];
+									end
+									if (result_temp[`DATA_WIDTH*41 - 1:`DATA_WIDTH*41 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*41 - 1:`DATA_WIDTH*40] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*41 - 1:`DATA_WIDTH*40] <= result_temp[`DATA_WIDTH*41 - 1:`DATA_WIDTH*40];
+									end
+									if (result_temp[`DATA_WIDTH*42 - 1:`DATA_WIDTH*42 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*40 - 1:`DATA_WIDTH*39] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*40 - 1:`DATA_WIDTH*39] <= result_temp[`DATA_WIDTH*42 - 1:`DATA_WIDTH*41];
+									end
+									if (result_temp[`DATA_WIDTH*43 - 1:`DATA_WIDTH*43 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*39 - 1:`DATA_WIDTH*38] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*39 - 1:`DATA_WIDTH*38] <= result_temp[`DATA_WIDTH*43 - 1:`DATA_WIDTH*42];
+									end
+									if (result_temp[`DATA_WIDTH*44 - 1:`DATA_WIDTH*44 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*38 - 1:`DATA_WIDTH*37] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*38 - 1:`DATA_WIDTH*37] <= result_temp[`DATA_WIDTH*44 - 1:`DATA_WIDTH*43];
+									end
+									if (result_temp[`DATA_WIDTH*45 - 1:`DATA_WIDTH*45 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*37 - 1:`DATA_WIDTH*36] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*37 - 1:`DATA_WIDTH*36] <= result_temp[`DATA_WIDTH*45 - 1:`DATA_WIDTH*44];
+									end
+
+									if (result_temp[`DATA_WIDTH*28 - 1:`DATA_WIDTH*28 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*36 - 1:`DATA_WIDTH*35] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*36 - 1:`DATA_WIDTH*35] <= result_temp[`DATA_WIDTH*28 - 1:`DATA_WIDTH*27];
+									end
+									if (result_temp[`DATA_WIDTH*29 - 1:`DATA_WIDTH*29 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*35 - 1:`DATA_WIDTH*34] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*35 - 1:`DATA_WIDTH*34] <= result_temp[`DATA_WIDTH*29 - 1:`DATA_WIDTH*28];
+									end
+									if (result_temp[`DATA_WIDTH*30 - 1:`DATA_WIDTH*30 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*34 - 1:`DATA_WIDTH*33] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*34 - 1:`DATA_WIDTH*33] <= result_temp[`DATA_WIDTH*30 - 1:`DATA_WIDTH*29];
+									end
+									if (result_temp[`DATA_WIDTH*31 - 1:`DATA_WIDTH*31 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*33 - 1:`DATA_WIDTH*32] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*33 - 1:`DATA_WIDTH*32] <= result_temp[`DATA_WIDTH*31 - 1:`DATA_WIDTH*30];
+									end
+									if (result_temp[`DATA_WIDTH*32 - 1:`DATA_WIDTH*32 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*32 - 1:`DATA_WIDTH*31] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*32 - 1:`DATA_WIDTH*31] <= result_temp[`DATA_WIDTH*32 - 1:`DATA_WIDTH*31];
+									end
+									if (result_temp[`DATA_WIDTH*33 - 1:`DATA_WIDTH*33 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*31 - 1:`DATA_WIDTH*30] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*31 - 1:`DATA_WIDTH*30] <= result_temp[`DATA_WIDTH*33 - 1:`DATA_WIDTH*32];
+									end
+									if (result_temp[`DATA_WIDTH*34 - 1:`DATA_WIDTH*34 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*30 - 1:`DATA_WIDTH*29] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*30 - 1:`DATA_WIDTH*29] <= result_temp[`DATA_WIDTH*34 - 1:`DATA_WIDTH*33];
+									end
+									if (result_temp[`DATA_WIDTH*35 - 1:`DATA_WIDTH*35 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*29 - 1:`DATA_WIDTH*28] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*29 - 1:`DATA_WIDTH*28] <= result_temp[`DATA_WIDTH*35 - 1:`DATA_WIDTH*34];
+									end
+									if (result_temp[`DATA_WIDTH*36 - 1:`DATA_WIDTH*36 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*28 - 1:`DATA_WIDTH*27] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*28 - 1:`DATA_WIDTH*27] <= result_temp[`DATA_WIDTH*36 - 1:`DATA_WIDTH*35];
+									end
+
+									if (result_temp[`DATA_WIDTH*19 - 1:`DATA_WIDTH*19 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*27 - 1:`DATA_WIDTH*26] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*27 - 1:`DATA_WIDTH*26] <= result_temp[`DATA_WIDTH*19 - 1:`DATA_WIDTH*18];
+									end
+									if (result_temp[`DATA_WIDTH*20 - 1:`DATA_WIDTH*20 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*26 - 1:`DATA_WIDTH*25] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*26 - 1:`DATA_WIDTH*25] <= result_temp[`DATA_WIDTH*20 - 1:`DATA_WIDTH*19];
+									end
+									if (result_temp[`DATA_WIDTH*21 - 1:`DATA_WIDTH*21 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*25 - 1:`DATA_WIDTH*24] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*25 - 1:`DATA_WIDTH*24] <= result_temp[`DATA_WIDTH*21 - 1:`DATA_WIDTH*20];
+									end
+									if (result_temp[`DATA_WIDTH*22 - 1:`DATA_WIDTH*22 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*24 - 1:`DATA_WIDTH*23] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*24 - 1:`DATA_WIDTH*23] <= result_temp[`DATA_WIDTH*22 - 1:`DATA_WIDTH*21];
+									end
+									if (result_temp[`DATA_WIDTH*23 - 1:`DATA_WIDTH*23 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*23 - 1:`DATA_WIDTH*22] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*23 - 1:`DATA_WIDTH*22] <= result_temp[`DATA_WIDTH*23 - 1:`DATA_WIDTH*22];
+									end
+									if (result_temp[`DATA_WIDTH*24 - 1:`DATA_WIDTH*24 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*22 - 1:`DATA_WIDTH*21] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*22 - 1:`DATA_WIDTH*21] <= result_temp[`DATA_WIDTH*24 - 1:`DATA_WIDTH*23];
+									end
+									if (result_temp[`DATA_WIDTH*25 - 1:`DATA_WIDTH*25 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*21 - 1:`DATA_WIDTH*20] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*21 - 1:`DATA_WIDTH*20] <= result_temp[`DATA_WIDTH*25 - 1:`DATA_WIDTH*24];
+									end
+									if (result_temp[`DATA_WIDTH*26 - 1:`DATA_WIDTH*26 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*20 - 1:`DATA_WIDTH*19] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*20 - 1:`DATA_WIDTH*19] <= result_temp[`DATA_WIDTH*26 - 1:`DATA_WIDTH*25];
+									end
+									if (result_temp[`DATA_WIDTH*27 - 1:`DATA_WIDTH*27 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*19 - 1:`DATA_WIDTH*18] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*19 - 1:`DATA_WIDTH*18] <= result_temp[`DATA_WIDTH*27 - 1:`DATA_WIDTH*26];
+									end
+
+									if (result_temp[`DATA_WIDTH*10 - 1:`DATA_WIDTH*10 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*18 - 1:`DATA_WIDTH*17] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*18 - 1:`DATA_WIDTH*17] <= result_temp[`DATA_WIDTH*10 - 1:`DATA_WIDTH*9];
+									end
+									if (result_temp[`DATA_WIDTH*11 - 1:`DATA_WIDTH*11 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*17 - 1:`DATA_WIDTH*16] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*17 - 1:`DATA_WIDTH*16] <= result_temp[`DATA_WIDTH*11 - 1:`DATA_WIDTH*10];
+									end
+									if (result_temp[`DATA_WIDTH*12 - 1:`DATA_WIDTH*12 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*16 - 1:`DATA_WIDTH*15] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*16 - 1:`DATA_WIDTH*15] <= result_temp[`DATA_WIDTH*12 - 1:`DATA_WIDTH*11];
+									end
+									if (result_temp[`DATA_WIDTH*13 - 1:`DATA_WIDTH*13 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*15 - 1:`DATA_WIDTH*14] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*15 - 1:`DATA_WIDTH*14] <= result_temp[`DATA_WIDTH*13 - 1:`DATA_WIDTH*12];
+									end
+									if (result_temp[`DATA_WIDTH*14 - 1:`DATA_WIDTH*14 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*14 - 1:`DATA_WIDTH*13] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*14 - 1:`DATA_WIDTH*13] <= result_temp[`DATA_WIDTH*14 - 1:`DATA_WIDTH*13];
+									end
+									if (result_temp[`DATA_WIDTH*15 - 1:`DATA_WIDTH*15 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*13 - 1:`DATA_WIDTH*12] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*13 - 1:`DATA_WIDTH*12] <= result_temp[`DATA_WIDTH*15 - 1:`DATA_WIDTH*14];
+									end
+									if (result_temp[`DATA_WIDTH*16 - 1:`DATA_WIDTH*16 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*12 - 1:`DATA_WIDTH*11] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*12 - 1:`DATA_WIDTH*11] <= result_temp[`DATA_WIDTH*16 - 1:`DATA_WIDTH*15];
+									end
+									if (result_temp[`DATA_WIDTH*17 - 1:`DATA_WIDTH*17 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*11 - 1:`DATA_WIDTH*10] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*11 - 1:`DATA_WIDTH*10] <= result_temp[`DATA_WIDTH*17 - 1:`DATA_WIDTH*16];
+									end
+									if (result_temp[`DATA_WIDTH*18 - 1:`DATA_WIDTH*18 - 1] == 1) begin
+										result_buffer[`DATA_WIDTH*10 - 1:`DATA_WIDTH*9] <= 0;
+									end
+									else begin
+										result_buffer[`DATA_WIDTH*10 - 1:`DATA_WIDTH*9] <= result_temp[`DATA_WIDTH*18 - 1:`DATA_WIDTH*17];
+									end
+
+									if (result_temp[`DATA_WIDTH*1 - 1:`DATA_WIDTH*1 - 1] == 1) begin
 										result_buffer[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= 0;
 									end
 									else begin
-										result_buffer[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= result_temp[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6];
+										result_buffer[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= result_temp[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
 									end
-									if (result_temp[`DATA_WIDTH*8 - 1:`DATA_WIDTH*8 - 1] == 1) begin
+									if (result_temp[`DATA_WIDTH*2 - 1:`DATA_WIDTH*2 - 1] == 1) begin
 										result_buffer[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= 0;
 									end
 									else begin
-										result_buffer[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= result_temp[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7];
+										result_buffer[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= result_temp[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
 									end
-									if (result_temp[`DATA_WIDTH*9 - 1:`DATA_WIDTH*9 - 1] == 1) begin
+									if (result_temp[`DATA_WIDTH*3 - 1:`DATA_WIDTH*3 - 1] == 1) begin
 										result_buffer[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= 0;
 									end
 									else begin
-										result_buffer[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= result_temp[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8];
+										result_buffer[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= result_temp[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
 									end
-
 									if (result_temp[`DATA_WIDTH*4 - 1:`DATA_WIDTH*4 - 1] == 1) begin
 										result_buffer[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= 0;
 									end
@@ -225,24 +1457,23 @@ module ConvParaScaleFloat16(
 									else begin
 										result_buffer[`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= result_temp[`DATA_WIDTH*6 - 1:`DATA_WIDTH*5];
 									end
-
-									if (result_temp[`DATA_WIDTH*1 - 1:`DATA_WIDTH*1 - 1] == 1) begin
+									if (result_temp[`DATA_WIDTH*7 - 1:`DATA_WIDTH*7 - 1] == 1) begin
 										result_buffer[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= 0;
 									end
 									else begin
-										result_buffer[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= result_temp[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0];
+										result_buffer[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= result_temp[`DATA_WIDTH*7 - 1:`DATA_WIDTH*6];
 									end
-									if (result_temp[`DATA_WIDTH*2 - 1:`DATA_WIDTH*2 - 1] == 1) begin
+									if (result_temp[`DATA_WIDTH*8 - 1:`DATA_WIDTH*8 - 1] == 1) begin
 										result_buffer[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= 0;
 									end
 									else begin
-										result_buffer[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= result_temp[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1];
+										result_buffer[`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= result_temp[`DATA_WIDTH*8 - 1:`DATA_WIDTH*7];
 									end
-									if (result_temp[`DATA_WIDTH*3 - 1:`DATA_WIDTH*3 - 1] == 1) begin
+									if (result_temp[`DATA_WIDTH*9 - 1:`DATA_WIDTH*9 - 1] == 1) begin
 										result_buffer[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= 0;
 									end
 									else begin
-										result_buffer[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= result_temp[`DATA_WIDTH*3 - 1:`DATA_WIDTH*2];
+										result_buffer[`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= result_temp[`DATA_WIDTH*9 - 1:`DATA_WIDTH*8];
 									end
 								end
 								// ======== End: result buffer ========
@@ -329,7 +1560,13 @@ module ConvParaScaleFloat16(
 								result_buffer	<= {
 													ma_result[0],
 													ma_result[1],
-													ma_result[2]
+													ma_result[2],
+													ma_result[3],
+													ma_result[4],
+													ma_result[5],
+													ma_result[6],
+													ma_result[7],
+													ma_result[8]
 												};
 								// ======== End: result buffer ========
 
@@ -345,7 +1582,7 @@ module ConvParaScaleFloat16(
 
 							// ======== Begin: MultAddUnitFloat16 input data ========
 								//                                  PARA_Y
-								register[0] <= input_data[`DATA_WIDTH*3 - 1:`DATA_WIDTH*0];
+								register[0] <= input_data[`DATA_WIDTH*9 - 1:`DATA_WIDTH*0];
 							// ======== End: MultAddUnitFloat16 input data ========
 
 							clk_count <= clk_count + 1;

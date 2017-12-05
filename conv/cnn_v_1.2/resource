@@ -1,0 +1,98 @@
+两个约束条件化简得：
+
+
+
+===================================
+
+block ram 使用情况：
+
+数据带宽：
+	每个 BRAM 提供 2 bits 读写带宽
+
+总资源数：
+	18K BRAM：890
+	36K BRAM：445
+
+PARA_Y = 9
+
+1、weight ram
+	写端口：
+		每次写 KERNERL_SIZE_MAX*KERNERL_SIZE_MAX*DATA_WIDTH bits 的数据
+		改为
+		每次写 PARA_Y*DATA_WIDTH bits 的数据
+			即：3*16 = 48
+		深度：4096*PARA_Y*DATA_WIDTH*2 / PARA_Y*DATA_WIDTH bits
+			即：4096*3*16*2 / 48 = 8192 上取整
+	读端口：
+		每次读取 PARA_Y*DATA_WIDTH bits 的数据
+			即：3*16 = 48
+		深度【自动】：8192
+
+	weight ram 存储空间：
+		16 位基本数据位宽，至少需要 8 个 BRAM
+		18 * 1024 * 8 * PARA_Y > 4096 * PARA_Y * 16 * 2
+		所以 weight ram 的存储足够，限制条件在读写带宽
+
+	weight ram 
+		数据带宽：		WRRW = PARA_Y * DATA_WIDTH
+		所需 BRAM 个数：	WBRN = PARA_Y * DATA_WIDTH / 2
+
+2、feature ram
+	写端口：
+		每次写 PARA_Y*DATA_WIDTH bits 的数据
+			即：3*16 = 48
+		深度：3211264/PARA_X*DATA_WIDTH*2 / PARA_Y*DATA_WIDTH 
+			即：3211264/3*16*2 / 48 = 713615 上取整 （PARA_X = 3）
+			存不下
+
+	feature ram
+		总数据量的两倍，存储最大值：		DATANUM = 3211264 * 2
+		每个 feature map 的存储最大值：	DATANUM_PR = DATANUM / PARA_X
+		数据带宽：					FMRRW  = PARA_Y * DATA_WIDTH
+		所需 BRAM 个数（根据数据带宽）：	FMBRN_RW = PARA_Y * DATA_WIDTH / 2
+		所需 BRAM 个数（根据存储空间）：	18K：FMBRN_SP_18 = DATANUM_PR / (18*1024)
+									36K：FMBRN_SP_36 = DATANUM_PR / (36*1024)
+		实际所需 BRAM 个数：			FMBRN = max(FMBRN_RW, FMBRN_SP)
+
+		例：
+			DATANUM 	= 224*224*4* 16 * 2 = 6422528
+			DATANUM_PR 	= 12845056 / 3 = 2140843
+			FMRRW 		= 3 * 16 = 48
+			FMBRN_RW 	= 48 / 2 = 24
+			FMBRN_SP_18 = 2140843 / (18*1024) = 116
+			FMBRN_SP_36 = 2140843 / (36*1024) = 58
+
+			IDE 给出最少方案：	2kx9：	36K 66 个
+							1kx18： 	36K 66 个
+			FMBRN		= max(24, 66) = 66
+
+
+简化，weight 用 18K，feature map 用 36K
+
+存储约束条件：
+	WBRN * PARA_KERNEL / 2 + FMBRN * PARA_X <= 445
+
+===================================
+
+DSP 使用情况：
+
+总资源数：
+	DSP：840
+
+1、MaxPoolUnitFloat16 模块
+	1 个 compare IP，不消耗 DSP
+	合计：1 个 DSP
+
+2、MultAddUnitFloat16 模块
+	1 个 add IP，消耗 1 个 DSP
+	1 个 multiply IP，消耗 1 个 DSP
+	合计：2 个 DSP
+
+3、ConvParaScaleFloat16 模块
+	PARA_X*PARA_Y 个 mua 模块，消耗 PARA_X*PARA_Y*2 个 DSP
+	合计：PARA_X*PARA_Y*2 个 DSP
+
+整体逻辑消耗 1 个 DSP
+
+DSP约束条件：
+	PARA_X * PARA_Y * PARA_KERNERL * 2 + PK + 1 <= 840

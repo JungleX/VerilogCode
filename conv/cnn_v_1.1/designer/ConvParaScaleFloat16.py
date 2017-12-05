@@ -1,8 +1,8 @@
 import os
 import shutil
 
-Para_X = 3
-Para_Y = 3
+Para_X = 20
+Para_Y = 9
 Para_kernel = 2
 KernelSizeList = [3]
 KernelSizeMax = 3
@@ -993,8 +993,8 @@ def replace(file_path, old_str, new_str):
 		print e 
 
 # ================================================================
-poolunit()
-FeatureMapRam(Para_Y, Para_kernel)
-WeightRam(Para_Y, KernelSizeMax)
+#poolunit()
+#FeatureMapRam(Para_Y, Para_kernel)
+#WeightRam(Para_Y, KernelSizeMax)
 ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y)
-LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel)
+#LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel)
