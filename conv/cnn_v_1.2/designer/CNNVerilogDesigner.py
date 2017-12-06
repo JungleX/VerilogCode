@@ -1,11 +1,18 @@
 import os
 import shutil
+import math
 
-Para_X = 3
-Para_Y = 3
-Para_kernel = 2
+Para_X = 14
+Para_Y = 10
+Para_kernel = 3
 KernelSizeList = [3]
 KernelSizeMax = 3
+
+fm_addra_width = 13
+fm_addrb_width = 13
+
+w_addra_width = 13
+w_addrb_width = 13
 
 def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 	destDir = './VerilogCode/'
@@ -516,6 +523,65 @@ def PoolUnit():
 	if os.path.isfile (destMax):
 		print "Create MaxPoolUnitFloat16.v Success."
 
+def CNNHeader(Para_X, Para_Y, Para_kernel, fm_addra_width, fm_addrb_width, w_addra_width, w_addrb_width):
+	# prepare depth
+	# feature map ram depth
+	fm_ram_half = int(math.floor(math.ceil(math.ceil(28*28*256*16/Para_X)/(2*Para_Y*16))))
+
+	print "feature map width: " + str(2*Para_Y*16)
+	print "feature map depth: " + str(fm_ram_half*2)
+	print "feature map half depth: " + str(fm_ram_half)
+	print ""
+
+	# weight ram depth
+	w_ram_half = int(math.floor(math.ceil(4096*Para_Y*16/(Para_Y*16))))
+	print "weight width: " + str(Para_Y*16)
+	print "weight depth: " + str(w_ram_half*2)
+	print "weight half depth: " + str(w_ram_half)
+	print ""
+
+	destDir = './VerilogCode/'
+	if not os.path.isdir(destDir):
+		os.mkdir(destDir)
+
+	sourceFile = './Template/Template_CNN_Parameter.vh'
+	destFile = destDir + 'CNN_Parameter.vh'
+	shutil.copy (sourceFile, destFile)
+
+	if os.path.isfile (destFile): 
+
+		a_header = []
+		inser_index = 0;
+
+		file_header = file(destFile)
+		for line in file_header:
+			line = line.replace('SET_PARA_X', str(Para_X))
+			line = line.replace('SET_PARA_Y', str(Para_Y))
+			line = line.replace('SET_PARA_KERNEL', str(Para_kernel))
+
+			line = line.replace('SET_FM_ADDRA_WIDTH', str(fm_addra_width))
+			line = line.replace('SET_FM_ADDRB_WIDTH', str(fm_addrb_width))
+			line = line.replace('SET_FM_RAM_MAX', str(fm_ram_half*2))
+			line = line.replace('SET_FM_RAM_HALF', str(fm_ram_half))
+
+			line = line.replace('SET_WEIGHT_ADDRA_WIDTH', str(w_addra_width))
+			line = line.replace('SET_WEIGHT_ADDRB_WIDTH', str(w_addrb_width))
+			line = line.replace('SET_WEIGHT_RAM_MAX', str(w_ram_half*2))
+			line = line.replace('SET_WEIGHT_RAM_HALF', str(w_ram_half))
+			
+			line = line[:-1]
+			a_header.insert(inser_index, line) 
+			inser_index = inser_index+1
+		file_header.close()
+
+		# save file
+		s_header = '\n'.join(a_header)
+		file_header = file(destFile, 'w')
+		file_header.write(s_header)
+		file_header.close()
+
+		print "Create CNN_Parameter.vh Success."
+
 def replace(file_path, old_str, new_str):  
 	try:  
 		f = open(file_path,'r+')  
@@ -530,7 +596,8 @@ def replace(file_path, old_str, new_str):
 		print e 
 
 # ================================================================
-#PoolUnit()
-#MultAddUnit()
-#ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y)
+CNNHeader(Para_X, Para_Y, Para_kernel, fm_addra_width, fm_addrb_width, w_addra_width, w_addrb_width)
+PoolUnit()
+MultAddUnit()
+ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y)
 LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel)

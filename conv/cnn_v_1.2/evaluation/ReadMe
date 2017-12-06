@@ -1,0 +1,13 @@
+ReadMe
+1、debug_demo
+	PARA_X: 3
+	PARA_Y: 3
+	PARA_KERNEL: 2
+	状态机中运行的是小规模测试模型，运算层深度很低，方便再 simulation 的时候看
+
+2、0_evaluation_3_3_2
+	PARA_X: 3
+	PARA_Y: 3
+	PARA_KERNEL: 2
+
+3、
