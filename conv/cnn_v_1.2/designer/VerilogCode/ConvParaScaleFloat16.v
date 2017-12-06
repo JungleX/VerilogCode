@@ -1210,7 +1210,7 @@ module ConvParaScaleFloat16(
 									endcase
 								end
 							end
-							else if ((clk_count-(clk_count*kernel_size)*kernel_size) == 0) begin // clk type 2
+							else if ((clk_count-(clk_count/kernel_size)*kernel_size) == 0) begin // clk type 2
 								for (l1=0; l1<`PARA_X; l1=l1+1)
 								begin
 			                        case(kernel_size)
