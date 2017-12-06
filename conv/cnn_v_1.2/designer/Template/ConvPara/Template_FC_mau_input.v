@@ -1,0 +1,1 @@
+								register[SET_INDEX] <= input_data[`DATA_WIDTH*SET_INDEX_Y_1 - 1:`DATA_WIDTH*SET_INDEX_Y_0];

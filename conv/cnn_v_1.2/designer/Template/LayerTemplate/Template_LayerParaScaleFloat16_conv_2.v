@@ -1,0 +1,1 @@
+										conv_weight[SET_INDEX]		<= wr_doutb[SET_INDEX][`DATA_WIDTH - 1:0]; 

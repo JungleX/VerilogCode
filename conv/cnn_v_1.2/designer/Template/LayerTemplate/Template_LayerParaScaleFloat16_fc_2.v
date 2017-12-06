@@ -1,0 +1,1 @@
+									conv_weight[SET_INDEX] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH - 1:0]; 

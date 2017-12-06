@@ -25,7 +25,7 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 		a_layer = s_layer.split('\n')
 
 		# =================== Begin: rst ===================
-		inser_index_layer = 273
+		inser_index_layer = 262
 		for i in range(Para_X):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_rst_0.v')
 
@@ -39,25 +39,10 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 			if i<(Para_X-1):
 				a_layer.insert(inser_index_layer, '') 
 				inser_index_layer = inser_index_layer+1
-
-		inser_index_layer = inser_index_layer + 4
-		for i in range(Para_kernel):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_rst_1.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX', str(i))
-				line = line[:-1]
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-
-			if i<(Para_kernel-1):
-				a_layer.insert(inser_index_layer, '') 
-				inser_index_layer = inser_index_layer+1
 		# =================== End: rst ===================
 		
 		# =================== Begin: init layer ===================
-		inser_index_layer = inser_index_layer + 58
+		inser_index_layer = inser_index_layer + 70
 		for i in range(Para_X):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_init_0.v')
 
@@ -72,54 +57,10 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 			if i<(Para_X-1):
 				a_layer.insert(inser_index_layer, '') 
 				inser_index_layer = inser_index_layer+1
-
-		inser_index_layer = inser_index_layer + 12
-		for i in range(Para_kernel):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_init_1.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX_ADD_ONE', str(i+1))
-				line = line.replace('SET_INDEX', str(i))
-				line = line[:-1]
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-
-			if i<(Para_kernel-1):
-				a_layer.insert(inser_index_layer, '') 
-				inser_index_layer = inser_index_layer+1
 		# =================== End: init layer ===================
 
-		# =================== Begin: update kernel ===================
-		inser_index_layer = inser_index_layer + 28
-		for i in range(Para_kernel):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_update_kernel_0.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX_ADD_ONE', str(i+1))
-				line = line.replace('SET_INDEX', str(i))
-				line = line[:-1]
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-
-			if i<(Para_kernel-1):
-				a_layer.insert(inser_index_layer, '') 
-				inser_index_layer = inser_index_layer+1
-
-		inser_index_layer = inser_index_layer + 5
-		for i in range(Para_kernel):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_update_kernel_1.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX', str(i))
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-		# =================== End: update kernel ===================
-
 		# =================== Begin: conv layer ===================
-		inser_index_layer = inser_index_layer + 17
+		inser_index_layer = inser_index_layer + 86
 		for i in range(Para_X):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_0.v')
 
@@ -134,56 +75,31 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 				a_layer.insert(inser_index_layer, '') 
 				inser_index_layer = inser_index_layer+1
 
-		inser_index_layer = inser_index_layer + 16
+		inser_index_layer = inser_index_layer + 20
 		for i in range(Para_X):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_1.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i))
-				line = line[:-1]
 				a_layer.insert(inser_index_layer, line) 
 				inser_index_layer = inser_index_layer+1
 			file_temp.close()
 
-			if i<(Para_X-1):
-				a_layer.insert(inser_index_layer, '') 
-				inser_index_layer = inser_index_layer+1
-
-		inser_index_layer = inser_index_layer + 4
+		inser_index_layer = inser_index_layer + 73
 		for i in range(Para_kernel):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_2.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i))
-				line = line[:-1]
 				a_layer.insert(inser_index_layer, line) 
 				inser_index_layer = inser_index_layer+1
 			file_temp.close()
-
-			if i<(Para_kernel-1):
-				a_layer.insert(inser_index_layer, '') 
-				inser_index_layer = inser_index_layer+1
-
-		inser_index_layer = inser_index_layer + 16
-		for i in range(Para_kernel):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_3.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX', str(i))
-				line = line[:-1]
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-
-			if i<(Para_kernel-1):
-				a_layer.insert(inser_index_layer, '') 
-				inser_index_layer = inser_index_layer+1
 
 		inser_index_layer = inser_index_layer + 7
 		for i in range(Para_kernel):
 			for j in range(Para_X):
 				for k in range(Para_Y):
-					file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_4.v')
+					file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_3.v')
 
 					for line in file_temp:
 						line = line.replace('SET_INDEX_3_ADD_ONE', str(Para_Y-k))
@@ -200,25 +116,10 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 					a_layer.insert(inser_index_layer, '') 
 					inser_index_layer = inser_index_layer+1
 
-		inser_index_layer = inser_index_layer + 4
-		for i in range(Para_X):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_5.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX', str(i))
-				line = line[:-1]
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-
-			if i<(Para_X-1):
-				a_layer.insert(inser_index_layer, '') 
-				inser_index_layer = inser_index_layer+1
-
 		inser_index_layer = inser_index_layer + 7
 		for i in range(Para_kernel):
 			for j in range(Para_X):
-				file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_4.v')
+				file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_3.v')
 
 				for line in file_temp:
 					line = line.replace('SET_INDEX_3_ADD_ONE', str(1))
@@ -235,20 +136,10 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 				a_layer.insert(inser_index_layer, '') 
 				inser_index_layer = inser_index_layer+1
 
-		inser_index_layer = inser_index_layer + 4
-		for i in range(Para_X):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_6.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX', str(i))
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-
-		inser_index_layer = inser_index_layer + 14
+		inser_index_layer = inser_index_layer + 7
 		for i in range(Para_kernel):
 			for j in range(Para_Y):
-				file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_4.v')
+				file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_3.v')
 
 				for line in file_temp:
 					line = line.replace('SET_INDEX_3_ADD_ONE', str(Para_Y-j))
@@ -265,19 +156,9 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 				a_layer.insert(inser_index_layer, '') 
 				inser_index_layer = inser_index_layer+1
 
-		inser_index_layer = inser_index_layer + 13
-		for i in range(Para_X):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_7.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX', str(i))
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-
-		inser_index_layer = inser_index_layer + 10
+		inser_index_layer = inser_index_layer + 7
 		for i in range(Para_kernel):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_4.v')
+			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_3.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX_3_ADD_ONE', str(1))
@@ -290,38 +171,9 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 				inser_index_layer = inser_index_layer+1
 			file_temp.close()
 
-		inser_index_layer = inser_index_layer + 14
+		inser_index_layer = inser_index_layer + 62
 		for i in range(Para_X):
-			file_temp_0 = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_8.v')
-			s_temp = file_temp_0.read()
-			file_temp_0.close()
-			a_temp = s_temp.split('\n')
-
-			for j in range(Para_kernel):
-				inser_index_temp = 10
-				file_temp_1 = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_9.v')
-				for line in file_temp_1:
-					line = line.replace('SET_INDEX_1_ADD_ONE', str(i+1))
-					line = line.replace('SET_INDEX_1', str(i))
-					line = line.replace('SET_INDEX_0', str(j))
-
-					if j == 0:
-						line = line[:-1]
-					a_temp.insert(inser_index_temp, line) 
-					inser_index_temp = inser_index_temp+1
-
-			for line in a_temp:
-				line = line.replace('SET_INDEX', str(i))
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-
-			if i<(Para_X-1):
-				a_layer.insert(inser_index_layer, '') 
-				inser_index_layer = inser_index_layer+1
-
-		inser_index_layer = inser_index_layer + 9
-		for i in range(Para_X):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_10.v')
+			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_4.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i))
@@ -331,7 +183,7 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 
 		inser_index_layer = inser_index_layer + 10
 		for i in range(Para_X):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_11.v')
+			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_6.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i))
@@ -339,9 +191,9 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 				inser_index_layer = inser_index_layer+1
 			file_temp.close()
 
-		inser_index_layer = inser_index_layer + 31
+		inser_index_layer = inser_index_layer + 37
 		for i in range(Para_X):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_12.v')
+			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_7.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i))
@@ -349,9 +201,9 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 				inser_index_layer = inser_index_layer+1
 			file_temp.close()
 
-		inser_index_layer = inser_index_layer + 12
+		inser_index_layer = inser_index_layer + 18
 		for i in range(Para_X):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_13.v')
+			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_8.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i))
@@ -359,9 +211,9 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 				inser_index_layer = inser_index_layer+1
 			file_temp.close()
 
-		inser_index_layer = inser_index_layer + 20
+		inser_index_layer = inser_index_layer + 34
 		for i in range(Para_X):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_14.v')
+			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_9.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i))
@@ -376,7 +228,7 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 
 		inser_index_layer = inser_index_layer + 18
 		for i in range(Para_X):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_15.v')
+			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_conv_10.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i))
@@ -386,7 +238,7 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 		# =================== End: conv layer ===================
 
 		# =================== Begin: pool layer ===================
-		inser_index_layer = inser_index_layer + 18
+		inser_index_layer = inser_index_layer + 23
 		for i in range(Para_X):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_pool_0.v')
 
@@ -396,39 +248,9 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 				inser_index_layer = inser_index_layer+1
 			file_temp.close()
 
-		inser_index_layer = inser_index_layer + 4
-		for i in range(Para_kernel):
+		inser_index_layer = inser_index_layer + 60
+		for i in range(Para_X):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_pool_1.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX', str(i))
-				line = line[:-1]
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-
-			if i<(Para_kernel-1):
-				a_layer.insert(inser_index_layer, '') 
-				inser_index_layer = inser_index_layer+1
-
-		inser_index_layer = inser_index_layer + 6
-		for i in range(Para_X):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_pool_2.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX', str(i))
-				line = line[:-1]
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-
-			if i<(Para_X-1):
-				a_layer.insert(inser_index_layer, '') 
-				inser_index_layer = inser_index_layer+1
-
-		inser_index_layer = inser_index_layer + 48
-		for i in range(Para_X):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_pool_3.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i))
@@ -443,7 +265,7 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 
 		inser_index_layer = inser_index_layer + 11
 		for i in range(Para_Y-1):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_pool_4.v')
+			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_pool_2.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i+1))
@@ -454,7 +276,7 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 
 		inser_index_layer = inser_index_layer + 53
 		for i in range(Para_X):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_pool_5.v')
+			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_pool_3.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i))
@@ -464,7 +286,7 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 
 		inser_index_layer = inser_index_layer + 23
 		for i in range(Para_X):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_pool_6.v')
+			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_pool_4.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i))
@@ -479,7 +301,7 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 		# =================== End: pool layer ===================
 
 		# =================== Begin: fc layer ===================
-		inser_index_layer = inser_index_layer + 16
+		inser_index_layer = inser_index_layer + 21
 		for i in range(Para_X):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_fc_0.v')
 
@@ -489,54 +311,19 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 				inser_index_layer = inser_index_layer+1
 			file_temp.close()
 
-		inser_index_layer = inser_index_layer + 4
+		inser_index_layer = inser_index_layer + 32
 		for i in range(Para_kernel):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_fc_1.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i))
-				line = line[:-1]
 				a_layer.insert(inser_index_layer, line) 
 				inser_index_layer = inser_index_layer+1
 			file_temp.close()
 
-			if i<(Para_kernel-1):
-				a_layer.insert(inser_index_layer, '') 
-				inser_index_layer = inser_index_layer+1
-
-		inser_index_layer = inser_index_layer + 32
+		inser_index_layer = inser_index_layer + 7
 		for i in range(Para_kernel):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_fc_2.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX', str(i))
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-
-		inser_index_layer = inser_index_layer + 7
-		for i in range(Para_kernel):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_fc_3.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX', str(i))
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-
-		inser_index_layer = inser_index_layer + 7
-		for i in range(Para_kernel):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_fc_4.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX', str(i))
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-
-		inser_index_layer = inser_index_layer + 5
-		for i in range(Para_kernel):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_fc_5.v')
 
 			for line in file_temp:
 				line = line.replace('SET_INDEX', str(i))
@@ -546,7 +333,7 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 		# =================== End: fc layer ===================
 
 		# =================== Begin: done layer ===================
-		inser_index_layer = inser_index_layer + 164
+		inser_index_layer = inser_index_layer + 167
 		for i in range(Para_X):
 			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_done_0.v')
 
@@ -560,17 +347,6 @@ def LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel):
 			if i<(Para_X-1):
 				a_layer.insert(inser_index_layer, '') 
 				inser_index_layer = inser_index_layer+1
-
-		inser_index_layer = inser_index_layer + 4
-		for i in range(Para_kernel):
-			file_temp = file('./Template/LayerTemplate/Template_LayerParaScaleFloat16_done_1.v')
-
-			for line in file_temp:
-				line = line.replace('SET_INDEX', str(i))
-				a_layer.insert(inser_index_layer, line) 
-				inser_index_layer = inser_index_layer+1
-			file_temp.close()
-		
 		# =================== End: done layer ===================
 		
 		s_layer = '\n'.join(a_layer)
@@ -754,7 +530,7 @@ def replace(file_path, old_str, new_str):
 		print e 
 
 # ================================================================
-PoolUnit()
+#PoolUnit()
 #MultAddUnit()
 #ConvParaScaleFloat16(KernelSizeList, Para_X, Para_Y)
-#LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel)
+LayerParaScaleFloat16(Para_X, Para_Y, Para_kernel)

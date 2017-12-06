@@ -1,0 +1,1 @@
+									conv_input_data[SET_INDEX] <= {0, wr_doutb[SET_INDEX]}; 
