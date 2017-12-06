@@ -331,3 +331,7 @@
         end
         rst <= 0;
         // PARA_X = 3, PARA_Y = 3, kernel size = 3 =============================================
+
+    end
+
+endmodule
