@@ -2,9 +2,9 @@ import os
 import shutil
 import math
 
-Para_X = 14
-Para_Y = 10
-Para_kernel = 3
+Para_X = 3
+Para_Y = 3
+Para_kernel = 2
 KernelSizeList = [3]
 KernelSizeMax = 3
 

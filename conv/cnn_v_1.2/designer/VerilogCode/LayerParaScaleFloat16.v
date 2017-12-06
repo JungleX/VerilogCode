@@ -271,50 +271,6 @@ module LayerParaScaleFloat16(
 			fmr_ena[2]	<= 0;
 			fmr_wea[2]	<= 0;
 			fmr_enb[2]	<= 0;
-
-			fmr_ena[3]	<= 0;
-			fmr_wea[3]	<= 0;
-			fmr_enb[3]	<= 0;
-
-			fmr_ena[4]	<= 0;
-			fmr_wea[4]	<= 0;
-			fmr_enb[4]	<= 0;
-
-			fmr_ena[5]	<= 0;
-			fmr_wea[5]	<= 0;
-			fmr_enb[5]	<= 0;
-
-			fmr_ena[6]	<= 0;
-			fmr_wea[6]	<= 0;
-			fmr_enb[6]	<= 0;
-
-			fmr_ena[7]	<= 0;
-			fmr_wea[7]	<= 0;
-			fmr_enb[7]	<= 0;
-
-			fmr_ena[8]	<= 0;
-			fmr_wea[8]	<= 0;
-			fmr_enb[8]	<= 0;
-
-			fmr_ena[9]	<= 0;
-			fmr_wea[9]	<= 0;
-			fmr_enb[9]	<= 0;
-
-			fmr_ena[10]	<= 0;
-			fmr_wea[10]	<= 0;
-			fmr_enb[10]	<= 0;
-
-			fmr_ena[11]	<= 0;
-			fmr_wea[11]	<= 0;
-			fmr_enb[11]	<= 0;
-
-			fmr_ena[12]	<= 0;
-			fmr_wea[12]	<= 0;
-			fmr_enb[12]	<= 0;
-
-			fmr_ena[13]	<= 0;
-			fmr_wea[13]	<= 0;
-			fmr_enb[13]	<= 0;
 			// ======== End: reset fm ram ========
 
 			// ======== Begin: reset weight ram ========
@@ -399,61 +355,6 @@ module LayerParaScaleFloat16(
 						fmr_wea[2]		<= 1;
 						fmr_addra[2]	<= write_fm_data_addr;
 						fmr_dina[2]		<= init_fm_data[`POOL_SIZE*`PARA_Y*`DATA_WIDTH*3 - 1:`POOL_SIZE*`PARA_Y*`DATA_WIDTH*2];
-
-						fmr_ena[3]		<= 1;
-						fmr_wea[3]		<= 1;
-						fmr_addra[3]	<= write_fm_data_addr;
-						fmr_dina[3]		<= init_fm_data[`POOL_SIZE*`PARA_Y*`DATA_WIDTH*4 - 1:`POOL_SIZE*`PARA_Y*`DATA_WIDTH*3];
-
-						fmr_ena[4]		<= 1;
-						fmr_wea[4]		<= 1;
-						fmr_addra[4]	<= write_fm_data_addr;
-						fmr_dina[4]		<= init_fm_data[`POOL_SIZE*`PARA_Y*`DATA_WIDTH*5 - 1:`POOL_SIZE*`PARA_Y*`DATA_WIDTH*4];
-
-						fmr_ena[5]		<= 1;
-						fmr_wea[5]		<= 1;
-						fmr_addra[5]	<= write_fm_data_addr;
-						fmr_dina[5]		<= init_fm_data[`POOL_SIZE*`PARA_Y*`DATA_WIDTH*6 - 1:`POOL_SIZE*`PARA_Y*`DATA_WIDTH*5];
-
-						fmr_ena[6]		<= 1;
-						fmr_wea[6]		<= 1;
-						fmr_addra[6]	<= write_fm_data_addr;
-						fmr_dina[6]		<= init_fm_data[`POOL_SIZE*`PARA_Y*`DATA_WIDTH*7 - 1:`POOL_SIZE*`PARA_Y*`DATA_WIDTH*6];
-
-						fmr_ena[7]		<= 1;
-						fmr_wea[7]		<= 1;
-						fmr_addra[7]	<= write_fm_data_addr;
-						fmr_dina[7]		<= init_fm_data[`POOL_SIZE*`PARA_Y*`DATA_WIDTH*8 - 1:`POOL_SIZE*`PARA_Y*`DATA_WIDTH*7];
-
-						fmr_ena[8]		<= 1;
-						fmr_wea[8]		<= 1;
-						fmr_addra[8]	<= write_fm_data_addr;
-						fmr_dina[8]		<= init_fm_data[`POOL_SIZE*`PARA_Y*`DATA_WIDTH*9 - 1:`POOL_SIZE*`PARA_Y*`DATA_WIDTH*8];
-
-						fmr_ena[9]		<= 1;
-						fmr_wea[9]		<= 1;
-						fmr_addra[9]	<= write_fm_data_addr;
-						fmr_dina[9]		<= init_fm_data[`POOL_SIZE*`PARA_Y*`DATA_WIDTH*10 - 1:`POOL_SIZE*`PARA_Y*`DATA_WIDTH*9];
-
-						fmr_ena[10]		<= 1;
-						fmr_wea[10]		<= 1;
-						fmr_addra[10]	<= write_fm_data_addr;
-						fmr_dina[10]		<= init_fm_data[`POOL_SIZE*`PARA_Y*`DATA_WIDTH*11 - 1:`POOL_SIZE*`PARA_Y*`DATA_WIDTH*10];
-
-						fmr_ena[11]		<= 1;
-						fmr_wea[11]		<= 1;
-						fmr_addra[11]	<= write_fm_data_addr;
-						fmr_dina[11]		<= init_fm_data[`POOL_SIZE*`PARA_Y*`DATA_WIDTH*12 - 1:`POOL_SIZE*`PARA_Y*`DATA_WIDTH*11];
-
-						fmr_ena[12]		<= 1;
-						fmr_wea[12]		<= 1;
-						fmr_addra[12]	<= write_fm_data_addr;
-						fmr_dina[12]		<= init_fm_data[`POOL_SIZE*`PARA_Y*`DATA_WIDTH*13 - 1:`POOL_SIZE*`PARA_Y*`DATA_WIDTH*12];
-
-						fmr_ena[13]		<= 1;
-						fmr_wea[13]		<= 1;
-						fmr_addra[13]	<= write_fm_data_addr;
-						fmr_dina[13]		<= init_fm_data[`POOL_SIZE*`PARA_Y*`DATA_WIDTH*14 - 1:`POOL_SIZE*`PARA_Y*`DATA_WIDTH*13];
 						// ======== End: write fm ram ========
 
 						init_fm_ram_ready	<= 0;
@@ -551,50 +452,6 @@ module LayerParaScaleFloat16(
 										fmr_enb[2]		<= 1;
 										//fmr_addrb[2]	<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
 										fmr_addrb[2]	<= 0;// test
-
-										fmr_enb[3]		<= 1;
-										//fmr_addrb[3]	<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
-										fmr_addrb[3]	<= 0;// test
-
-										fmr_enb[4]		<= 1;
-										//fmr_addrb[4]	<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
-										fmr_addrb[4]	<= 0;// test
-
-										fmr_enb[5]		<= 1;
-										//fmr_addrb[5]	<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
-										fmr_addrb[5]	<= 0;// test
-
-										fmr_enb[6]		<= 1;
-										//fmr_addrb[6]	<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
-										fmr_addrb[6]	<= 0;// test
-
-										fmr_enb[7]		<= 1;
-										//fmr_addrb[7]	<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
-										fmr_addrb[7]	<= 0;// test
-
-										fmr_enb[8]		<= 1;
-										//fmr_addrb[8]	<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
-										fmr_addrb[8]	<= 0;// test
-
-										fmr_enb[9]		<= 1;
-										//fmr_addrb[9]	<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
-										fmr_addrb[9]	<= 0;// test
-
-										fmr_enb[10]		<= 1;
-										//fmr_addrb[10]	<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
-										fmr_addrb[10]	<= 0;// test
-
-										fmr_enb[11]		<= 1;
-										//fmr_addrb[11]	<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
-										fmr_addrb[11]	<= 0;// test
-
-										fmr_enb[12]		<= 1;
-										//fmr_addrb[12]	<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
-										fmr_addrb[12]	<= 0;// test
-
-										fmr_enb[13]		<= 1;
-										//fmr_addrb[13]	<= cur_fm_swap*`FM_RAM_HALF + cur_x/`PARA_X*((fm_size+`PARA_Y-1)/`PARA_Y)+cur_y/`PARA_Y+cur_slice*((fm_size+`PARA_Y-1)/`PARA_Y)*((fm_size+`PARA_X-1)/`PARA_X);
-										fmr_addrb[13]	<= 0;// test
 										// ======== End: set fm ram read ========
 
 										// set weight read
@@ -618,17 +475,6 @@ module LayerParaScaleFloat16(
 										fmr_addrb[0] = fmr_addrb[0] + 1; 
 										fmr_addrb[1] = fmr_addrb[1] + 1; 
 										fmr_addrb[2] = fmr_addrb[2] + 1; 
-										fmr_addrb[3] = fmr_addrb[3] + 1; 
-										fmr_addrb[4] = fmr_addrb[4] + 1; 
-										fmr_addrb[5] = fmr_addrb[5] + 1; 
-										fmr_addrb[6] = fmr_addrb[6] + 1; 
-										fmr_addrb[7] = fmr_addrb[7] + 1; 
-										fmr_addrb[8] = fmr_addrb[8] + 1; 
-										fmr_addrb[9] = fmr_addrb[9] + 1; 
-										fmr_addrb[10] = fmr_addrb[10] + 1; 
-										fmr_addrb[11] = fmr_addrb[11] + 1; 
-										fmr_addrb[12] = fmr_addrb[12] + 1; 
-										fmr_addrb[13] = fmr_addrb[13] + 1; 
 										// ======== End: set fm ram read ========
 									end
 									else if (read_clk_count > 1 && read_clk_count <= kernel_size) begin
@@ -704,7 +550,6 @@ module LayerParaScaleFloat16(
 										// PARA_KERNEL
 										conv_weight[0]		<= wr_doutb[0][`DATA_WIDTH - 1:0]; 
 										conv_weight[1]		<= wr_doutb[1][`DATA_WIDTH - 1:0]; 
-										conv_weight[2]		<= wr_doutb[2][`DATA_WIDTH - 1:0]; 
 										// ======== End: set weight ram read ========
 									end
 
@@ -712,467 +557,29 @@ module LayerParaScaleFloat16(
 									if (clk_count == 1) begin
 										// ======== Begin: set fm ram read data ========
 										// PARA_KERNEL -> PARA_X -> PARA_Y
-										conv_input_data[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[0][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fmr_doutb[0][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fmr_doutb[0][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= fmr_doutb[0][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= fmr_doutb[0][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= fmr_doutb[0][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= fmr_doutb[0][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= fmr_doutb[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= fmr_doutb[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9] <= fmr_doutb[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
+										conv_input_data[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
+										conv_input_data[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fmr_doutb[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
+										conv_input_data[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fmr_doutb[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 
-										conv_input_data[0][`DATA_WIDTH*11 - 1:`DATA_WIDTH*10] <= fmr_doutb[1][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*12 - 1:`DATA_WIDTH*11] <= fmr_doutb[1][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*13 - 1:`DATA_WIDTH*12] <= fmr_doutb[1][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*14 - 1:`DATA_WIDTH*13] <= fmr_doutb[1][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*15 - 1:`DATA_WIDTH*14] <= fmr_doutb[1][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*16 - 1:`DATA_WIDTH*15] <= fmr_doutb[1][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*17 - 1:`DATA_WIDTH*16] <= fmr_doutb[1][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*18 - 1:`DATA_WIDTH*17] <= fmr_doutb[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*19 - 1:`DATA_WIDTH*18] <= fmr_doutb[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*20 - 1:`DATA_WIDTH*19] <= fmr_doutb[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
+										conv_input_data[0][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= fmr_doutb[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
+										conv_input_data[0][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= fmr_doutb[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
+										conv_input_data[0][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= fmr_doutb[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 
-										conv_input_data[0][`DATA_WIDTH*21 - 1:`DATA_WIDTH*20] <= fmr_doutb[2][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*22 - 1:`DATA_WIDTH*21] <= fmr_doutb[2][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*23 - 1:`DATA_WIDTH*22] <= fmr_doutb[2][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*24 - 1:`DATA_WIDTH*23] <= fmr_doutb[2][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*25 - 1:`DATA_WIDTH*24] <= fmr_doutb[2][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*26 - 1:`DATA_WIDTH*25] <= fmr_doutb[2][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*27 - 1:`DATA_WIDTH*26] <= fmr_doutb[2][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*28 - 1:`DATA_WIDTH*27] <= fmr_doutb[2][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*29 - 1:`DATA_WIDTH*28] <= fmr_doutb[2][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*30 - 1:`DATA_WIDTH*29] <= fmr_doutb[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
+										conv_input_data[0][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= fmr_doutb[2][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
+										conv_input_data[0][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= fmr_doutb[2][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
+										conv_input_data[0][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= fmr_doutb[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 
-										conv_input_data[0][`DATA_WIDTH*31 - 1:`DATA_WIDTH*30] <= fmr_doutb[3][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*32 - 1:`DATA_WIDTH*31] <= fmr_doutb[3][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*33 - 1:`DATA_WIDTH*32] <= fmr_doutb[3][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*34 - 1:`DATA_WIDTH*33] <= fmr_doutb[3][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*35 - 1:`DATA_WIDTH*34] <= fmr_doutb[3][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*36 - 1:`DATA_WIDTH*35] <= fmr_doutb[3][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*37 - 1:`DATA_WIDTH*36] <= fmr_doutb[3][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*38 - 1:`DATA_WIDTH*37] <= fmr_doutb[3][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*39 - 1:`DATA_WIDTH*38] <= fmr_doutb[3][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*40 - 1:`DATA_WIDTH*39] <= fmr_doutb[3][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
+										conv_input_data[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
+										conv_input_data[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fmr_doutb[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
+										conv_input_data[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fmr_doutb[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 
-										conv_input_data[0][`DATA_WIDTH*41 - 1:`DATA_WIDTH*40] <= fmr_doutb[4][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*42 - 1:`DATA_WIDTH*41] <= fmr_doutb[4][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*43 - 1:`DATA_WIDTH*42] <= fmr_doutb[4][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*44 - 1:`DATA_WIDTH*43] <= fmr_doutb[4][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*45 - 1:`DATA_WIDTH*44] <= fmr_doutb[4][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*46 - 1:`DATA_WIDTH*45] <= fmr_doutb[4][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*47 - 1:`DATA_WIDTH*46] <= fmr_doutb[4][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*48 - 1:`DATA_WIDTH*47] <= fmr_doutb[4][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*49 - 1:`DATA_WIDTH*48] <= fmr_doutb[4][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*50 - 1:`DATA_WIDTH*49] <= fmr_doutb[4][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
+										conv_input_data[1][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= fmr_doutb[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
+										conv_input_data[1][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= fmr_doutb[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
+										conv_input_data[1][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= fmr_doutb[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 
-										conv_input_data[0][`DATA_WIDTH*51 - 1:`DATA_WIDTH*50] <= fmr_doutb[5][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*52 - 1:`DATA_WIDTH*51] <= fmr_doutb[5][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*53 - 1:`DATA_WIDTH*52] <= fmr_doutb[5][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*54 - 1:`DATA_WIDTH*53] <= fmr_doutb[5][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*55 - 1:`DATA_WIDTH*54] <= fmr_doutb[5][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*56 - 1:`DATA_WIDTH*55] <= fmr_doutb[5][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*57 - 1:`DATA_WIDTH*56] <= fmr_doutb[5][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*58 - 1:`DATA_WIDTH*57] <= fmr_doutb[5][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*59 - 1:`DATA_WIDTH*58] <= fmr_doutb[5][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*60 - 1:`DATA_WIDTH*59] <= fmr_doutb[5][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[0][`DATA_WIDTH*61 - 1:`DATA_WIDTH*60] <= fmr_doutb[6][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*62 - 1:`DATA_WIDTH*61] <= fmr_doutb[6][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*63 - 1:`DATA_WIDTH*62] <= fmr_doutb[6][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*64 - 1:`DATA_WIDTH*63] <= fmr_doutb[6][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*65 - 1:`DATA_WIDTH*64] <= fmr_doutb[6][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*66 - 1:`DATA_WIDTH*65] <= fmr_doutb[6][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*67 - 1:`DATA_WIDTH*66] <= fmr_doutb[6][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*68 - 1:`DATA_WIDTH*67] <= fmr_doutb[6][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*69 - 1:`DATA_WIDTH*68] <= fmr_doutb[6][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*70 - 1:`DATA_WIDTH*69] <= fmr_doutb[6][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[0][`DATA_WIDTH*71 - 1:`DATA_WIDTH*70] <= fmr_doutb[7][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*72 - 1:`DATA_WIDTH*71] <= fmr_doutb[7][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*73 - 1:`DATA_WIDTH*72] <= fmr_doutb[7][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*74 - 1:`DATA_WIDTH*73] <= fmr_doutb[7][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*75 - 1:`DATA_WIDTH*74] <= fmr_doutb[7][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*76 - 1:`DATA_WIDTH*75] <= fmr_doutb[7][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*77 - 1:`DATA_WIDTH*76] <= fmr_doutb[7][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*78 - 1:`DATA_WIDTH*77] <= fmr_doutb[7][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*79 - 1:`DATA_WIDTH*78] <= fmr_doutb[7][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*80 - 1:`DATA_WIDTH*79] <= fmr_doutb[7][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[0][`DATA_WIDTH*81 - 1:`DATA_WIDTH*80] <= fmr_doutb[8][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*82 - 1:`DATA_WIDTH*81] <= fmr_doutb[8][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*83 - 1:`DATA_WIDTH*82] <= fmr_doutb[8][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*84 - 1:`DATA_WIDTH*83] <= fmr_doutb[8][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*85 - 1:`DATA_WIDTH*84] <= fmr_doutb[8][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*86 - 1:`DATA_WIDTH*85] <= fmr_doutb[8][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*87 - 1:`DATA_WIDTH*86] <= fmr_doutb[8][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*88 - 1:`DATA_WIDTH*87] <= fmr_doutb[8][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*89 - 1:`DATA_WIDTH*88] <= fmr_doutb[8][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*90 - 1:`DATA_WIDTH*89] <= fmr_doutb[8][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[0][`DATA_WIDTH*91 - 1:`DATA_WIDTH*90] <= fmr_doutb[9][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*92 - 1:`DATA_WIDTH*91] <= fmr_doutb[9][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*93 - 1:`DATA_WIDTH*92] <= fmr_doutb[9][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*94 - 1:`DATA_WIDTH*93] <= fmr_doutb[9][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*95 - 1:`DATA_WIDTH*94] <= fmr_doutb[9][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*96 - 1:`DATA_WIDTH*95] <= fmr_doutb[9][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*97 - 1:`DATA_WIDTH*96] <= fmr_doutb[9][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*98 - 1:`DATA_WIDTH*97] <= fmr_doutb[9][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*99 - 1:`DATA_WIDTH*98] <= fmr_doutb[9][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*100 - 1:`DATA_WIDTH*99] <= fmr_doutb[9][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[0][`DATA_WIDTH*101 - 1:`DATA_WIDTH*100] <= fmr_doutb[10][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*102 - 1:`DATA_WIDTH*101] <= fmr_doutb[10][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*103 - 1:`DATA_WIDTH*102] <= fmr_doutb[10][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*104 - 1:`DATA_WIDTH*103] <= fmr_doutb[10][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*105 - 1:`DATA_WIDTH*104] <= fmr_doutb[10][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*106 - 1:`DATA_WIDTH*105] <= fmr_doutb[10][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*107 - 1:`DATA_WIDTH*106] <= fmr_doutb[10][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*108 - 1:`DATA_WIDTH*107] <= fmr_doutb[10][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*109 - 1:`DATA_WIDTH*108] <= fmr_doutb[10][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*110 - 1:`DATA_WIDTH*109] <= fmr_doutb[10][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[0][`DATA_WIDTH*111 - 1:`DATA_WIDTH*110] <= fmr_doutb[11][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*112 - 1:`DATA_WIDTH*111] <= fmr_doutb[11][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*113 - 1:`DATA_WIDTH*112] <= fmr_doutb[11][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*114 - 1:`DATA_WIDTH*113] <= fmr_doutb[11][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*115 - 1:`DATA_WIDTH*114] <= fmr_doutb[11][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*116 - 1:`DATA_WIDTH*115] <= fmr_doutb[11][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*117 - 1:`DATA_WIDTH*116] <= fmr_doutb[11][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*118 - 1:`DATA_WIDTH*117] <= fmr_doutb[11][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*119 - 1:`DATA_WIDTH*118] <= fmr_doutb[11][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*120 - 1:`DATA_WIDTH*119] <= fmr_doutb[11][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[0][`DATA_WIDTH*121 - 1:`DATA_WIDTH*120] <= fmr_doutb[12][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*122 - 1:`DATA_WIDTH*121] <= fmr_doutb[12][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*123 - 1:`DATA_WIDTH*122] <= fmr_doutb[12][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*124 - 1:`DATA_WIDTH*123] <= fmr_doutb[12][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*125 - 1:`DATA_WIDTH*124] <= fmr_doutb[12][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*126 - 1:`DATA_WIDTH*125] <= fmr_doutb[12][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*127 - 1:`DATA_WIDTH*126] <= fmr_doutb[12][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*128 - 1:`DATA_WIDTH*127] <= fmr_doutb[12][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*129 - 1:`DATA_WIDTH*128] <= fmr_doutb[12][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*130 - 1:`DATA_WIDTH*129] <= fmr_doutb[12][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[0][`DATA_WIDTH*131 - 1:`DATA_WIDTH*130] <= fmr_doutb[13][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*132 - 1:`DATA_WIDTH*131] <= fmr_doutb[13][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*133 - 1:`DATA_WIDTH*132] <= fmr_doutb[13][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*134 - 1:`DATA_WIDTH*133] <= fmr_doutb[13][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*135 - 1:`DATA_WIDTH*134] <= fmr_doutb[13][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*136 - 1:`DATA_WIDTH*135] <= fmr_doutb[13][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*137 - 1:`DATA_WIDTH*136] <= fmr_doutb[13][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*138 - 1:`DATA_WIDTH*137] <= fmr_doutb[13][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*139 - 1:`DATA_WIDTH*138] <= fmr_doutb[13][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*140 - 1:`DATA_WIDTH*139] <= fmr_doutb[13][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[0][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fmr_doutb[0][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fmr_doutb[0][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= fmr_doutb[0][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= fmr_doutb[0][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= fmr_doutb[0][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= fmr_doutb[0][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= fmr_doutb[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= fmr_doutb[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9] <= fmr_doutb[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*11 - 1:`DATA_WIDTH*10] <= fmr_doutb[1][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*12 - 1:`DATA_WIDTH*11] <= fmr_doutb[1][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*13 - 1:`DATA_WIDTH*12] <= fmr_doutb[1][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*14 - 1:`DATA_WIDTH*13] <= fmr_doutb[1][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*15 - 1:`DATA_WIDTH*14] <= fmr_doutb[1][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*16 - 1:`DATA_WIDTH*15] <= fmr_doutb[1][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*17 - 1:`DATA_WIDTH*16] <= fmr_doutb[1][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*18 - 1:`DATA_WIDTH*17] <= fmr_doutb[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*19 - 1:`DATA_WIDTH*18] <= fmr_doutb[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*20 - 1:`DATA_WIDTH*19] <= fmr_doutb[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*21 - 1:`DATA_WIDTH*20] <= fmr_doutb[2][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*22 - 1:`DATA_WIDTH*21] <= fmr_doutb[2][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*23 - 1:`DATA_WIDTH*22] <= fmr_doutb[2][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*24 - 1:`DATA_WIDTH*23] <= fmr_doutb[2][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*25 - 1:`DATA_WIDTH*24] <= fmr_doutb[2][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*26 - 1:`DATA_WIDTH*25] <= fmr_doutb[2][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*27 - 1:`DATA_WIDTH*26] <= fmr_doutb[2][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*28 - 1:`DATA_WIDTH*27] <= fmr_doutb[2][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*29 - 1:`DATA_WIDTH*28] <= fmr_doutb[2][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*30 - 1:`DATA_WIDTH*29] <= fmr_doutb[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*31 - 1:`DATA_WIDTH*30] <= fmr_doutb[3][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*32 - 1:`DATA_WIDTH*31] <= fmr_doutb[3][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*33 - 1:`DATA_WIDTH*32] <= fmr_doutb[3][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*34 - 1:`DATA_WIDTH*33] <= fmr_doutb[3][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*35 - 1:`DATA_WIDTH*34] <= fmr_doutb[3][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*36 - 1:`DATA_WIDTH*35] <= fmr_doutb[3][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*37 - 1:`DATA_WIDTH*36] <= fmr_doutb[3][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*38 - 1:`DATA_WIDTH*37] <= fmr_doutb[3][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*39 - 1:`DATA_WIDTH*38] <= fmr_doutb[3][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*40 - 1:`DATA_WIDTH*39] <= fmr_doutb[3][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*41 - 1:`DATA_WIDTH*40] <= fmr_doutb[4][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*42 - 1:`DATA_WIDTH*41] <= fmr_doutb[4][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*43 - 1:`DATA_WIDTH*42] <= fmr_doutb[4][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*44 - 1:`DATA_WIDTH*43] <= fmr_doutb[4][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*45 - 1:`DATA_WIDTH*44] <= fmr_doutb[4][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*46 - 1:`DATA_WIDTH*45] <= fmr_doutb[4][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*47 - 1:`DATA_WIDTH*46] <= fmr_doutb[4][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*48 - 1:`DATA_WIDTH*47] <= fmr_doutb[4][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*49 - 1:`DATA_WIDTH*48] <= fmr_doutb[4][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*50 - 1:`DATA_WIDTH*49] <= fmr_doutb[4][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*51 - 1:`DATA_WIDTH*50] <= fmr_doutb[5][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*52 - 1:`DATA_WIDTH*51] <= fmr_doutb[5][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*53 - 1:`DATA_WIDTH*52] <= fmr_doutb[5][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*54 - 1:`DATA_WIDTH*53] <= fmr_doutb[5][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*55 - 1:`DATA_WIDTH*54] <= fmr_doutb[5][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*56 - 1:`DATA_WIDTH*55] <= fmr_doutb[5][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*57 - 1:`DATA_WIDTH*56] <= fmr_doutb[5][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*58 - 1:`DATA_WIDTH*57] <= fmr_doutb[5][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*59 - 1:`DATA_WIDTH*58] <= fmr_doutb[5][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*60 - 1:`DATA_WIDTH*59] <= fmr_doutb[5][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*61 - 1:`DATA_WIDTH*60] <= fmr_doutb[6][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*62 - 1:`DATA_WIDTH*61] <= fmr_doutb[6][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*63 - 1:`DATA_WIDTH*62] <= fmr_doutb[6][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*64 - 1:`DATA_WIDTH*63] <= fmr_doutb[6][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*65 - 1:`DATA_WIDTH*64] <= fmr_doutb[6][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*66 - 1:`DATA_WIDTH*65] <= fmr_doutb[6][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*67 - 1:`DATA_WIDTH*66] <= fmr_doutb[6][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*68 - 1:`DATA_WIDTH*67] <= fmr_doutb[6][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*69 - 1:`DATA_WIDTH*68] <= fmr_doutb[6][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*70 - 1:`DATA_WIDTH*69] <= fmr_doutb[6][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*71 - 1:`DATA_WIDTH*70] <= fmr_doutb[7][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*72 - 1:`DATA_WIDTH*71] <= fmr_doutb[7][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*73 - 1:`DATA_WIDTH*72] <= fmr_doutb[7][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*74 - 1:`DATA_WIDTH*73] <= fmr_doutb[7][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*75 - 1:`DATA_WIDTH*74] <= fmr_doutb[7][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*76 - 1:`DATA_WIDTH*75] <= fmr_doutb[7][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*77 - 1:`DATA_WIDTH*76] <= fmr_doutb[7][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*78 - 1:`DATA_WIDTH*77] <= fmr_doutb[7][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*79 - 1:`DATA_WIDTH*78] <= fmr_doutb[7][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*80 - 1:`DATA_WIDTH*79] <= fmr_doutb[7][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*81 - 1:`DATA_WIDTH*80] <= fmr_doutb[8][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*82 - 1:`DATA_WIDTH*81] <= fmr_doutb[8][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*83 - 1:`DATA_WIDTH*82] <= fmr_doutb[8][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*84 - 1:`DATA_WIDTH*83] <= fmr_doutb[8][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*85 - 1:`DATA_WIDTH*84] <= fmr_doutb[8][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*86 - 1:`DATA_WIDTH*85] <= fmr_doutb[8][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*87 - 1:`DATA_WIDTH*86] <= fmr_doutb[8][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*88 - 1:`DATA_WIDTH*87] <= fmr_doutb[8][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*89 - 1:`DATA_WIDTH*88] <= fmr_doutb[8][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*90 - 1:`DATA_WIDTH*89] <= fmr_doutb[8][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*91 - 1:`DATA_WIDTH*90] <= fmr_doutb[9][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*92 - 1:`DATA_WIDTH*91] <= fmr_doutb[9][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*93 - 1:`DATA_WIDTH*92] <= fmr_doutb[9][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*94 - 1:`DATA_WIDTH*93] <= fmr_doutb[9][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*95 - 1:`DATA_WIDTH*94] <= fmr_doutb[9][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*96 - 1:`DATA_WIDTH*95] <= fmr_doutb[9][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*97 - 1:`DATA_WIDTH*96] <= fmr_doutb[9][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*98 - 1:`DATA_WIDTH*97] <= fmr_doutb[9][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*99 - 1:`DATA_WIDTH*98] <= fmr_doutb[9][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*100 - 1:`DATA_WIDTH*99] <= fmr_doutb[9][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*101 - 1:`DATA_WIDTH*100] <= fmr_doutb[10][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*102 - 1:`DATA_WIDTH*101] <= fmr_doutb[10][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*103 - 1:`DATA_WIDTH*102] <= fmr_doutb[10][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*104 - 1:`DATA_WIDTH*103] <= fmr_doutb[10][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*105 - 1:`DATA_WIDTH*104] <= fmr_doutb[10][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*106 - 1:`DATA_WIDTH*105] <= fmr_doutb[10][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*107 - 1:`DATA_WIDTH*106] <= fmr_doutb[10][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*108 - 1:`DATA_WIDTH*107] <= fmr_doutb[10][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*109 - 1:`DATA_WIDTH*108] <= fmr_doutb[10][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*110 - 1:`DATA_WIDTH*109] <= fmr_doutb[10][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*111 - 1:`DATA_WIDTH*110] <= fmr_doutb[11][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*112 - 1:`DATA_WIDTH*111] <= fmr_doutb[11][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*113 - 1:`DATA_WIDTH*112] <= fmr_doutb[11][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*114 - 1:`DATA_WIDTH*113] <= fmr_doutb[11][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*115 - 1:`DATA_WIDTH*114] <= fmr_doutb[11][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*116 - 1:`DATA_WIDTH*115] <= fmr_doutb[11][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*117 - 1:`DATA_WIDTH*116] <= fmr_doutb[11][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*118 - 1:`DATA_WIDTH*117] <= fmr_doutb[11][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*119 - 1:`DATA_WIDTH*118] <= fmr_doutb[11][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*120 - 1:`DATA_WIDTH*119] <= fmr_doutb[11][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*121 - 1:`DATA_WIDTH*120] <= fmr_doutb[12][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*122 - 1:`DATA_WIDTH*121] <= fmr_doutb[12][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*123 - 1:`DATA_WIDTH*122] <= fmr_doutb[12][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*124 - 1:`DATA_WIDTH*123] <= fmr_doutb[12][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*125 - 1:`DATA_WIDTH*124] <= fmr_doutb[12][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*126 - 1:`DATA_WIDTH*125] <= fmr_doutb[12][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*127 - 1:`DATA_WIDTH*126] <= fmr_doutb[12][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*128 - 1:`DATA_WIDTH*127] <= fmr_doutb[12][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*129 - 1:`DATA_WIDTH*128] <= fmr_doutb[12][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*130 - 1:`DATA_WIDTH*129] <= fmr_doutb[12][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[1][`DATA_WIDTH*131 - 1:`DATA_WIDTH*130] <= fmr_doutb[13][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*132 - 1:`DATA_WIDTH*131] <= fmr_doutb[13][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*133 - 1:`DATA_WIDTH*132] <= fmr_doutb[13][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*134 - 1:`DATA_WIDTH*133] <= fmr_doutb[13][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*135 - 1:`DATA_WIDTH*134] <= fmr_doutb[13][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*136 - 1:`DATA_WIDTH*135] <= fmr_doutb[13][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*137 - 1:`DATA_WIDTH*136] <= fmr_doutb[13][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*138 - 1:`DATA_WIDTH*137] <= fmr_doutb[13][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*139 - 1:`DATA_WIDTH*138] <= fmr_doutb[13][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*140 - 1:`DATA_WIDTH*139] <= fmr_doutb[13][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[0][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fmr_doutb[0][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fmr_doutb[0][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= fmr_doutb[0][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= fmr_doutb[0][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= fmr_doutb[0][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= fmr_doutb[0][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= fmr_doutb[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= fmr_doutb[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9] <= fmr_doutb[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*11 - 1:`DATA_WIDTH*10] <= fmr_doutb[1][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*12 - 1:`DATA_WIDTH*11] <= fmr_doutb[1][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*13 - 1:`DATA_WIDTH*12] <= fmr_doutb[1][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*14 - 1:`DATA_WIDTH*13] <= fmr_doutb[1][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*15 - 1:`DATA_WIDTH*14] <= fmr_doutb[1][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*16 - 1:`DATA_WIDTH*15] <= fmr_doutb[1][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*17 - 1:`DATA_WIDTH*16] <= fmr_doutb[1][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*18 - 1:`DATA_WIDTH*17] <= fmr_doutb[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*19 - 1:`DATA_WIDTH*18] <= fmr_doutb[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*20 - 1:`DATA_WIDTH*19] <= fmr_doutb[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*21 - 1:`DATA_WIDTH*20] <= fmr_doutb[2][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*22 - 1:`DATA_WIDTH*21] <= fmr_doutb[2][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*23 - 1:`DATA_WIDTH*22] <= fmr_doutb[2][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*24 - 1:`DATA_WIDTH*23] <= fmr_doutb[2][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*25 - 1:`DATA_WIDTH*24] <= fmr_doutb[2][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*26 - 1:`DATA_WIDTH*25] <= fmr_doutb[2][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*27 - 1:`DATA_WIDTH*26] <= fmr_doutb[2][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*28 - 1:`DATA_WIDTH*27] <= fmr_doutb[2][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*29 - 1:`DATA_WIDTH*28] <= fmr_doutb[2][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*30 - 1:`DATA_WIDTH*29] <= fmr_doutb[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*31 - 1:`DATA_WIDTH*30] <= fmr_doutb[3][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*32 - 1:`DATA_WIDTH*31] <= fmr_doutb[3][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*33 - 1:`DATA_WIDTH*32] <= fmr_doutb[3][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*34 - 1:`DATA_WIDTH*33] <= fmr_doutb[3][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*35 - 1:`DATA_WIDTH*34] <= fmr_doutb[3][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*36 - 1:`DATA_WIDTH*35] <= fmr_doutb[3][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*37 - 1:`DATA_WIDTH*36] <= fmr_doutb[3][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*38 - 1:`DATA_WIDTH*37] <= fmr_doutb[3][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*39 - 1:`DATA_WIDTH*38] <= fmr_doutb[3][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*40 - 1:`DATA_WIDTH*39] <= fmr_doutb[3][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*41 - 1:`DATA_WIDTH*40] <= fmr_doutb[4][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*42 - 1:`DATA_WIDTH*41] <= fmr_doutb[4][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*43 - 1:`DATA_WIDTH*42] <= fmr_doutb[4][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*44 - 1:`DATA_WIDTH*43] <= fmr_doutb[4][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*45 - 1:`DATA_WIDTH*44] <= fmr_doutb[4][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*46 - 1:`DATA_WIDTH*45] <= fmr_doutb[4][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*47 - 1:`DATA_WIDTH*46] <= fmr_doutb[4][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*48 - 1:`DATA_WIDTH*47] <= fmr_doutb[4][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*49 - 1:`DATA_WIDTH*48] <= fmr_doutb[4][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*50 - 1:`DATA_WIDTH*49] <= fmr_doutb[4][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*51 - 1:`DATA_WIDTH*50] <= fmr_doutb[5][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*52 - 1:`DATA_WIDTH*51] <= fmr_doutb[5][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*53 - 1:`DATA_WIDTH*52] <= fmr_doutb[5][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*54 - 1:`DATA_WIDTH*53] <= fmr_doutb[5][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*55 - 1:`DATA_WIDTH*54] <= fmr_doutb[5][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*56 - 1:`DATA_WIDTH*55] <= fmr_doutb[5][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*57 - 1:`DATA_WIDTH*56] <= fmr_doutb[5][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*58 - 1:`DATA_WIDTH*57] <= fmr_doutb[5][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*59 - 1:`DATA_WIDTH*58] <= fmr_doutb[5][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*60 - 1:`DATA_WIDTH*59] <= fmr_doutb[5][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*61 - 1:`DATA_WIDTH*60] <= fmr_doutb[6][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*62 - 1:`DATA_WIDTH*61] <= fmr_doutb[6][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*63 - 1:`DATA_WIDTH*62] <= fmr_doutb[6][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*64 - 1:`DATA_WIDTH*63] <= fmr_doutb[6][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*65 - 1:`DATA_WIDTH*64] <= fmr_doutb[6][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*66 - 1:`DATA_WIDTH*65] <= fmr_doutb[6][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*67 - 1:`DATA_WIDTH*66] <= fmr_doutb[6][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*68 - 1:`DATA_WIDTH*67] <= fmr_doutb[6][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*69 - 1:`DATA_WIDTH*68] <= fmr_doutb[6][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*70 - 1:`DATA_WIDTH*69] <= fmr_doutb[6][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*71 - 1:`DATA_WIDTH*70] <= fmr_doutb[7][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*72 - 1:`DATA_WIDTH*71] <= fmr_doutb[7][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*73 - 1:`DATA_WIDTH*72] <= fmr_doutb[7][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*74 - 1:`DATA_WIDTH*73] <= fmr_doutb[7][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*75 - 1:`DATA_WIDTH*74] <= fmr_doutb[7][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*76 - 1:`DATA_WIDTH*75] <= fmr_doutb[7][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*77 - 1:`DATA_WIDTH*76] <= fmr_doutb[7][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*78 - 1:`DATA_WIDTH*77] <= fmr_doutb[7][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*79 - 1:`DATA_WIDTH*78] <= fmr_doutb[7][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*80 - 1:`DATA_WIDTH*79] <= fmr_doutb[7][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*81 - 1:`DATA_WIDTH*80] <= fmr_doutb[8][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*82 - 1:`DATA_WIDTH*81] <= fmr_doutb[8][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*83 - 1:`DATA_WIDTH*82] <= fmr_doutb[8][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*84 - 1:`DATA_WIDTH*83] <= fmr_doutb[8][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*85 - 1:`DATA_WIDTH*84] <= fmr_doutb[8][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*86 - 1:`DATA_WIDTH*85] <= fmr_doutb[8][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*87 - 1:`DATA_WIDTH*86] <= fmr_doutb[8][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*88 - 1:`DATA_WIDTH*87] <= fmr_doutb[8][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*89 - 1:`DATA_WIDTH*88] <= fmr_doutb[8][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*90 - 1:`DATA_WIDTH*89] <= fmr_doutb[8][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*91 - 1:`DATA_WIDTH*90] <= fmr_doutb[9][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*92 - 1:`DATA_WIDTH*91] <= fmr_doutb[9][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*93 - 1:`DATA_WIDTH*92] <= fmr_doutb[9][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*94 - 1:`DATA_WIDTH*93] <= fmr_doutb[9][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*95 - 1:`DATA_WIDTH*94] <= fmr_doutb[9][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*96 - 1:`DATA_WIDTH*95] <= fmr_doutb[9][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*97 - 1:`DATA_WIDTH*96] <= fmr_doutb[9][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*98 - 1:`DATA_WIDTH*97] <= fmr_doutb[9][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*99 - 1:`DATA_WIDTH*98] <= fmr_doutb[9][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*100 - 1:`DATA_WIDTH*99] <= fmr_doutb[9][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*101 - 1:`DATA_WIDTH*100] <= fmr_doutb[10][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*102 - 1:`DATA_WIDTH*101] <= fmr_doutb[10][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*103 - 1:`DATA_WIDTH*102] <= fmr_doutb[10][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*104 - 1:`DATA_WIDTH*103] <= fmr_doutb[10][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*105 - 1:`DATA_WIDTH*104] <= fmr_doutb[10][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*106 - 1:`DATA_WIDTH*105] <= fmr_doutb[10][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*107 - 1:`DATA_WIDTH*106] <= fmr_doutb[10][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*108 - 1:`DATA_WIDTH*107] <= fmr_doutb[10][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*109 - 1:`DATA_WIDTH*108] <= fmr_doutb[10][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*110 - 1:`DATA_WIDTH*109] <= fmr_doutb[10][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*111 - 1:`DATA_WIDTH*110] <= fmr_doutb[11][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*112 - 1:`DATA_WIDTH*111] <= fmr_doutb[11][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*113 - 1:`DATA_WIDTH*112] <= fmr_doutb[11][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*114 - 1:`DATA_WIDTH*113] <= fmr_doutb[11][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*115 - 1:`DATA_WIDTH*114] <= fmr_doutb[11][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*116 - 1:`DATA_WIDTH*115] <= fmr_doutb[11][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*117 - 1:`DATA_WIDTH*116] <= fmr_doutb[11][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*118 - 1:`DATA_WIDTH*117] <= fmr_doutb[11][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*119 - 1:`DATA_WIDTH*118] <= fmr_doutb[11][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*120 - 1:`DATA_WIDTH*119] <= fmr_doutb[11][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*121 - 1:`DATA_WIDTH*120] <= fmr_doutb[12][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*122 - 1:`DATA_WIDTH*121] <= fmr_doutb[12][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*123 - 1:`DATA_WIDTH*122] <= fmr_doutb[12][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*124 - 1:`DATA_WIDTH*123] <= fmr_doutb[12][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*125 - 1:`DATA_WIDTH*124] <= fmr_doutb[12][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*126 - 1:`DATA_WIDTH*125] <= fmr_doutb[12][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*127 - 1:`DATA_WIDTH*126] <= fmr_doutb[12][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*128 - 1:`DATA_WIDTH*127] <= fmr_doutb[12][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*129 - 1:`DATA_WIDTH*128] <= fmr_doutb[12][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*130 - 1:`DATA_WIDTH*129] <= fmr_doutb[12][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*131 - 1:`DATA_WIDTH*130] <= fmr_doutb[13][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*132 - 1:`DATA_WIDTH*131] <= fmr_doutb[13][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*133 - 1:`DATA_WIDTH*132] <= fmr_doutb[13][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*134 - 1:`DATA_WIDTH*133] <= fmr_doutb[13][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*135 - 1:`DATA_WIDTH*134] <= fmr_doutb[13][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*136 - 1:`DATA_WIDTH*135] <= fmr_doutb[13][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*137 - 1:`DATA_WIDTH*136] <= fmr_doutb[13][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*138 - 1:`DATA_WIDTH*137] <= fmr_doutb[13][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*139 - 1:`DATA_WIDTH*138] <= fmr_doutb[13][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*140 - 1:`DATA_WIDTH*139] <= fmr_doutb[13][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
+										conv_input_data[1][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= fmr_doutb[2][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
+										conv_input_data[1][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= fmr_doutb[2][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
+										conv_input_data[1][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= fmr_doutb[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 										// ======== End: set fm ram read data ========
 
 										clk_count <= clk_count + 1;
@@ -1183,47 +590,10 @@ module LayerParaScaleFloat16(
 										conv_input_data[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 										conv_input_data[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fmr_doutb[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 										conv_input_data[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fmr_doutb[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[0][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= fmr_doutb[3][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[0][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= fmr_doutb[4][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[0][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= fmr_doutb[5][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[0][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= fmr_doutb[6][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[0][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= fmr_doutb[7][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[0][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= fmr_doutb[8][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[0][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9] <= fmr_doutb[9][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[0][`DATA_WIDTH*11 - 1:`DATA_WIDTH*10] <= fmr_doutb[10][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[0][`DATA_WIDTH*12 - 1:`DATA_WIDTH*11] <= fmr_doutb[11][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[0][`DATA_WIDTH*13 - 1:`DATA_WIDTH*12] <= fmr_doutb[12][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[0][`DATA_WIDTH*14 - 1:`DATA_WIDTH*13] <= fmr_doutb[13][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 
 										conv_input_data[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 										conv_input_data[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fmr_doutb[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 										conv_input_data[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fmr_doutb[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[1][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= fmr_doutb[3][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[1][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= fmr_doutb[4][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[1][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= fmr_doutb[5][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[1][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= fmr_doutb[6][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[1][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= fmr_doutb[7][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[1][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= fmr_doutb[8][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[1][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9] <= fmr_doutb[9][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[1][`DATA_WIDTH*11 - 1:`DATA_WIDTH*10] <= fmr_doutb[10][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[1][`DATA_WIDTH*12 - 1:`DATA_WIDTH*11] <= fmr_doutb[11][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[1][`DATA_WIDTH*13 - 1:`DATA_WIDTH*12] <= fmr_doutb[12][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[1][`DATA_WIDTH*14 - 1:`DATA_WIDTH*13] <= fmr_doutb[13][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fmr_doutb[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fmr_doutb[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= fmr_doutb[3][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= fmr_doutb[4][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= fmr_doutb[5][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= fmr_doutb[6][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= fmr_doutb[7][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= fmr_doutb[8][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9] <= fmr_doutb[9][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*11 - 1:`DATA_WIDTH*10] <= fmr_doutb[10][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*12 - 1:`DATA_WIDTH*11] <= fmr_doutb[11][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*13 - 1:`DATA_WIDTH*12] <= fmr_doutb[12][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*14 - 1:`DATA_WIDTH*13] <= fmr_doutb[13][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 										// ======== End: set fm ram read data ========
 
 										clk_count	<= clk_count + 1;
@@ -1231,38 +601,13 @@ module LayerParaScaleFloat16(
 									else if ((clk_count-(clk_count/kernel_size)*kernel_size) == 1 && clk_count <= (kernel_size*kernel_size)) begin
 										// ======== Begin: set fm ram read data ========
 										// PARA_KERNEL -> PARA_Y
-										conv_input_data[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[0][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[0][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[0][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[0][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[0][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[0][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[0][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
+										conv_input_data[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
+										conv_input_data[0][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
+										conv_input_data[0][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 
-										conv_input_data[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[1][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[1][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[1][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[1][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[1][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[1][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[1][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-
-										conv_input_data[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9]; 
-										conv_input_data[2][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8]; 
-										conv_input_data[2][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7]; 
-										conv_input_data[2][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6]; 
-										conv_input_data[2][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5]; 
-										conv_input_data[2][`DATA_WIDTH*6 - 1:`DATA_WIDTH*5] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*5 - 1:`DATA_WIDTH*4]; 
-										conv_input_data[2][`DATA_WIDTH*7 - 1:`DATA_WIDTH*6] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*4 - 1:`DATA_WIDTH*3]; 
-										conv_input_data[2][`DATA_WIDTH*8 - 1:`DATA_WIDTH*7] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
-										conv_input_data[2][`DATA_WIDTH*9 - 1:`DATA_WIDTH*8] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
-										conv_input_data[2][`DATA_WIDTH*10 - 1:`DATA_WIDTH*9] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
+										conv_input_data[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2]; 
+										conv_input_data[1][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*2 - 1:`DATA_WIDTH*1]; 
+										conv_input_data[1][`DATA_WIDTH*3 - 1:`DATA_WIDTH*2] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 										// ======== End: set fm ram read data ========
 
 										clk_count	<= clk_count + 1;
@@ -1272,7 +617,6 @@ module LayerParaScaleFloat16(
 										// PARA_KERNEL
 										conv_input_data[0][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 										conv_input_data[1][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
-										conv_input_data[2][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH*1 - 1:`DATA_WIDTH*0]; 
 										// ======== End: set fm ram read data ========
 
 										clk_count	<= clk_count + 1;
@@ -1338,17 +682,6 @@ module LayerParaScaleFloat16(
 												cur_out_index[0] <= cur_out_index[0] + `PARA_Y; 
 												cur_out_index[1] <= cur_out_index[1] + `PARA_Y; 
 												cur_out_index[2] <= cur_out_index[2] + `PARA_Y; 
-												cur_out_index[3] <= cur_out_index[3] + `PARA_Y; 
-												cur_out_index[4] <= cur_out_index[4] + `PARA_Y; 
-												cur_out_index[5] <= cur_out_index[5] + `PARA_Y; 
-												cur_out_index[6] <= cur_out_index[6] + `PARA_Y; 
-												cur_out_index[7] <= cur_out_index[7] + `PARA_Y; 
-												cur_out_index[8] <= cur_out_index[8] + `PARA_Y; 
-												cur_out_index[9] <= cur_out_index[9] + `PARA_Y; 
-												cur_out_index[10] <= cur_out_index[10] + `PARA_Y; 
-												cur_out_index[11] <= cur_out_index[11] + `PARA_Y; 
-												cur_out_index[12] <= cur_out_index[12] + `PARA_Y; 
-												cur_out_index[13] <= cur_out_index[13] + `PARA_Y; 
 												// ======== End: set fm ram write ========
 											end
 											else begin
@@ -1362,17 +695,6 @@ module LayerParaScaleFloat16(
 													cur_out_index[0] <= (((cur_out_index[0] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
 													cur_out_index[1] <= (((cur_out_index[1] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
 													cur_out_index[2] <= (((cur_out_index[2] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-													cur_out_index[3] <= (((cur_out_index[3] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-													cur_out_index[4] <= (((cur_out_index[4] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-													cur_out_index[5] <= (((cur_out_index[5] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-													cur_out_index[6] <= (((cur_out_index[6] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-													cur_out_index[7] <= (((cur_out_index[7] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-													cur_out_index[8] <= (((cur_out_index[8] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-													cur_out_index[9] <= (((cur_out_index[9] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-													cur_out_index[10] <= (((cur_out_index[10] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-													cur_out_index[11] <= (((cur_out_index[11] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-													cur_out_index[12] <= (((cur_out_index[12] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-													cur_out_index[13] <= (((cur_out_index[13] + `PARA_Y + padding_out)+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
 													// ======== End: set fm ram write ========
 												end
 												else begin 
@@ -1413,17 +735,6 @@ module LayerParaScaleFloat16(
 															cur_out_index[0]	<= ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
 															cur_out_index[1]	<= ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
 															cur_out_index[2]	<= ((padding_out-2+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-															cur_out_index[3]	<= ((padding_out-3+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-															cur_out_index[4]	<= ((padding_out-4+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-															cur_out_index[5]	<= ((padding_out-5+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-															cur_out_index[6]	<= ((padding_out-6+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-															cur_out_index[7]	<= ((padding_out-7+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-															cur_out_index[8]	<= ((padding_out-8+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-															cur_out_index[9]	<= ((padding_out-9+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-															cur_out_index[10]	<= ((padding_out-10+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-															cur_out_index[11]	<= ((padding_out-11+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-															cur_out_index[12]	<= ((padding_out-12+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-															cur_out_index[13]	<= ((padding_out-13+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
 															// ======== End: set fm ram write ========
 
 															// ======== Begin: set conv buffer write to feature map ram ========
@@ -1445,17 +756,6 @@ module LayerParaScaleFloat16(
 														cur_out_index[0]	<= ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
 														cur_out_index[1]	<= ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
 														cur_out_index[2]	<= ((padding_out-2+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-														cur_out_index[3]	<= ((padding_out-3+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-														cur_out_index[4]	<= ((padding_out-4+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-														cur_out_index[5]	<= ((padding_out-5+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-														cur_out_index[6]	<= ((padding_out-6+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-														cur_out_index[7]	<= ((padding_out-7+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-														cur_out_index[8]	<= ((padding_out-8+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-														cur_out_index[9]	<= ((padding_out-9+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-														cur_out_index[10]	<= ((padding_out-10+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-														cur_out_index[11]	<= ((padding_out-11+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-														cur_out_index[12]	<= ((padding_out-12+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
-														cur_out_index[13]	<= ((padding_out-13+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y)*`PARA_Y+padding_out; 
 														// ======== End: set fm ram write ========
 
 														cur_kernel_slice	<= cur_kernel_slice + 1; // next kernel slice
@@ -1498,39 +798,6 @@ module LayerParaScaleFloat16(
 
 										fmr_ena[2]	<= 0;
 										fmr_wea[2]	<= 0;
-
-										fmr_ena[3]	<= 0;
-										fmr_wea[3]	<= 0;
-
-										fmr_ena[4]	<= 0;
-										fmr_wea[4]	<= 0;
-
-										fmr_ena[5]	<= 0;
-										fmr_wea[5]	<= 0;
-
-										fmr_ena[6]	<= 0;
-										fmr_wea[6]	<= 0;
-
-										fmr_ena[7]	<= 0;
-										fmr_wea[7]	<= 0;
-
-										fmr_ena[8]	<= 0;
-										fmr_wea[8]	<= 0;
-
-										fmr_ena[9]	<= 0;
-										fmr_wea[9]	<= 0;
-
-										fmr_ena[10]	<= 0;
-										fmr_wea[10]	<= 0;
-
-										fmr_ena[11]	<= 0;
-										fmr_wea[11]	<= 0;
-
-										fmr_ena[12]	<= 0;
-										fmr_wea[12]	<= 0;
-
-										fmr_ena[13]	<= 0;
-										fmr_wea[13]	<= 0;
 										// ======== End: disable fm ram write ========
 
 										write_ready_clk_count <= 0;
@@ -1552,17 +819,6 @@ module LayerParaScaleFloat16(
 											cur_out_index[0]	<= 0; 
 											cur_out_index[1]	<= 0; 
 											cur_out_index[2]	<= 0; 
-											cur_out_index[3]	<= 0; 
-											cur_out_index[4]	<= 0; 
-											cur_out_index[5]	<= 0; 
-											cur_out_index[6]	<= 0; 
-											cur_out_index[7]	<= 0; 
-											cur_out_index[8]	<= 0; 
-											cur_out_index[9]	<= 0; 
-											cur_out_index[10]	<= 0; 
-											cur_out_index[11]	<= 0; 
-											cur_out_index[12]	<= 0; 
-											cur_out_index[13]	<= 0; 
 											// ======== End: reset fm ram write ========
 
 											cur_out_slice		<= 0;
@@ -1589,17 +845,6 @@ module LayerParaScaleFloat16(
 								fmr_enb[0]	<= 1; 
 								fmr_enb[1]	<= 1; 
 								fmr_enb[2]	<= 1; 
-								fmr_enb[3]	<= 1; 
-								fmr_enb[4]	<= 1; 
-								fmr_enb[5]	<= 1; 
-								fmr_enb[6]	<= 1; 
-								fmr_enb[7]	<= 1; 
-								fmr_enb[8]	<= 1; 
-								fmr_enb[9]	<= 1; 
-								fmr_enb[10]	<= 1; 
-								fmr_enb[11]	<= 1; 
-								fmr_enb[12]	<= 1; 
-								fmr_enb[13]	<= 1; 
 								// ======== End: set fm ram read ========
 
 								// disable weight ram read 
@@ -1668,39 +913,6 @@ module LayerParaScaleFloat16(
 
 												fmr_ena[2]	<= 1;
 												fmr_wea[2]	<= 1;
-
-												fmr_ena[3]	<= 1;
-												fmr_wea[3]	<= 1;
-
-												fmr_ena[4]	<= 1;
-												fmr_wea[4]	<= 1;
-
-												fmr_ena[5]	<= 1;
-												fmr_wea[5]	<= 1;
-
-												fmr_ena[6]	<= 1;
-												fmr_wea[6]	<= 1;
-
-												fmr_ena[7]	<= 1;
-												fmr_wea[7]	<= 1;
-
-												fmr_ena[8]	<= 1;
-												fmr_wea[8]	<= 1;
-
-												fmr_ena[9]	<= 1;
-												fmr_wea[9]	<= 1;
-
-												fmr_ena[10]	<= 1;
-												fmr_wea[10]	<= 1;
-
-												fmr_ena[11]	<= 1;
-												fmr_wea[11]	<= 1;
-
-												fmr_ena[12]	<= 1;
-												fmr_wea[12]	<= 1;
-
-												fmr_ena[13]	<= 1;
-												fmr_wea[13]	<= 1;
 												// ======== End: set fm ram write ========
 
 												fmr_addrb[cur_out_fm_ram] <= fm_zero_start_addr[cur_out_fm_ram] 
@@ -1719,34 +931,6 @@ module LayerParaScaleFloat16(
 														2:
 															begin
 																fmr_dina[cur_out_fm_ram] <= {0, pu_result[`DATA_WIDTH*2-1:0]};
-															end
-														3:
-															begin
-																fmr_dina[cur_out_fm_ram] <= {0, pu_result[`DATA_WIDTH*3-1:0]};
-															end
-														4:
-															begin
-																fmr_dina[cur_out_fm_ram] <= {0, pu_result[`DATA_WIDTH*4-1:0]};
-															end
-														5:
-															begin
-																fmr_dina[cur_out_fm_ram] <= {0, pu_result[`DATA_WIDTH*5-1:0]};
-															end
-														6:
-															begin
-																fmr_dina[cur_out_fm_ram] <= {0, pu_result[`DATA_WIDTH*6-1:0]};
-															end
-														7:
-															begin
-																fmr_dina[cur_out_fm_ram] <= {0, pu_result[`DATA_WIDTH*7-1:0]};
-															end
-														8:
-															begin
-																fmr_dina[cur_out_fm_ram] <= {0, pu_result[`DATA_WIDTH*8-1:0]};
-															end
-														9:
-															begin
-																fmr_dina[cur_out_fm_ram] <= {0, pu_result[`DATA_WIDTH*9-1:0]};
 															end
 														// ======== End: set fm ram write ========
 													endcase
@@ -1804,17 +988,6 @@ module LayerParaScaleFloat16(
 														cur_out_index[0] 	<= ((padding_out-0+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
 														cur_out_index[1] 	<= ((padding_out-1+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
 														cur_out_index[2] 	<= ((padding_out-2+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
-														cur_out_index[3] 	<= ((padding_out-3+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
-														cur_out_index[4] 	<= ((padding_out-4+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
-														cur_out_index[5] 	<= ((padding_out-5+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
-														cur_out_index[6] 	<= ((padding_out-6+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
-														cur_out_index[7] 	<= ((padding_out-7+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
-														cur_out_index[8] 	<= ((padding_out-8+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
-														cur_out_index[9] 	<= ((padding_out-9+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
-														cur_out_index[10] 	<= ((padding_out-10+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
-														cur_out_index[11] 	<= ((padding_out-11+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
-														cur_out_index[12] 	<= ((padding_out-12+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
-														cur_out_index[13] 	<= ((padding_out-13+`PARA_X-1)/`PARA_X)*((fm_size_out+`PARA_Y-1)/`PARA_Y); 
 														// ======== End: set fm ram write ========
 													end
 												end 
@@ -1852,61 +1025,6 @@ module LayerParaScaleFloat16(
 									fmr_wea[2]	<= 0;
 
 									cur_out_index[2]	<= 0;
-
-									fmr_ena[3]	<= 0;
-									fmr_wea[3]	<= 0;
-
-									cur_out_index[3]	<= 0;
-
-									fmr_ena[4]	<= 0;
-									fmr_wea[4]	<= 0;
-
-									cur_out_index[4]	<= 0;
-
-									fmr_ena[5]	<= 0;
-									fmr_wea[5]	<= 0;
-
-									cur_out_index[5]	<= 0;
-
-									fmr_ena[6]	<= 0;
-									fmr_wea[6]	<= 0;
-
-									cur_out_index[6]	<= 0;
-
-									fmr_ena[7]	<= 0;
-									fmr_wea[7]	<= 0;
-
-									cur_out_index[7]	<= 0;
-
-									fmr_ena[8]	<= 0;
-									fmr_wea[8]	<= 0;
-
-									cur_out_index[8]	<= 0;
-
-									fmr_ena[9]	<= 0;
-									fmr_wea[9]	<= 0;
-
-									cur_out_index[9]	<= 0;
-
-									fmr_ena[10]	<= 0;
-									fmr_wea[10]	<= 0;
-
-									cur_out_index[10]	<= 0;
-
-									fmr_ena[11]	<= 0;
-									fmr_wea[11]	<= 0;
-
-									cur_out_index[11]	<= 0;
-
-									fmr_ena[12]	<= 0;
-									fmr_wea[12]	<= 0;
-
-									cur_out_index[12]	<= 0;
-
-									fmr_ena[13]	<= 0;
-									fmr_wea[13]	<= 0;
-
-									cur_out_index[13]	<= 0;
 									// ======== End: disable fm ram write ========
 
 									cur_out_slice		<= 0;
@@ -1931,17 +1049,6 @@ module LayerParaScaleFloat16(
 								fmr_enb[0]	<= 1; 
 								fmr_enb[1]	<= 1; 
 								fmr_enb[2]	<= 1; 
-								fmr_enb[3]	<= 1; 
-								fmr_enb[4]	<= 1; 
-								fmr_enb[5]	<= 1; 
-								fmr_enb[6]	<= 1; 
-								fmr_enb[7]	<= 1; 
-								fmr_enb[8]	<= 1; 
-								fmr_enb[9]	<= 1; 
-								fmr_enb[10]	<= 1; 
-								fmr_enb[11]	<= 1; 
-								fmr_enb[12]	<= 1; 
-								fmr_enb[13]	<= 1; 
 								// ======== End: set fm ram read ========
 
 								// set weight ram read
@@ -1976,7 +1083,6 @@ module LayerParaScaleFloat16(
 									// PARA_KERNEL
 									conv_input_data[0] <= {0, wr_doutb[0]}; 
 									conv_input_data[1] <= {0, wr_doutb[1]}; 
-									conv_input_data[2] <= {0, wr_doutb[2]}; 
 									// ======== End: set conv input ========
 								end
 
@@ -1986,7 +1092,6 @@ module LayerParaScaleFloat16(
 									// PARA_KERNEL
 									conv_weight[0] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH - 1:0]; 
 									conv_weight[1] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH - 1:0]; 
-									conv_weight[2] <= fmr_doutb[cur_fm_ram][`DATA_WIDTH - 1:0]; 
 									// ======== End: set conv input ========
 								end
 
@@ -2171,72 +1276,6 @@ module LayerParaScaleFloat16(
 								fmr_enb[2]	<= 0;
 
 								cur_out_index[2]		<= 0;
-
-								fmr_ena[3]	<= 0;
-								fmr_wea[3]	<= 0;
-								fmr_enb[3]	<= 0;
-
-								cur_out_index[3]		<= 0;
-
-								fmr_ena[4]	<= 0;
-								fmr_wea[4]	<= 0;
-								fmr_enb[4]	<= 0;
-
-								cur_out_index[4]		<= 0;
-
-								fmr_ena[5]	<= 0;
-								fmr_wea[5]	<= 0;
-								fmr_enb[5]	<= 0;
-
-								cur_out_index[5]		<= 0;
-
-								fmr_ena[6]	<= 0;
-								fmr_wea[6]	<= 0;
-								fmr_enb[6]	<= 0;
-
-								cur_out_index[6]		<= 0;
-
-								fmr_ena[7]	<= 0;
-								fmr_wea[7]	<= 0;
-								fmr_enb[7]	<= 0;
-
-								cur_out_index[7]		<= 0;
-
-								fmr_ena[8]	<= 0;
-								fmr_wea[8]	<= 0;
-								fmr_enb[8]	<= 0;
-
-								cur_out_index[8]		<= 0;
-
-								fmr_ena[9]	<= 0;
-								fmr_wea[9]	<= 0;
-								fmr_enb[9]	<= 0;
-
-								cur_out_index[9]		<= 0;
-
-								fmr_ena[10]	<= 0;
-								fmr_wea[10]	<= 0;
-								fmr_enb[10]	<= 0;
-
-								cur_out_index[10]		<= 0;
-
-								fmr_ena[11]	<= 0;
-								fmr_wea[11]	<= 0;
-								fmr_enb[11]	<= 0;
-
-								cur_out_index[11]		<= 0;
-
-								fmr_ena[12]	<= 0;
-								fmr_wea[12]	<= 0;
-								fmr_enb[12]	<= 0;
-
-								cur_out_index[12]		<= 0;
-
-								fmr_ena[13]	<= 0;
-								fmr_wea[13]	<= 0;
-								fmr_enb[13]	<= 0;
-
-								cur_out_index[13]		<= 0;
 								// ======== End: reset fm ram ========
 
 								// reset weight ram 

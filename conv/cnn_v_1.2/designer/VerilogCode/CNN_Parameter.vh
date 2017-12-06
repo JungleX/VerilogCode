@@ -2,14 +2,14 @@
 `define DATA_WIDTH				16	// 16 bits float
 
 // kernel
-`define PARA_KERNEL				3	// para kernel number
+`define PARA_KERNEL				2	// para kernel number
 `define KERNEL_SIZE_MAX			3	// kernel size, max value: 3
 `define KERNEL_SIZE_WIDTH		13	// kernel size width, conv max value: 3, fc max value: 4096
 `define KERNEL_NUM_WIDTH		13	// kernel num width, max value: 4096
 
 // conv
-`define PARA_X					14	// Para X
-`define PARA_Y					10	// Para Y
+`define PARA_X					3	// Para X
+`define PARA_Y					3	// Para Y
 
 // pool
 `define	POOL_SIZE				2	// only one pool size in VGG
@@ -36,8 +36,8 @@
 // feature map ram, block ram
 `define FM_ADDRA_WIDTH			13
 `define FM_ADDRB_WIDTH			13
-`define FM_RAM_MAX				1434
-`define FM_RAM_HALF				717
+`define FM_RAM_MAX				22302
+`define FM_RAM_HALF				11151
 
 // weight ram, block ram
 `define WEIGHT_ADDRA_WIDTH		13
