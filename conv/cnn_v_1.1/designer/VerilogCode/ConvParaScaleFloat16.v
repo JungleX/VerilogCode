@@ -133,6 +133,75 @@ module ConvParaScaleFloat16(
 	endgenerate
 
 	// === End: kernel size = 3 ===
+	// === Begin: kernel size = 5 ===
+	// clk type 0
+	// clk 0
+	wire [`DATA_WIDTH*(`PARA_Y + `KERNEL_SIZE_MAX - 1) - 1:0] register_ks5_0[`PARA_X - 1:0];
+	generate
+		genvar k_ks5_0;
+		for (k_ks5_0 = 0; k_ks5_0 < `PARA_X; k_ks5_0 = k_ks5_0 + 1)
+		begin:identifier_ks5_0
+			assign register_ks5_0[k_ks5_0][`DATA_WIDTH*`PARA_Y - 1:0] = input_data[`DATA_WIDTH*(k_ks5_0+1)*(`PARA_Y) - 1:`DATA_WIDTH*k_ks5_0*(`PARA_Y)];
+		end
+	endgenerate
+
+	// clk type 1
+	// all register group, move and update
+	wire [`DATA_WIDTH*(`PARA_Y + `KERNEL_SIZE_MAX - 1) - 1:0] register_ks5_1[`PARA_X - 1:0];
+	generate
+		genvar k_ks5_1_1;
+		genvar k_ks5_1_2;
+		for (k_ks5_1_1 = 0; k_ks5_1_1 < `PARA_X; k_ks5_1_1 = k_ks5_1_1 + 1)
+		begin:identifier_ks5_1_0
+			for (k_ks5_1_2 = `PARA_Y+(5-1); k_ks5_1_2 > 1; k_ks5_1_2 = k_ks5_1_2 - 1)
+			begin:identifier_ks5_1_1
+				assign register_ks5_1[k_ks5_1_1][`DATA_WIDTH*k_ks5_1_2 - 1:`DATA_WIDTH*(k_ks5_1_2-1)] = register[k_ks5_1_1][`DATA_WIDTH*(k_ks5_1_2-1) - 1:`DATA_WIDTH*(k_ks5_1_2-2)];
+			end
+
+			assign register_ks5_1[k_ks5_1_1][`DATA_WIDTH - 1:0] = input_data[`DATA_WIDTH*(k_ks5_1_1+1) - 1:`DATA_WIDTH*k_ks5_1_1];
+		end
+	endgenerate
+
+	// clk type 2
+	// move between register group, update PARA_Y register in last register group
+	wire [`DATA_WIDTH*(`PARA_Y + `KERNEL_SIZE_MAX - 1) - 1:0] register_ks5_2[`PARA_X - 1:0];
+	generate
+		genvar k_ks5_2;
+		for (k_ks5_2 = 0; k_ks5_2 < (`PARA_X - 1); k_ks5_2 = k_ks5_2 + 1)
+		begin:identifier_ks5_2
+			assign register_ks5_2[k_ks5_2][`DATA_WIDTH*`PARA_Y - 1:0] = register[k_ks5_2+1][`DATA_WIDTH*(`PARA_Y + (5-1)) - 1:`DATA_WIDTH*(5-1)];
+			assign register_ks5_2[k_ks5_2][`DATA_WIDTH*(`PARA_Y + (5-1)) - 1:`DATA_WIDTH*`PARA_Y] = register[k_ks5_2+1][`DATA_WIDTH*(5-1) - 1:0];
+		end
+		assign register_ks5_2[`PARA_X - 1][`DATA_WIDTH*`PARA_Y - 1:0] = input_data[`DATA_WIDTH*`PARA_Y - 1:0];
+	endgenerate
+
+	// clk tpye 3
+	// move between register group, update one register in last register group
+	wire [`DATA_WIDTH*(`PARA_Y + `KERNEL_SIZE_MAX - 1) - 1:0] register_ks5_3[`PARA_X - 1:0];
+	generate
+		genvar k_ks5_3_1;
+		genvar k_ks5_3_2;
+		genvar k_ks5_3_3;
+
+		for (k_ks5_3_1 = 0; k_ks5_3_1 < (`PARA_X-1); k_ks5_3_1 = k_ks5_3_1 + 1)
+		begin:identifier_ks5_3_1
+			for (k_ks5_3_2 = `PARA_Y+(5-1); k_ks5_3_2 > 1; k_ks5_3_2 = k_ks5_3_2 - 1)
+			begin:identifier_ks5_3_2
+				assign register_ks5_3[k_ks5_3_1][`DATA_WIDTH*k_ks5_3_2 - 1:`DATA_WIDTH*(k_ks5_3_2-1)] = register[k_ks5_3_1][`DATA_WIDTH*(k_ks5_3_2-1) - 1:`DATA_WIDTH*(k_ks5_3_2-2)];
+			end
+
+			assign register_ks5_3[k_ks5_3_1][`DATA_WIDTH - 1:0] = register[k_ks5_3_1][`DATA_WIDTH*(`PARA_Y+(5-1)) - 1:`DATA_WIDTH*(`PARA_Y+(5-2))];
+		end
+
+		for (k_ks5_3_3 = `PARA_Y+(5-1); k_ks5_3_3 > 1; k_ks5_3_3 = k_ks5_3_3 - 1)
+		begin:identifier_ks5_3_3
+			assign register_ks5_3[`PARA_X - 1][`DATA_WIDTH*k_ks5_3_3 - 1:`DATA_WIDTH*(k_ks5_3_3-1)] = register[`PARA_X - 1][`DATA_WIDTH*(k_ks5_3_3-1) - 1:`DATA_WIDTH*(k_ks5_3_3-2)];
+		end
+
+		assign register_ks5_3[`PARA_X - 1][`DATA_WIDTH - 1:0] = input_data[`DATA_WIDTH - 1:0];
+	endgenerate
+
+	// === End: kernel size = 5 ===
 	// ======== End: register move wire ========
 
 	// input to MAC
@@ -1498,6 +1567,10 @@ module ConvParaScaleFloat16(
 											begin
 												register[l1] <= register_ks3_0[l1];
 											end
+										5:
+											begin
+												register[l1] <= register_ks5_0[l1];
+											end
 										// ======== End: kernel size case, clk type 0 ======== 
 									endcase
 								end
@@ -1510,6 +1583,10 @@ module ConvParaScaleFloat16(
 										3:
 											begin
 												register[l1] <= register_ks3_2[l1];
+											end
+										5:
+											begin
+												register[l1] <= register_ks5_2[l1];
 											end
 										// ======== End: kernel size case, clk type 2 ======== 
 									endcase
@@ -1524,6 +1601,10 @@ module ConvParaScaleFloat16(
 											begin
 												register[l1] <= register_ks3_1[l1];
 											end
+										5:
+											begin
+												register[l1] <= register_ks5_1[l1];
+											end
 										// ======== End: kernel size case, clk type 1 ======== 
 									endcase
 								end
@@ -1536,6 +1617,10 @@ module ConvParaScaleFloat16(
 										3:
 											begin
 												register[l1] <= register_ks3_3[l1];
+											end
+										5:
+											begin
+												register[l1] <= register_ks5_3[l1];
 											end
 										// ======== End: kernel size case, clk type 3 ======== 
 									endcase
