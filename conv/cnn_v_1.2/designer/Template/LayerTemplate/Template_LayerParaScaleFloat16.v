@@ -680,7 +680,7 @@ module LayerParaScaleFloat16(
 								// write conv buffer to fm ram
 								// todo 
 								if (buffer_to_fm_ram == 1) begin
-									if (buffer_write_count <= (fm_size_out*fm_size_out/`PARA_Y)) begin
+									if (buffer_write_count <= (fm_size_out*fm_size_out*`PARA_KERNEL/(`PARA_X*`PARA_Y))) begin
 										buffer_write_count <= buffer_write_count + 1;
 									end
 									else begin
